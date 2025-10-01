@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Clippy.js - React Demo</title>
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                font-family:
+                    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+                    "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+                    "Helvetica Neue", sans-serif;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+
+            #root {
+                min-height: 100vh;
+                background: linear-gradient(
+                    to bottom,
+                    #f0f9ff 0%,
+                    #e0f2fe 100%
+                );
+            }
+        </style>
+    </head>
+    <body>
+        <div id="root"></div>
+
+        <!-- React and ReactDOM from CDN -->
+        <script
+            crossorigin
+            src="https://unpkg.com/react@18/umd/react.development.js"
+        ></script>
+        <script
+            crossorigin
+            src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+        ></script>
+
+        <!-- Clippy.js UMD build -->
+        <script src="./clippy.min.js"></script>
+
+        <!-- Demo script -->
+        <script type="module" src="./demo-react.js"></script>
+    </body>
+</html>
