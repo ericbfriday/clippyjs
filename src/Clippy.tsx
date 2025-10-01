@@ -2,9 +2,9 @@
  * React component for Clippy agents
  */
 
-import React, { useEffect, useRef, useState } from 'react';
-import { useClippy } from './ClippyProvider';
-import { Agent } from './Agent';
+import React, { useEffect, useRef, useState } from "react";
+import { useClippy } from "./ClippyProvider";
+import { Agent } from "./Agent";
 
 export interface ClippyProps {
   /** Name of the agent to load (e.g., 'Clippy', 'Bonzi', 'Rover') */
@@ -36,7 +36,7 @@ export const Clippy: React.FC<ClippyProps> = ({
   onError,
   position,
   speak,
-  holdSpeech = false
+  holdSpeech = false,
 }) => {
   const { loadAgent, getAgent, unloadAgent } = useClippy();
   const [agent, setAgent] = useState<Agent | undefined>();
@@ -60,7 +60,7 @@ export const Clippy: React.FC<ClippyProps> = ({
           // Load the agent
           currentAgent = await loadAgent(name, {
             basePath,
-            show: showOnLoad
+            show: showOnLoad,
           });
         } else if (showOnLoad) {
           await currentAgent.show();
@@ -123,7 +123,9 @@ export const Clippy: React.FC<ClippyProps> = ({
 /**
  * Hook to control a specific agent
  */
-export const useAgent = (name: string): {
+export const useAgent = (
+  name: string,
+): {
   agent: Agent | undefined;
   loading: boolean;
   error: Error | null;
@@ -150,7 +152,7 @@ export const useAgent = (name: string): {
 
   const unload = () => {
     unloadAgent(name);
-    setAgent(undefined);
+    setAgent();
   };
 
   useEffect(() => {
@@ -166,6 +168,6 @@ export const useAgent = (name: string): {
     loading,
     error,
     load,
-    unload
+    unload,
   };
 };

@@ -1,7 +1,7 @@
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import typescript from "@rollup/plugin-typescript";
-import { terser } from "rollup-plugin-terser";
+import terser from "@rollup/plugin-terser";
 
 const external = ["react", "react-dom"];
 
@@ -13,6 +13,7 @@ export default [
       file: "dist/index.esm.js",
       format: "es",
       sourcemap: true,
+      interop: "auto",
     },
     external,
     plugins: [
@@ -23,6 +24,7 @@ export default [
         declaration: true,
         declarationDir: "dist",
         rootDir: "src",
+        outputToFilesystem: true,
       }),
     ],
   },
@@ -33,6 +35,7 @@ export default [
       file: "dist/index.js",
       format: "cjs",
       sourcemap: true,
+      interop: "auto",
     },
     external,
     plugins: [
@@ -40,7 +43,10 @@ export default [
       commonjs(),
       typescript({
         tsconfig: "./tsconfig.json",
-        declaration: false,
+        declaration: true,
+        declarationDir: "dist",
+        rootDir: "src",
+        outputToFilesystem: true,
       }),
     ],
   },
@@ -56,6 +62,7 @@ export default [
         react: "React",
         "react-dom": "ReactDOM",
       },
+      interop: "auto",
     },
     external,
     plugins: [
@@ -63,7 +70,10 @@ export default [
       commonjs(),
       typescript({
         tsconfig: "./tsconfig.json",
-        declaration: false,
+        declaration: true,
+        declarationDir: "dist",
+        rootDir: "src",
+        outputToFilesystem: true,
       }),
       terser(),
     ],

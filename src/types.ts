@@ -43,12 +43,12 @@ export interface SoundMap {
   [key: string]: string;
 }
 
-export type AnimationState = 'WAITING' | 'EXITED' | 'PLAYING';
+export type AnimationState = "WAITING" | "EXITED" | "PLAYING";
 
 export interface AnimatorStates {
-  WAITING: 'WAITING';
-  EXITED: 'EXITED';
-  PLAYING: 'PLAYING';
+  WAITING: "WAITING";
+  EXITED: "EXITED";
+  PLAYING: "PLAYING";
 }
 
 export interface ClippyOptions {
@@ -63,7 +63,7 @@ export interface AgentConfig {
   sounds: SoundMap;
 }
 
-export type Direction = 'Up' | 'Down' | 'Left' | 'Right';
+export type Direction = "Up" | "Down" | "Left" | "Right";
 
 export type QueueCallback = () => void;
 
@@ -74,3 +74,15 @@ export interface BalloonOptions {
 export interface LoadOptions {
   basePath?: string;
 }
+
+export type AgentName =
+  | "Clippy"
+  | "Bonzi"
+  | "F1"
+  | "Genie"
+  | "Genius"
+  | "Links"
+  | "Merlin"
+  | "Peedy"
+  | "Rocky"
+  | "Rover";

@@ -30,19 +30,29 @@
         <div id="root"></div>
 
         <!-- React and ReactDOM from CDN -->
-        <script
+        <!--<script
             crossorigin
-            src="https://unpkg.com/react@18/umd/react.development.js"
+            src="https://esm.sh/react@19/?dev"
+            type="text/javascript"
         ></script>
         <script
             crossorigin
-            src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
-        ></script>
+            src="https://unpkg.com/react-dom@19/react-dom.development.js"
+            type="text/javascript"
+        ></script>-->
 
         <!-- Clippy.js UMD build -->
-        <script src="./clippy.min.js"></script>
+        <script type="module">
+            import React from "https://esm.sh/react@19/?dev";
+            import ReactDOMClient from "https://esm.sh/react-dom@19/client?dev";
+        </script>
+        <script src="./clippy.min.js" type="text/javascript"></script>
 
         <!-- Demo script -->
-        <script type="module" src="./demo-react.js"></script>
+        <script
+            type="module"
+            src="./demo-react-js/demo/demo-react.js"
+            type="text/javascript"
+        ></script>
     </body>
 </html>

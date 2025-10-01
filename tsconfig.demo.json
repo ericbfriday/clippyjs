@@ -4,10 +4,10 @@
     "module": "ESNext",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "jsx": "react-jsx",
-    "declaration": true,
-    "declarationMap": true,
-    "outDir": "./dist",
-    "rootDir": "./src",
+    "declaration": false,
+    "declarationMap": false,
+    "outDir": "./demo/demo-react-js",
+    "rootDir": "./",
     "strict": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
@@ -17,12 +17,17 @@
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "resolveJsonModule": true,
-    "isolatedModules": true,
+    "isolatedModules": false,
     "allowImportingTsExtensions": false,
-    "noEmit": false
+    "noEmit": false,
+    "baseUrl": "./",
+    "paths": {
+      "../src": ["./src/index"],
+      "../src/*": ["./src/*"]
+    }
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "lib", "demo"]
+  "include": ["demo/demo-react.tsx", "src/**/*"],
+  "exclude": ["node_modules", "dist", "lib"]
 }

@@ -25,7 +25,7 @@ import { Animator } from "./Animator";
 import { Balloon } from "./Balloon";
 import { Queue } from "./Queue";
 
-const clippy = {
+export const clippy = {
   load,
   ready,
   soundsReady,
@@ -38,7 +38,14 @@ const clippy = {
 // Export default for backward compatibility
 export default clippy;
 
-// Set up global if in browser
-if (typeof window !== "undefined") {
-  (window as any).clippy = clippy;
+export function setupGlobal() {
+  // Set up global if in browser
+  if (typeof window !== "undefined") {
+    (window as any).clippy = clippy;
+    console.info("Clippy.js set to window.");
+  } else {
+    console.info(
+      `Clippy.js not running in a browser environment, global not set.`,
+    );
+  }
 }
