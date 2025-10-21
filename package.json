@@ -1,22 +1,11 @@
 {
-  "name": "clippyjs",
+  "name": "clippyjs-workspace",
   "version": "1.0.0",
   "description": "Add Clippy or his friends to any website for instant nostalgia - modern TypeScript and React implementation.",
   "type": "module",
-  "main": "dist/index.js",
-  "module": "dist/index.esm.js",
-  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "npm run clean && npm run build:ts && npm run build:bundle",
-    "build:ts": "tsc",
-    "build:bundle": "rollup -c",
-    "build:demo": "tsc -p tsconfig.demo.json",
-    "watch": "tsc -w",
-    "clean": "rm -rf dist",
-    "prepublish": "yarn run build",
-    "test": "jest",
-    "lint": "eslint src/**/*.{ts,tsx}",
-    "demo": "yarn dlx http-server ./ --cors"
+    "demo": "yarn dlx http-server ./ --cors",
+    "demo:react": "yarn workspace react-app start"
   },
   "repository": {
     "type": "git",
@@ -27,27 +16,8 @@
     "url": "https://github.com/ericbfriday/clippyjs/issues"
   },
   "homepage": "https://github.com/ericbfriday/clippyjs#readme",
-  "peerDependencies": {
-    "react": "*",
-    "react-dom": "*"
-  },
-  "devDependencies": {
-    "@rollup/plugin-commonjs": "^28.0.2",
-    "@rollup/plugin-node-resolve": "^16.0.0",
-    "@rollup/plugin-terser": "^0.4.4",
-    "@rollup/plugin-typescript": "^12.1.2",
-    "@types/react": "^19.1.16",
-    "@types/react-dom": "^19.1.9",
-    "@typescript-eslint/eslint-plugin": "^8.20.0",
-    "@typescript-eslint/parser": "^8.20.0",
-    "eslint": "^9.18.0",
-    "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "jest": "^30.0.0-alpha.7",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "rollup": "^4.31.0",
-    "tslib": "^2.8.1",
-    "typescript": "^5.7.3"
-  }
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ]
 }
