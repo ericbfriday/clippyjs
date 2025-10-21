@@ -17,7 +17,16 @@
 yarn install
 ```
 
-### 2. Run Tests Locally
+### 2. First-Time Setup for Playwright
+```bash
+# Install Chromium browser (required for integration/visual tests)
+# Note: This project uses Yarn PnP, use one of these commands:
+yarn playwright:install                        # Uses package script
+# OR
+yarn exec playwright install chromium --with-deps
+```
+
+### 3. Run Tests Locally
 
 ```bash
 # Unit tests (watch mode)
@@ -27,20 +36,11 @@ yarn test
 yarn workspace @clippyjs/storybook storybook  # Terminal 1
 yarn test:integration                          # Terminal 2
 
-# Visual tests
+# Visual tests (generates baselines on first run)
 yarn test:visual
 
 # Everything
 yarn test:all
-```
-
-### 3. First-Time Setup for Playwright
-```bash
-# Install browsers
-yarn playwright install chromium --with-deps
-
-# Generate visual baselines (first run)
-yarn test:visual
 ```
 
 ## 📋 Test Commands
