@@ -20,7 +20,7 @@ const soundCallbacks: Map<string, (sounds: SoundMap) => void> = new Map();
 export async function load(name: string, options?: LoadOptions): Promise<Agent> {
   const basePath = options?.basePath ||
     (window as any).CLIPPY_CDN ||
-    'https://gitcdn.xyz/repo/pi0/clippyjs/master/assets/agents/';
+    '/agents/';
 
   const path = `${basePath}${name}`;
 

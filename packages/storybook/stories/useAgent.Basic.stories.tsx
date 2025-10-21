@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import React, { useState } from 'react';
 import { useAgent } from '@clippyjs/react';
-import { useState } from 'react';
 
 /**
  * Basic useAgent examples demonstrating fundamental hook usage

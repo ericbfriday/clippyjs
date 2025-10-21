@@ -508,16 +508,16 @@ __metadata:
   dependencies:
     "@chromatic-com/storybook": "npm:^3.2.2"
     "@clippyjs/react": "workspace:^"
-    "@storybook/addon-essentials": "npm:^8.5.0"
-    "@storybook/addon-interactions": "npm:^8.5.0"
-    "@storybook/addon-links": "npm:^8.5.0"
-    "@storybook/blocks": "npm:^8.5.0"
-    "@storybook/react": "npm:^8.5.0"
-    "@storybook/react-vite": "npm:^8.5.0"
-    "@storybook/test": "npm:^8.5.0"
+    "@storybook/addon-essentials": "npm:^8.6.14"
+    "@storybook/addon-interactions": "npm:^8.6.14"
+    "@storybook/addon-links": "npm:^8.6.14"
+    "@storybook/blocks": "npm:^8.6.14"
+    "@storybook/react": "npm:^8.6.14"
+    "@storybook/react-vite": "npm:^8.6.14"
+    "@storybook/test": "npm:^8.6.14"
     react: "npm:^19.0.0"
     react-dom: "npm:^19.0.0"
-    storybook: "npm:^8.5.0"
+    storybook: "npm:^8.6.14"
     typescript: "npm:^5.7.3"
     vite: "npm:^6.0.7"
   languageName: unknown
@@ -2413,7 +2413,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-essentials@npm:^8.5.0":
+"@storybook/addon-essentials@npm:^8.6.14":
   version: 8.6.14
   resolution: "@storybook/addon-essentials@npm:8.6.14"
   dependencies:
@@ -2444,7 +2444,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-interactions@npm:^8.5.0":
+"@storybook/addon-interactions@npm:^8.6.14":
   version: 8.6.14
   resolution: "@storybook/addon-interactions@npm:8.6.14"
   dependencies:
@@ -2459,7 +2459,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-links@npm:^8.5.0":
+"@storybook/addon-links@npm:^8.6.14":
   version: 8.6.14
   resolution: "@storybook/addon-links@npm:8.6.14"
   dependencies:
@@ -2519,7 +2519,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/blocks@npm:8.6.14, @storybook/blocks@npm:^8.5.0":
+"@storybook/blocks@npm:8.6.14, @storybook/blocks@npm:^8.6.14":
   version: 8.6.14
   resolution: "@storybook/blocks@npm:8.6.14"
   dependencies:
@@ -2654,7 +2654,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/react-vite@npm:^8.5.0":
+"@storybook/react-vite@npm:^8.6.14":
   version: 8.6.14
   resolution: "@storybook/react-vite@npm:8.6.14"
   dependencies:
@@ -2680,7 +2680,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/react@npm:8.6.14, @storybook/react@npm:^8.5.0":
+"@storybook/react@npm:8.6.14, @storybook/react@npm:^8.6.14":
   version: 8.6.14
   resolution: "@storybook/react@npm:8.6.14"
   dependencies:
@@ -2705,7 +2705,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/test@npm:8.6.14, @storybook/test@npm:^8.5.0":
+"@storybook/test@npm:8.6.14, @storybook/test@npm:^8.6.14":
   version: 8.6.14
   resolution: "@storybook/test@npm:8.6.14"
   dependencies:
@@ -9444,7 +9444,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"storybook@npm:^8.5.0":
+"storybook@npm:^8.6.14":
   version: 8.6.14
   resolution: "storybook@npm:8.6.14"
   dependencies:

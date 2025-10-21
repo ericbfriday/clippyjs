@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import React, { useState } from 'react';
 import { useAgent, AgentName } from '@clippyjs/react';
-import { useState } from 'react';
 
 /**
  * Showcase of all 10 available agents

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import React, { useState } from 'react';
 import { Clippy } from '@clippyjs/react';
-import { useState } from 'react';
 
 /**
  * Declarative Clippy component examples
