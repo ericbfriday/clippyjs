@@ -17,6 +17,10 @@ export default defineConfig({
         'src/index.ts',
       ],
     },
-    include: ['tests/unit/**/*.test.{ts,tsx}'],
+    include: [
+      'tests/unit/**/*.test.{ts,tsx}',
+      'tests/integration/**/*.test.{ts,tsx}',
+      'tests/examples/**/*.test.{ts,tsx}',
+    ],
   },
 });

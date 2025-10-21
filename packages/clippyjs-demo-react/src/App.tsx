@@ -1,5 +1,5 @@
 import React from 'react';
-import { ClippyProvider, Clippy } from 'clippyjs';
+import { ClippyProvider, Clippy } from '@clippyjs/react';
 
 const App = () => (
   <ClippyProvider defaultBasePath="/assets/agents/">
