@@ -79,22 +79,32 @@ describe('useAgent', () => {
     it('provides all expected methods', () => {
       const { result } = renderHook(() => useAgent('Clippy'), { wrapper });
 
-      // All methods should be defined
+      // Lifecycle methods
       expect(typeof result.current.load).toBe('function');
+      expect(typeof result.current.unload).toBe('function');
+      expect(typeof result.current.reload).toBe('function');
+
+      // Core methods
       expect(typeof result.current.show).toBe('function');
       expect(typeof result.current.hide).toBe('function');
-      expect(typeof result.current.speak).toBe('function');
       expect(typeof result.current.play).toBe('function');
       expect(typeof result.current.animate).toBe('function');
+      expect(typeof result.current.speak).toBe('function');
       expect(typeof result.current.moveTo).toBe('function');
       expect(typeof result.current.gestureAt).toBe('function');
-      expect(typeof result.current.stopCurrent).toBe('function');
+
+      // Control methods
       expect(typeof result.current.stop).toBe('function');
+      expect(typeof result.current.stopCurrent).toBe('function');
+      expect(typeof result.current.pause).toBe('function');
+      expect(typeof result.current.resume).toBe('function');
       expect(typeof result.current.delay).toBe('function');
       expect(typeof result.current.closeBalloon).toBe('function');
-      expect(typeof result.current.animations).toBe('function');
-      expect(typeof result.current.reload).toBe('function');
-      expect(typeof result.current.unload).toBe('function');
+
+      // Utility methods
+      expect(typeof result.current.getAnimations).toBe('function');
+      expect(typeof result.current.hasAnimation).toBe('function');
+      expect(typeof result.current.isVisible).toBe('function');
     });
   });
 
@@ -121,20 +131,34 @@ describe('useAgent', () => {
   });
 
   describe('SSR compatibility', () => {
-    it('handles server-side rendering gracefully', () => {
-      // Mock window as undefined to simulate SSR
-      const originalWindow = global.window;
-      // @ts-expect-error - intentionally setting to undefined for SSR test
-      global.window = undefined;
-
+    it('initializes without errors in client environment', () => {
       const { result } = renderHook(() => useAgent('Clippy'), { wrapper });
 
-      // Hook should not crash in SSR environment
+      // Hook should initialize properly
       expect(result.current.agent).toBeNull();
       expect(result.current.loading).toBe(false);
+      expect(result.current.error).toBeNull();
+    });
 
-      // Restore window
-      global.window = originalWindow;
+    it('provides getAnimations that returns empty array when agent not loaded', () => {
+      const { result } = renderHook(() => useAgent('Clippy'), { wrapper });
+
+      // Should return empty array when no agent loaded
+      expect(result.current.getAnimations()).toEqual([]);
+    });
+
+    it('provides hasAnimation that returns false when agent not loaded', () => {
+      const { result } = renderHook(() => useAgent('Clippy'), { wrapper });
+
+      // Should return false when no agent loaded
+      expect(result.current.hasAnimation('Wave')).toBe(false);
+    });
+
+    it('provides isVisible that returns false when agent not loaded', () => {
+      const { result } = renderHook(() => useAgent('Clippy'), { wrapper });
+
+      // Should return false when no agent loaded
+      expect(result.current.isVisible()).toBe(false);
     });
   });
 });
