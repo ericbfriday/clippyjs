@@ -1,0 +1,91 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Introduction" />
+
+# Welcome to ClippyJS React Storybook
+
+Add Clippy or his friends to any React website for instant nostalgia!
+
+## What is ClippyJS?
+
+ClippyJS brings back the classic Microsoft Office assistant characters as interactive React components. Built with modern TypeScript and React 19, it provides a production-ready, type-safe API for adding nostalgic agent assistants to your applications.
+
+## Features
+
+- 🎯 **10 Classic Agents** - Clippy, Merlin, Rover, and more
+- ⚛️ **Modern React** - Built for React 18/19 with hooks
+- 🔷 **TypeScript** - Full type safety with comprehensive definitions
+- 🎨 **Declarative & Imperative** - Choose your preferred API style
+- 🌐 **SSR Compatible** - Works with Next.js and other SSR frameworks
+- 🎭 **50+ Animations** - Rich animation library per agent
+- 💬 **Speech Balloons** - Interactive speech with customizable messages
+- 🎮 **Full Control** - Move, animate, speak, and more
+
+## Available Agents
+
+- **Clippy** - The iconic paperclip assistant
+- **Merlin** - The wise wizard
+- **Rover** - The friendly red dog
+- **Genie** - The magical genie
+- **Bonzi** - The purple gorilla
+- **Peedy** - The green parrot
+- **Links** - The helpful cat
+- **F1** - The racing car
+- **Rocky** - The dog
+- **Genius** - Einstein-like character
+
+## Quick Start
+
+### Installation
+
+```bash
+npm install @clippyjs/react
+```
+
+### Basic Usage
+
+```tsx
+import { ClippyProvider, useAgent } from '@clippyjs/react';
+
+function App() {
+  return (
+    <ClippyProvider>
+      <MyComponent />
+    </ClippyProvider>
+  );
+}
+
+function MyComponent() {
+  const { load, speak } = useAgent('Clippy');
+
+  return (
+    <button onClick={async () => {
+      await load();
+      await speak('Hello! Welcome to our website!');
+    }}>
+      Show Clippy
+    </button>
+  );
+}
+```
+
+## Using This Storybook
+
+Explore the sidebar to see:
+
+- **useAgent Hook** - Interactive examples of the imperative API
+- **Clippy Component** - Declarative component examples
+- **All Agents** - Demos of all 10 agents
+- **Animations** - Catalog of available animations
+- **Multiple Agents** - Coordinating multiple agents
+- **Advanced** - Custom controls and patterns
+
+## Resources
+
+- [GitHub Repository](https://github.com/ericbfriday/clippyjs)
+- [API Documentation](https://github.com/ericbfriday/clippyjs/tree/master/docs)
+- [Getting Started Guide](https://github.com/ericbfriday/clippyjs/tree/master/docs/getting-started)
+
+---
+
+**Ready to explore?** Check out the stories in the sidebar! 👈
