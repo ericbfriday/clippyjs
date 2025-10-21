@@ -1,15 +1,35 @@
 /**
  * React Context Provider for Clippy agents
+ *
+ * Provides centralized management for multiple Clippy agents with features including:
+ * - Agent lifecycle management (load, unload, get)
+ * - Concurrent agent limits
+ * - Global error handling
+ * - Automatic cleanup on unmount
+ *
+ * @example
+ * ```tsx
+ * <ClippyProvider maxAgents={3} onError={(err) => console.error(err)}>
+ *   <App />
+ * </ClippyProvider>
+ * ```
  */
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import type { Agent } from '@clippyjs/core';
 import { load } from '@clippyjs/core';
 
+/**
+ * Context value provided by ClippyProvider
+ */
 interface ClippyContextType {
+  /** Map of all loaded agents by name */
   agents: Map<string, Agent>;
+  /** Load a new agent or return existing one */
   loadAgent: (name: string, options?: LoadAgentOptions) => Promise<Agent>;
+  /** Unload and destroy an agent */
   unloadAgent: (name: string) => void;
+  /** Get a loaded agent by name */
   getAgent: (name: string) => Agent | undefined;
 }
 
@@ -20,7 +40,14 @@ interface LoadAgentOptions {
 
 interface ClippyProviderProps {
   children: ReactNode;
+  /** Default base path for agent assets */
   defaultBasePath?: string;
+  /** Maximum number of concurrent agents (default: 5) */
+  maxAgents?: number;
+  /** Enable/disable sounds globally (default: true) */
+  soundEnabled?: boolean;
+  /** Error callback for global error handling */
+  onError?: (error: Error, agentName?: string) => void;
 }
 
 const ClippyContext = createContext<ClippyContextType | undefined>(undefined);
@@ -28,13 +55,28 @@ const ClippyContext = createContext<ClippyContextType | undefined>(undefined);
 /**
  * Provider component for managing Clippy agents
  */
-export const ClippyProvider: React.FC<ClippyProviderProps> = ({ children, defaultBasePath }) => {
+export const ClippyProvider: React.FC<ClippyProviderProps> = ({
+  children,
+  defaultBasePath,
+  maxAgents = 5,
+  soundEnabled = true,
+  onError
+}) => {
   const [agents, setAgents] = useState<Map<string, Agent>>(new Map());
 
   const loadAgent = async (name: string, options?: LoadAgentOptions): Promise<Agent> => {
     // Check if already loaded
     const existing = agents.get(name);
     if (existing) return existing;
+
+    // Check max agents limit
+    if (agents.size >= maxAgents) {
+      const error = new Error(
+        `Maximum ${maxAgents} agents allowed. Unload an agent before loading another.`
+      );
+      onError?.(error, name);
+      throw error;
+    }
 
     try {
       // Load the agent
@@ -52,8 +94,10 @@ export const ClippyProvider: React.FC<ClippyProviderProps> = ({ children, defaul
 
       return agent;
     } catch (error) {
-      console.error(`Failed to load agent ${name}:`, error);
-      throw error;
+      const err = error as Error;
+      onError?.(err, name);
+      console.error(`Failed to load agent ${name}:`, err);
+      throw err;
     }
   };
 
