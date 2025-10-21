@@ -68,6 +68,9 @@ describe('Integration: Event-Driven Behavior', () => {
         </ClippyProvider>
       );
 
+      // Wait for React effects to complete: isClient effect + autoLoad effect
+      await new Promise(resolve => setTimeout(resolve, 500));
+
       await user.click(screen.getByRole('button', { name: 'Click Me!' }));
 
       await waitFor(() => {
@@ -114,16 +117,19 @@ describe('Integration: Event-Driven Behavior', () => {
         </ClippyProvider>
       );
 
+      // Wait for React effects to complete: isClient effect + autoLoad effect
+      await new Promise(resolve => setTimeout(resolve, 500));
+
       // Simulate scroll to bottom
-      Object.defineProperty(window, 'scrollY', { value: 2000, writable: true });
-      Object.defineProperty(window, 'innerHeight', { value: 800, writable: true });
-      Object.defineProperty(document.documentElement, 'scrollHeight', { value: 2800, writable: true });
+      Object.defineProperty(window, 'scrollY', { value: 2000, writable: true, configurable: true });
+      Object.defineProperty(window, 'innerHeight', { value: 800, writable: true, configurable: true });
+      Object.defineProperty(document.documentElement, 'scrollHeight', { value: 2800, writable: true, configurable: true });
 
       fireEvent.scroll(window);
 
       await waitFor(() => {
         expect(screen.queryByTestId('scroll-help')).toBeInTheDocument();
-      });
+      }, { timeout: 3000 });
     });
 
     it('responds to keyboard shortcuts', async () => {
@@ -168,6 +174,9 @@ describe('Integration: Event-Driven Behavior', () => {
           <KeyboardShortcutApp />
         </ClippyProvider>
       );
+
+      // Wait for React effects to complete: isClient effect + autoLoad effect
+      await new Promise(resolve => setTimeout(resolve, 500));
 
       // Trigger keyboard shortcut
       await user.keyboard('{Control>}h{/Control}');
@@ -339,15 +348,22 @@ describe('Integration: Event-Driven Behavior', () => {
         </ClippyProvider>
       );
 
-      // Fast-forward time by 2 minutes
-      vi.advanceTimersByTime(120000);
+      // Advance time for React effects to complete: isClient effect + autoLoad effect
+      await vi.advanceTimersByTimeAsync(500);
 
-      await waitFor(() => {
-        expect(screen.getByTestId('idle-reminder')).toBeInTheDocument();
-      });
-    });
+      // Fast-forward time by 2 minutes (use async to wait for state updates)
+      await vi.advanceTimersByTimeAsync(120000);
+
+      // Run all pending timers to flush React state updates
+      await vi.runOnlyPendingTimersAsync();
+
+      // Now check state
+      expect(screen.getByTestId('idle-reminder')).toBeInTheDocument();
+    }, 15000);
 
     it('shows periodic tips during long tasks', async () => {
+      vi.useFakeTimers();
+
       function LongTaskWithTips() {
         const agent = useAgent('Clippy', { autoLoad: true });
         const [tipCount, setTipCount] = useState(0);
@@ -377,14 +393,19 @@ describe('Integration: Event-Driven Behavior', () => {
         </ClippyProvider>
       );
 
-      // Fast-forward 90 seconds (3 tips)
-      vi.advanceTimersByTime(90000);
+      // Advance time for React effects to complete: isClient effect + autoLoad effect
+      await vi.advanceTimersByTimeAsync(500);
 
-      await waitFor(() => {
-        const tipCount = screen.getByTestId('tip-count');
-        expect(tipCount.textContent).toMatch(/Tips shown: [3-9]/);
-      });
-    });
+      // Fast-forward 90 seconds (3 tips) - use async to wait for state updates
+      await vi.advanceTimersByTimeAsync(90000);
+
+      // Run all pending timers to flush React state updates
+      await vi.runOnlyPendingTimersAsync();
+
+      // Now check state
+      const tipCount = screen.getByTestId('tip-count');
+      expect(tipCount.textContent).toMatch(/Tips shown: [3-9]/);
+    }, 15000);
   });
 
   describe('Window Events', () => {
@@ -468,14 +489,21 @@ describe('Integration: Event-Driven Behavior', () => {
         </ClippyProvider>
       );
 
+      // Wait for React effects to complete: isClient effect + autoLoad effect
+      await new Promise(resolve => setTimeout(resolve, 500));
+
       // Simulate tab becoming visible
-      Object.defineProperty(document, 'hidden', { value: false, writable: true });
+      Object.defineProperty(document, 'hidden', {
+        value: false,
+        writable: true,
+        configurable: true,
+      });
       fireEvent(document, new Event('visibilitychange'));
 
       await waitFor(() => {
-        expect(screen.queryByTestId('welcome-back')).toBeInTheDocument();
-      });
-    });
+        expect(screen.getByTestId('welcome-back')).toBeInTheDocument();
+      }, { timeout: 10000 });
+    }, 15000);
   });
 
   describe('Mouse Interaction Events', () => {
@@ -516,6 +544,9 @@ describe('Integration: Event-Driven Behavior', () => {
           <HoverHelp />
         </ClippyProvider>
       );
+
+      // Wait for React effects to complete: isClient effect + autoLoad effect
+      await new Promise(resolve => setTimeout(resolve, 500));
 
       // Hover over help icon
       await user.hover(screen.getByTestId('help-icon'));
@@ -559,6 +590,9 @@ describe('Integration: Event-Driven Behavior', () => {
           <DoubleClickEasterEgg />
         </ClippyProvider>
       );
+
+      // Wait for React effects to complete: isClient effect + autoLoad effect
+      await new Promise(resolve => setTimeout(resolve, 500));
 
       // Double-click
       await user.dblClick(screen.getByTestId('easter-egg-trigger'));

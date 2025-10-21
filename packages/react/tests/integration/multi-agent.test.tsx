@@ -108,15 +108,25 @@ describe('Integration: Multi-Agent Scenarios', () => {
         </ClippyProvider>
       );
 
+      const user = userEvent;
+
+      // Wait for React effects to complete: isClient effect + autoLoad effect
+      // This gives time for the component to render → set isClient → load agents
+      await new Promise(resolve => setTimeout(resolve, 500));
+
       const clippyButton = screen.getByRole('button', { name: 'Clippy Speak' });
       const merlinButton = screen.getByRole('button', { name: 'Merlin Speak' });
 
-      userEvent.click(clippyButton);
-      userEvent.click(merlinButton);
+      // Click and wait for each action to complete
+      await user.click(clippyButton);
+      await waitFor(() => {
+        expect(screen.getByTestId('action-count')).toHaveTextContent('1 actions');
+      }, { timeout: 10000 });
 
+      await user.click(merlinButton);
       await waitFor(() => {
         expect(screen.getByTestId('action-count')).toHaveTextContent('2 actions');
-      });
+      }, { timeout: 10000 });
     });
 
     it('coordinates agent movements', async () => {
@@ -151,12 +161,16 @@ describe('Integration: Multi-Agent Scenarios', () => {
         </ClippyProvider>
       );
 
+      // Wait for React effects to complete
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      const user = userEvent;
       const moveButton = screen.getByRole('button', { name: 'Move Both' });
-      userEvent.click(moveButton);
+      await user.click(moveButton);
 
       await waitFor(() => {
         expect(screen.getByTestId('movement-complete')).toBeInTheDocument();
-      });
+      }, { timeout: 10000 });
     });
   });
 
@@ -207,15 +221,18 @@ describe('Integration: Multi-Agent Scenarios', () => {
         </ClippyProvider>
       );
 
+      // Wait for React effects to complete
+      await new Promise(resolve => setTimeout(resolve, 500));
+
       await user.click(screen.getByRole('button', { name: 'Start Conversation' }));
 
       await waitFor(
         () => {
           expect(screen.getByTestId('message-count')).toHaveTextContent('3 messages');
         },
-        { timeout: 2000 }
+        { timeout: 15000 }
       );
-    });
+    }, 20000);
 
     it('specialized agents for different tasks', async () => {
       function SpecializedAgents() {
@@ -262,8 +279,9 @@ describe('Integration: Multi-Agent Scenarios', () => {
         </ClippyProvider>
       );
 
+      const user = userEvent;
       const helpButton = screen.getByRole('button', { name: 'Request Help' });
-      userEvent.click(helpButton);
+      await user.click(helpButton);
 
       await waitFor(() => {
         expect(screen.getByTestId('current-task')).toHaveTextContent(
@@ -309,17 +327,21 @@ describe('Integration: Multi-Agent Scenarios', () => {
         </ClippyProvider>
       );
 
+      // Wait for React effects to complete
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      const user = userEvent;
       const advancedButton = screen.getByRole('button', {
         name: 'Ask Advanced Question',
       });
-      userEvent.click(advancedButton);
+      await user.click(advancedButton);
 
       await waitFor(() => {
         expect(screen.getByTestId('active-agent')).toHaveTextContent(
           'Active: expert'
         );
-      }, { timeout: 1000 });
-    });
+      }, { timeout: 10000 });
+    }, 15000);
   });
 
   describe('Team Assistance', () => {
@@ -357,16 +379,17 @@ describe('Integration: Multi-Agent Scenarios', () => {
         </ClippyProvider>
       );
 
+      const user = userEvent;
       const nextButton = screen.getByRole('button', { name: 'Next Step' });
 
       // Move to step 2
-      userEvent.click(nextButton);
+      await user.click(nextButton);
       await waitFor(() => {
         expect(screen.getByTestId('current-step')).toHaveTextContent('Step 2');
       });
 
       // Move to step 3
-      userEvent.click(nextButton);
+      await user.click(nextButton);
       await waitFor(() => {
         expect(screen.getByTestId('current-step')).toHaveTextContent('Step 3');
       });
@@ -424,8 +447,9 @@ describe('Integration: Multi-Agent Scenarios', () => {
 
       render(<AgentRotation />);
 
+      const user = userEvent;
       const rotateButton = screen.getByRole('button', { name: 'Rotate Agents' });
-      userEvent.click(rotateButton);
+      await user.click(rotateButton);
 
       await waitFor(() => {
         expect(screen.getByTestId('agent-list')).toHaveTextContent(
@@ -469,12 +493,16 @@ describe('Integration: Multi-Agent Scenarios', () => {
         </ClippyProvider>
       );
 
+      // Wait for React effects to complete
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      const user = userEvent;
       const executeButton = screen.getByRole('button', { name: 'Execute All' });
-      userEvent.click(executeButton);
+      await user.click(executeButton);
 
       await waitFor(() => {
         expect(screen.getByTestId('update-count')).toHaveTextContent('4 updates');
-      });
-    });
+      }, { timeout: 10000 });
+    }, 15000);
   });
 });

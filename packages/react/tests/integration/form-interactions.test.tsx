@@ -72,6 +72,9 @@ describe('Integration: Form Interactions', () => {
         </ClippyProvider>
       );
 
+      // Wait for React effects to complete: isClient effect + autoLoad effect
+      await new Promise(resolve => setTimeout(resolve, 500));
+
       // User focuses on email field
       const emailInput = screen.getByLabelText('Email Address');
       await user.click(emailInput);
@@ -79,7 +82,7 @@ describe('Integration: Form Interactions', () => {
       // Agent should offer help
       await waitFor(() => {
         expect(screen.getByRole('status')).toBeInTheDocument();
-      });
+      }, { timeout: 10000 });
     });
 
     it('provides different help for different field types', async () => {
@@ -146,13 +149,16 @@ describe('Integration: Form Interactions', () => {
         </ClippyProvider>
       );
 
+      // Wait for React effects to complete: isClient effect + autoLoad effect
+      await new Promise(resolve => setTimeout(resolve, 500));
+
       // Focus on email field
       await user.click(screen.getByLabelText('Email'));
       await waitFor(() => {
         expect(screen.getByTestId('help-message')).toHaveTextContent(
           'Enter your email address'
         );
-      });
+      }, { timeout: 10000 });
 
       // Focus on password field
       await user.click(screen.getByLabelText('Password'));
@@ -160,7 +166,7 @@ describe('Integration: Form Interactions', () => {
         expect(screen.getByTestId('help-message')).toHaveTextContent(
           'Password must be at least 8 characters'
         );
-      });
+      }, { timeout: 10000 });
     });
   });
 

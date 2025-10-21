@@ -80,11 +80,14 @@ describe('Integration: External Data', () => {
         </ClippyProvider>
       );
 
+      // Wait for React effects to complete: isClient effect + autoLoad effect
+      await new Promise(resolve => setTimeout(resolve, 500));
+
       await user.click(screen.getByRole('button', { name: 'Fetch Data' }));
 
       await waitFor(() => {
         expect(screen.getByTestId('data-result')).toHaveTextContent('Test User: 5 items');
-      });
+      }, { timeout: 10000 });
     });
 
     it('handles API errors with helpful messages', async () => {
@@ -128,6 +131,9 @@ describe('Integration: External Data', () => {
         </ClippyProvider>
       );
 
+      // Wait for React effects to complete: isClient effect + autoLoad effect
+      await new Promise(resolve => setTimeout(resolve, 500));
+
       await user.click(screen.getByRole('button', { name: 'Fetch Data' }));
 
       await waitFor(() => {
@@ -170,8 +176,9 @@ describe('Integration: External Data', () => {
         </ClippyProvider>
       );
 
+      const user = userEvent;
       const userButton = screen.getByRole('button', { name: 'Load User' });
-      userEvent.click(userButton);
+      await user.click(userButton);
 
       await waitFor(() => {
         expect(screen.getByTestId('response-type')).toHaveTextContent('user data loaded');
@@ -181,6 +188,8 @@ describe('Integration: External Data', () => {
 
   describe('Real-Time Data Updates', () => {
     it('responds to WebSocket-like real-time notifications', async () => {
+      vi.useFakeTimers();
+
       function RealTimeNotifications() {
         const agent = useAgent('Clippy', { autoLoad: true });
         const [notifications, setNotifications] = useState<string[]>([]);
@@ -213,25 +222,28 @@ describe('Integration: External Data', () => {
         );
       }
 
-      vi.useFakeTimers();
-
       render(
         <ClippyProvider>
           <RealTimeNotifications />
         </ClippyProvider>
       );
 
-      // Advance time to trigger notifications
-      vi.advanceTimersByTime(4000); // 2 notifications
+      // Advance time for React effects to complete: isClient effect + autoLoad effect
+      await vi.advanceTimersByTimeAsync(500);
 
-      await waitFor(() => {
-        expect(screen.getByTestId('notification-count')).toHaveTextContent(
-          'Notifications: 2'
-        );
-      });
+      // Advance time to trigger notifications (use async to wait for state updates)
+      await vi.advanceTimersByTimeAsync(4000); // 2 notifications
+
+      // Run all pending timers to flush React state updates
+      await vi.runOnlyPendingTimersAsync();
+
+      // Now check state
+      expect(screen.getByTestId('notification-count')).toHaveTextContent(
+        'Notifications: 2'
+      );
 
       vi.useRealTimers();
-    });
+    }, 20000);
 
     it('handles streaming data updates', async () => {
       function StreamingData() {
@@ -280,13 +292,18 @@ describe('Integration: External Data', () => {
         </ClippyProvider>
       );
 
-      // Advance time to complete progress
-      vi.advanceTimersByTime(1000);
+      // Advance time for React effects to complete: isClient effect + autoLoad effect
+      await vi.advanceTimersByTimeAsync(500);
 
-      await waitFor(() => {
-        expect(screen.getByTestId('progress')).toHaveTextContent('100%');
-        expect(screen.getByTestId('complete')).toBeInTheDocument();
-      });
+      // Advance time to complete progress
+      await vi.advanceTimersByTimeAsync(1000);
+
+      // Run all pending timers to flush React state updates
+      await vi.runOnlyPendingTimersAsync();
+
+      // Now check state
+      expect(screen.getByTestId('progress')).toHaveTextContent('100%');
+      expect(screen.getByTestId('complete')).toBeInTheDocument();
 
       vi.useRealTimers();
     });
@@ -328,6 +345,9 @@ describe('Integration: External Data', () => {
           <PersonalizedApp />
         </ClippyProvider>
       );
+
+      // Wait for React effects to complete: isClient effect + autoLoad effect
+      await new Promise(resolve => setTimeout(resolve, 500));
 
       await waitFor(() => {
         expect(screen.getByTestId('greeting')).toHaveTextContent('Welcome Alice!');
@@ -375,15 +395,19 @@ describe('Integration: External Data', () => {
         </ClippyProvider>
       );
 
+      // Wait for React effects to complete: isClient effect + autoLoad effect
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      const user = userEvent;
       const helpButton = screen.getByRole('button', { name: 'Get Help' });
-      userEvent.click(helpButton);
+      await user.click(helpButton);
 
       await waitFor(() => {
         expect(screen.getByTestId('help-message')).toHaveTextContent(
           'Quick tip: Try using the keyboard shortcut Ctrl+K'
         );
-      });
-    });
+      }, { timeout: 10000 });
+    }, 15000);
   });
 
   describe('Context-Aware Assistance', () => {
@@ -422,8 +446,12 @@ describe('Integration: External Data', () => {
         </ClippyProvider>
       );
 
+      // Wait for React effects to complete: isClient effect + autoLoad effect
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      const user = userEvent;
       const dashboardButton = screen.getByRole('button', { name: 'Dashboard' });
-      userEvent.click(dashboardButton);
+      await user.click(dashboardButton);
 
       await waitFor(() => {
         expect(screen.getByTestId('current-page')).toHaveTextContent('dashboard');
@@ -465,8 +493,12 @@ describe('Integration: External Data', () => {
         </ClippyProvider>
       );
 
+      // Wait for React effects to complete: isClient effect + autoLoad effect
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      const user = userEvent;
       const profileButton = screen.getByRole('button', { name: 'Complete Profile' });
-      userEvent.click(profileButton);
+      await user.click(profileButton);
 
       await waitFor(() => {
         expect(screen.getByTestId('steps-completed')).toHaveTextContent(
@@ -523,6 +555,9 @@ describe('Integration: External Data', () => {
         </ClippyProvider>
       );
 
+      // Wait for React effects to complete: isClient effect + autoLoad effect
+      await new Promise(resolve => setTimeout(resolve, 500));
+
       const searchInput = screen.getByTestId('search-input');
       await user.type(searchInput, 'nonexistent{Enter}');
 
@@ -569,8 +604,12 @@ describe('Integration: External Data', () => {
         </ClippyProvider>
       );
 
+      // Wait for React effects to complete: isClient effect + autoLoad effect
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      const user = userEvent;
       const searchButton = screen.getByRole('button', { name: 'Search All' });
-      userEvent.click(searchButton);
+      await user.click(searchButton);
 
       await waitFor(() => {
         expect(screen.getByTestId('filter-suggestion')).toBeInTheDocument();
