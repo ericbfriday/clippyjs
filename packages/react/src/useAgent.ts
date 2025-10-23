@@ -76,12 +76,28 @@ export function useAgent(
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const mountedRef = useRef(true);
+  const agentNameRef = useRef(name);
   const [isClient, setIsClient] = useState(false);
 
   // Detect client-side (SSR compatibility)
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  // Handle agent name changes - cleanup old agent when name changes
+  useEffect(() => {
+    if (agentNameRef.current !== name) {
+      // Name changed - unload the old agent
+      const oldName = agentNameRef.current;
+      const oldAgent = getAgent(oldName);
+      if (oldAgent && autoCleanup) {
+        oldAgent.destroy();
+        unloadAgent(oldName);
+      }
+      agentNameRef.current = name;
+      setAgent(null);
+    }
+  }, [name, autoCleanup, getAgent, unloadAgent]);
 
   // Load function
   const load = useCallback(async (): Promise<Agent> => {
@@ -146,10 +162,10 @@ export function useAgent(
   const unload = useCallback(() => {
     if (agent) {
       agent.destroy();
-      unloadAgent(name);
+      unloadAgent(agentNameRef.current);
       setAgent(null);
     }
-  }, [agent, name, unloadAgent]);
+  }, [agent, unloadAgent]);
 
   // Reload function
   const reload = useCallback(async (): Promise<Agent> => {
@@ -174,10 +190,10 @@ export function useAgent(
       mountedRef.current = false;
       if (agent && autoCleanup) {
         agent.destroy();
-        unloadAgent(name);
+        unloadAgent(agentNameRef.current);
       }
     };
-  }, [agent, name, autoCleanup, unloadAgent]);
+  }, [agent, autoCleanup, unloadAgent]);
 
   // Convenience method wrappers
   const show = useCallback(async () => {
