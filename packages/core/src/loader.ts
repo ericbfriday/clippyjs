@@ -9,10 +9,34 @@ import { AgentData, SoundMap, LoadOptions } from './types';
 const loadedMaps: Map<string, Promise<void>> = new Map();
 const loadedSounds: Map<string, Promise<SoundMap>> = new Map();
 const loadedData: Map<string, Promise<AgentData>> = new Map();
+let cssLoaded = false;
 
 // Callbacks for JSONP-style loading
 const dataCallbacks: Map<string, (data: AgentData) => void> = new Map();
 const soundCallbacks: Map<string, (sounds: SoundMap) => void> = new Map();
+
+/**
+ * Load Clippy CSS styles (once per session)
+ */
+function loadCSS(basePath: string): void {
+  if (cssLoaded) return;
+
+  // Extract the parent directory from basePath
+  // e.g., '/agents/' -> '/', 'https://cdn.com/agents/' -> 'https://cdn.com/'
+  const pathWithoutTrailingSlash = basePath.replace(/\/$/, '');
+  const lastSlashIndex = pathWithoutTrailingSlash.lastIndexOf('/');
+  const cssBasePath = lastSlashIndex >= 0
+    ? pathWithoutTrailingSlash.substring(0, lastSlashIndex + 1)
+    : '/';
+
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.type = 'text/css';
+  link.href = `${cssBasePath}clippy.css`;
+  document.head.appendChild(link);
+
+  cssLoaded = true;
+}
 
 /**
  * Load a Clippy agent
@@ -21,6 +45,9 @@ export async function load(name: string, options?: LoadOptions): Promise<Agent> 
   const basePath = options?.basePath ||
     (window as any).CLIPPY_CDN ||
     '/agents/';
+
+  // Load CSS styles (once per session)
+  loadCSS(basePath);
 
   const path = `${basePath}${name}`;
 
