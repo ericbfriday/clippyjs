@@ -1,5 +1,6 @@
 import type { Message } from '../providers/AIProvider';
 import type { ContextData } from '../context/ContextProvider';
+import type { AgentName } from '../personality/PersonalityProfiles';
 
 /**
  * Conversation message with metadata
@@ -15,7 +16,7 @@ export interface ConversationMessage extends Message {
  */
 export interface ConversationHistory {
   messages: ConversationMessage[];
-  agentName: string;
+  agentName: AgentName;
   startedAt: Date;
   lastInteraction: Date;
 }
@@ -35,13 +36,13 @@ export interface HistoryStore {
    * @param agentName Name of the agent
    * @returns Conversation history or null if not found
    */
-  load(agentName: string): Promise<ConversationHistory | null>;
+  load(agentName: AgentName): Promise<ConversationHistory | null>;
 
   /**
    * Clear conversation history for an agent
    * @param agentName Name of the agent
    */
-  clear(agentName: string): Promise<void>;
+  clear(agentName: AgentName): Promise<void>;
 
   /**
    * Clear all conversation histories
@@ -68,7 +69,7 @@ export class LocalStorageHistoryStore implements HistoryStore {
     }
   }
 
-  async load(agentName: string): Promise<ConversationHistory | null> {
+  async load(agentName: AgentName): Promise<ConversationHistory | null> {
     const key = this.getKey(agentName);
     try {
       const data = localStorage.getItem(key);
@@ -95,7 +96,7 @@ export class LocalStorageHistoryStore implements HistoryStore {
     }
   }
 
-  async clear(agentName: string): Promise<void> {
+  async clear(agentName: AgentName): Promise<void> {
     const key = this.getKey(agentName);
     localStorage.removeItem(key);
   }
@@ -135,7 +136,7 @@ export class SessionStorageHistoryStore implements HistoryStore {
     }
   }
 
-  async load(agentName: string): Promise<ConversationHistory | null> {
+  async load(agentName: AgentName): Promise<ConversationHistory | null> {
     const key = this.getKey(agentName);
     try {
       const data = sessionStorage.getItem(key);
@@ -162,7 +163,7 @@ export class SessionStorageHistoryStore implements HistoryStore {
     }
   }
 
-  async clear(agentName: string): Promise<void> {
+  async clear(agentName: AgentName): Promise<void> {
     const key = this.getKey(agentName);
     sessionStorage.removeItem(key);
   }

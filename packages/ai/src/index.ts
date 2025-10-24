@@ -68,3 +68,36 @@ export {
   getAvailableAgents,
   isValidAgentName,
 } from './personality/PersonalityProfiles';
+
+// Proactive behavior
+export {
+  ProactiveBehaviorEngine,
+  DEFAULT_PROACTIVE_CONFIG,
+  type IntrusionLevel,
+  type ProactiveBehaviorConfig,
+  type ProactiveTriggerReason,
+  type ProactiveSuggestion,
+} from './proactive/ProactiveBehaviorEngine';
+
+// React integration
+export {
+  AIClippyProvider,
+  useAIClippy,
+  type AIClippyConfig,
+  type AIClippyContextValue,
+  type AIClippyProviderProps,
+} from './react/AIClippyContext';
+
+export {
+  useAIChat,
+  type ChatMessage,
+  type UseAIChatResult,
+} from './react/useAIChat';
+
+// Enhanced content block types
+export {
+  type TextBlock,
+  type ImageBlock,
+  type ToolUseContentBlock,
+  type ToolResultContentBlock,
+} from './providers/AIProvider';

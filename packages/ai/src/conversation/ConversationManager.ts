@@ -1,10 +1,11 @@
 import type { AIProvider, Message, StreamChunk } from '../providers/AIProvider';
-import type { ContextData } from '../context/ContextProvider';
+import type { ContextData, ContextProvider } from '../context/ContextProvider';
 import type {
   HistoryStore,
   ConversationMessage,
   ConversationHistory,
 } from './HistoryStore';
+import { getPersonalityPrompt, type AgentName, type PersonalityMode } from '../personality/PersonalityProfiles';
 
 /**
  * Conversation Manager
@@ -15,32 +16,40 @@ import type {
 export class ConversationManager {
   private history: ConversationMessage[] = [];
   private maxHistoryLength = 50;
-  private agentName: string = 'unknown';
 
   constructor(
     private provider: AIProvider,
-    private historyStore?: HistoryStore
+    private agentName: AgentName,
+    private personalityMode: PersonalityMode,
+    private contextProviders: ContextProvider[] = [],
+    private historyStore?: HistoryStore,
+    private customPrompt?: string
   ) {}
 
   /**
    * Set the agent name for history tracking
    */
-  setAgentName(name: string): void {
+  setAgentName(name: AgentName): void {
     this.agentName = name;
   }
 
   /**
    * Send a message and stream the response
    * @param userMessage User's message text
-   * @param context Context data to include
-   * @param systemPrompt System prompt for the AI
    * @returns Async iterator of response chunks
    */
   async *sendMessage(
-    userMessage: string,
-    context: ContextData[],
-    systemPrompt: string
+    userMessage: string
   ): AsyncIterableIterator<StreamChunk> {
+    // Gather context from providers
+    const context = await this.gatherContext();
+
+    // Get personality-based system prompt
+    const systemPrompt = getPersonalityPrompt(
+      this.agentName,
+      this.personalityMode,
+      this.customPrompt
+    );
     // Create user message
     const userMsg: ConversationMessage = {
       id: this.generateId(),
@@ -162,6 +171,17 @@ export class ConversationManager {
    */
   getLastMessage(): ConversationMessage | null {
     return this.history.length > 0 ? this.history[this.history.length - 1] : null;
+  }
+
+  /**
+   * Gather context from all registered providers
+   */
+  private async gatherContext(): Promise<ContextData[]> {
+    const contextPromises = this.contextProviders
+      .filter((provider) => provider.enabled)
+      .map((provider) => provider.gather());
+
+    return Promise.all(contextPromises);
   }
 
   /**
