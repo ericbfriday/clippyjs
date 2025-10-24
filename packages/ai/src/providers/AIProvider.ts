@@ -24,25 +24,68 @@ export type MessageRole = 'user' | 'assistant' | 'system';
 /**
  * Content block types for multimodal messages
  */
-export type ContentBlockType = 'text' | 'image';
+export type ContentBlockType = 'text' | 'image' | 'tool_use' | 'tool_result';
 
 /**
  * Image source for vision-enabled messages
  */
 export interface ImageSource {
   type: 'base64' | 'url';
-  media_type: string;
-  data: string;
+  mediaType: string;
+  data?: string;
+  url?: string;
+}
+
+/**
+ * Base content block
+ */
+interface BaseContentBlock {
+  type: ContentBlockType;
+}
+
+/**
+ * Text content block
+ */
+export interface TextBlock extends BaseContentBlock {
+  type: 'text';
+  text: string;
+}
+
+/**
+ * Image content block
+ */
+export interface ImageBlock extends BaseContentBlock {
+  type: 'image';
+  source: ImageSource;
+}
+
+/**
+ * Tool use content block
+ */
+export interface ToolUseContentBlock extends BaseContentBlock {
+  type: 'tool_use';
+  id: string;
+  name: string;
+  input: Record<string, any>;
+}
+
+/**
+ * Tool result content block
+ */
+export interface ToolResultContentBlock extends BaseContentBlock {
+  type: 'tool_result';
+  toolUseId: string;
+  content: string;
 }
 
 /**
  * Content block for multimodal messages
  */
-export interface ContentBlock {
-  type: ContentBlockType;
-  text?: string;
-  source?: ImageSource;
-}
+export type ContentBlock =
+  | TextBlock
+  | ImageBlock
+  | ToolUseContentBlock
+  | ToolResultContentBlock;
 
 /**
  * Message structure for AI conversations
@@ -55,7 +98,13 @@ export interface Message {
 /**
  * Stream chunk types
  */
-export type StreamChunkType = 'content_delta' | 'tool_use' | 'complete' | 'error';
+export type StreamChunkType =
+  | 'content_delta'
+  | 'tool_use'
+  | 'tool_use_start'
+  | 'tool_use_delta'
+  | 'complete'
+  | 'error';
 
 /**
  * Tool use block for function calling
@@ -78,11 +127,12 @@ export interface StreamChunk {
 
 /**
  * Tool definition for function calling
+ * Compatible with Anthropic's Tool format
  */
 export interface Tool {
   name: string;
   description: string;
-  parameters: {
+  input_schema: {
     type: 'object';
     properties: Record<string, any>;
     required?: string[];
