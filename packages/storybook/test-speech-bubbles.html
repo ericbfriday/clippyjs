@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clippy Speech Bubble Test - Full Viewport</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        .controls {
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background: #4CAF50;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .info {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔬 Clippy Speech Bubble Test</h1>
+        <p>This full-viewport test page verifies that speech bubbles render correctly without bounding box constraints.</p>
+
+        <div class="controls">
+            <button id="loadClippy">Load Clippy</button>
+            <button id="showAgent">Show Agent</button>
+            <button id="speakShort">Speak (Short)</button>
+            <button id="speakLong">Speak (Long)</button>
+            <button id="speakMultiple">Speak Multiple</button>
+            <button id="moveAgent">Move Around</button>
+            <button id="hideAgent">Hide Agent</button>
+        </div>
+
+        <div class="info">
+            <strong>Test Instructions:</strong>
+            <ol>
+                <li>Click "Load Clippy" to load the agent</li>
+                <li>Use "Show Agent" to display Clippy</li>
+                <li>Click speech buttons to test speech bubbles</li>
+                <li>Check that bubbles render with proper styling and positioning</li>
+                <li>Verify bubbles are NOT constrained by any container boundaries</li>
+            </ol>
+        </div>
+
+        <div class="status" id="status">
+            Status: Ready. Waiting for user action...
+        </div>
+    </div>
+
+    <script type="module">
+        import { load } from '../core/dist/index.esm.js';
+
+        let agent = null;
+        const statusEl = document.getElementById('status');
+
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            statusEl.textContent = `[${timestamp}] ${message}`;
+            console.log(message);
+        }
+
+        // Load Clippy button
+        document.getElementById('loadClippy').addEventListener('click', async () => {
+            try {
+                log('Loading Clippy agent...');
+                agent = await load('Clippy', { basePath: '/agents/' });
+                log('✅ Clippy loaded successfully!');
+            } catch (error) {
+                log(`❌ Error loading Clippy: ${error.message}`);
+                console.error(error);
+            }
+        });
+
+        // Show Agent button
+        document.getElementById('showAgent').addEventListener('click', async () => {
+            if (!agent) {
+                log('⚠️ Please load Clippy first');
+                return;
+            }
+            try {
+                log('Showing agent...');
+                await agent.show();
+                log('✅ Agent shown');
+            } catch (error) {
+                log(`❌ Error showing agent: ${error.message}`);
+            }
+        });
+
+        // Speak Short button
+        document.getElementById('speakShort').addEventListener('click', async () => {
+            if (!agent) {
+                log('⚠️ Please load Clippy first');
+                return;
+            }
+            try {
+                log('Agent speaking (short)...');
+                await agent.speak('Hello! Speech bubbles should render correctly now.');
+                log('✅ Speech completed');
+            } catch (error) {
+                log(`❌ Error speaking: ${error.message}`);
+            }
+        });
+
+        // Speak Long button
+        document.getElementById('speakLong').addEventListener('click', async () => {
+            if (!agent) {
+                log('⚠️ Please load Clippy first');
+                return;
+            }
+            try {
+                log('Agent speaking (long)...');
+                await agent.speak('This is a much longer speech bubble to test wrapping and positioning. The CSS should provide proper styling with background color, border, padding, and most importantly, position: fixed so it is not constrained by any parent container boundaries!');
+                log('✅ Speech completed');
+            } catch (error) {
+                log(`❌ Error speaking: ${error.message}`);
+            }
+        });
+
+        // Speak Multiple button
+        document.getElementById('speakMultiple').addEventListener('click', async () => {
+            if (!agent) {
+                log('⚠️ Please load Clippy first');
+                return;
+            }
+            try {
+                log('Agent speaking (multiple)...');
+                await agent.speak('First message...');
+                await agent.speak('Second message!');
+                await agent.speak('Third and final message!');
+                log('✅ All speeches completed');
+            } catch (error) {
+                log(`❌ Error speaking: ${error.message}`);
+            }
+        });
+
+        // Move Agent button
+        document.getElementById('moveAgent').addEventListener('click', async () => {
+            if (!agent) {
+                log('⚠️ Please load Clippy first');
+                return;
+            }
+            try {
+                log('Moving agent around...');
+                await agent.moveTo(100, 100);
+                await agent.speak('Top left!');
+                await agent.moveTo(window.innerWidth - 200, 100);
+                await agent.speak('Top right!');
+                await agent.moveTo(window.innerWidth - 200, window.innerHeight - 200);
+                await agent.speak('Bottom right!');
+                await agent.moveTo(100, window.innerHeight - 200);
+                await agent.speak('Bottom left!');
+                log('✅ Movement test completed');
+            } catch (error) {
+                log(`❌ Error moving agent: ${error.message}`);
+            }
+        });
+
+        // Hide Agent button
+        document.getElementById('hideAgent').addEventListener('click', async () => {
+            if (!agent) {
+                log('⚠️ Please load Clippy first');
+                return;
+            }
+            try {
+                log('Hiding agent...');
+                await agent.hide();
+                log('✅ Agent hidden');
+            } catch (error) {
+                log(`❌ Error hiding agent: ${error.message}`);
+            }
+        });
+
+        // Log when CSS is loaded
+        log('Test page loaded. Check if clippy.css is in <head>...');
+        setTimeout(() => {
+            const cssLink = document.querySelector('link[href*="clippy.css"]');
+            if (cssLink) {
+                log(`✅ CSS file detected: ${cssLink.href}`);
+            } else {
+                log('⚠️ No clippy.css link found yet (will be loaded when agent loads)');
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

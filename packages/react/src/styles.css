@@ -1,0 +1,71 @@
+/**
+ * Clippy.js CSS styles
+ */
+
+.clippy {
+  position: fixed;
+  z-index: 9999;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.clippy-balloon {
+  position: fixed;
+  z-index: 9998;
+  background: #FFC;
+  border: 1px solid #000;
+  border-radius: 5px;
+  padding: 8px;
+  font-family: "Microsoft Sans Serif", Arial, sans-serif;
+  font-size: 12px;
+  color: #000;
+  max-width: 200px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.clippy-content {
+  min-height: 14px;
+  overflow: hidden;
+  word-wrap: break-word;
+}
+
+.clippy-tip {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #FFC;
+  border: 1px solid #000;
+  transform: rotate(45deg);
+}
+
+/* Tip positions for different balloon orientations */
+.clippy-top-left .clippy-tip {
+  bottom: -6px;
+  right: 20px;
+  border-top: none;
+  border-left: none;
+}
+
+.clippy-top-right .clippy-tip {
+  bottom: -6px;
+  left: 20px;
+  border-top: none;
+  border-right: none;
+}
+
+.clippy-bottom-right .clippy-tip {
+  top: -6px;
+  left: 20px;
+  border-bottom: none;
+  border-right: none;
+}
+
+.clippy-bottom-left .clippy-tip {
+  top: -6px;
+  right: 20px;
+  border-bottom: none;
+  border-left: none;
+}

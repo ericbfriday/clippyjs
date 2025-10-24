@@ -1,0 +1,73 @@
+{
+  "name": "@clippyjs/react",
+  "version": "1.0.0",
+  "description": "React components for ClippyJS agents",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "assets"
+  ],
+  "scripts": {
+    "build": "yarn clean && yarn build:ts && yarn build:bundle",
+    "build:ts": "tsc",
+    "build:bundle": "rollup -c",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "yarn build",
+    "playwright:install": "playwright install chromium --with-deps",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
+    "test:integration": "playwright test tests/integration",
+    "test:visual": "playwright test tests/visual",
+    "test:all": "yarn test && yarn test:integration && yarn test:visual",
+    "test:ci": "vitest --run && playwright test"
+  },
+  "keywords": [
+    "clippy",
+    "react",
+    "assistant",
+    "agent",
+    "components",
+    "hooks"
+  ],
+  "author": "Eric Friday",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ericbfriday/clippyjs.git"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "dependencies": {
+    "@clippyjs/core": "workspace:^"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.1",
+    "@rollup/plugin-commonjs": "^28.0.2",
+    "@rollup/plugin-node-resolve": "^16.0.0",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^12.1.2",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
+    "@types/react": "^19.0.6",
+    "@types/react-dom": "^19.0.2",
+    "@vitejs/plugin-react": "^4.3.4",
+    "@vitest/coverage-v8": "^2.1.8",
+    "@vitest/ui": "^2.1.8",
+    "jsdom": "^25.0.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "rollup": "^4.31.0",
+    "rollup-plugin-copy": "^3.5.0",
+    "tslib": "^2.8.1",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.11",
+    "vitest": "^2.1.8"
+  }
+}

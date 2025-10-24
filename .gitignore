@@ -1,5 +1,8 @@
 .idea
 *.iml
 *.log*
-/dist
+**/dist
 node_modules
+**/.env
+**/.env.*
+**/.env.template

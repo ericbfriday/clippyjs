@@ -1,0 +1,30 @@
+{
+  "name": "@clippyjs/storybook",
+  "version": "1.0.0",
+  "description": "Storybook for ClippyJS React components",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "preview": "npx http-server storybook-static"
+  },
+  "dependencies": {
+    "@clippyjs/react": "workspace:^",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@chromatic-com/storybook": "^3.2.2",
+    "@storybook/addon-essentials": "^8.6.14",
+    "@storybook/addon-interactions": "^8.6.14",
+    "@storybook/addon-links": "^8.6.14",
+    "@storybook/blocks": "^8.6.14",
+    "@storybook/react": "^8.6.14",
+    "@storybook/react-vite": "^8.6.14",
+    "@storybook/test": "^8.6.14",
+    "storybook": "^8.6.14",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.7"
+  }
+}

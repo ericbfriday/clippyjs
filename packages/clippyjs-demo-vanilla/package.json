@@ -1,0 +1,13 @@
+{
+  "name": "clippyjs-demo-vanilla",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Vanilla JavaScript demo for Clippy.js",
+  "scripts": {
+    "prestart": "cp ../clippyjs-lib/dist/clippy.min.js clippy.min.js",
+    "start": "yarn dlx http-server . --cors"
+  },
+  "dependencies": {
+    "clippyjs": "workspace:*"
+  }
+}
