@@ -10,6 +10,8 @@
     "preview": "npx http-server storybook-static"
   },
   "dependencies": {
+    "@clippyjs/ai": "workspace:^",
+    "@clippyjs/ai-anthropic": "workspace:^",
     "@clippyjs/react": "workspace:^",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
