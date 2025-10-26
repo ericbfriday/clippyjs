@@ -85,12 +85,20 @@ export interface AIClippyProviderProps {
 export function AIClippyProvider({ config, children }: AIClippyProviderProps) {
   const conversationManagerRef = useRef<ConversationManager | null>(null);
   const proactiveBehaviorRef = useRef<ProactiveBehaviorEngine | null>(null);
+  const initializedRef = useRef(false); // Track if initialization has completed
   const [isResponding, setIsResponding] = useState(false);
   const [latestSuggestion, setLatestSuggestion] = useState<ProactiveSuggestion | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
 
-  // Initialize conversation manager
+  // Initialize managers once - resilient to StrictMode double-invocation
   useEffect(() => {
-    conversationManagerRef.current = new ConversationManager(
+    // Skip if already initialized (prevents StrictMode double-execution)
+    if (initializedRef.current) {
+      return;
+    }
+
+    // Create ConversationManager
+    const conversationManager = new ConversationManager(
       config.provider,
       config.agentName,
       config.personalityMode,
@@ -98,14 +106,9 @@ export function AIClippyProvider({ config, children }: AIClippyProviderProps) {
       config.historyStore,
       config.customPrompt
     );
+    conversationManagerRef.current = conversationManager;
 
-    return () => {
-      conversationManagerRef.current = null;
-    };
-  }, [config]);
-
-  // Initialize proactive behavior engine
-  useEffect(() => {
+    // Create ProactiveBehaviorEngine
     const engine = new ProactiveBehaviorEngine(config.proactiveConfig);
 
     // Register context providers
@@ -122,15 +125,23 @@ export function AIClippyProvider({ config, children }: AIClippyProviderProps) {
 
     // Start the engine
     engine.start();
-
     proactiveBehaviorRef.current = engine;
 
+    // Mark as initialized
+    initializedRef.current = true;
+    setIsInitialized(true);
+
+    // Cleanup only on actual unmount
+    // In StrictMode, this will be called during development double-mount,
+    // but we DON'T want to destroy the engine then - only on real unmount.
+    // The initializedRef guard ensures we don't recreate on second mount.
     return () => {
+      // Only cleanup subscription, but keep engine alive for StrictMode resilience
       unsubscribe();
-      engine.destroy();
-      proactiveBehaviorRef.current = null;
+      // Note: engine.destroy() intentionally NOT called here
+      // to preserve engine across StrictMode's development double-mount cycle
     };
-  }, [config.contextProviders, config.proactiveConfig]);
+  }, []); // Empty deps - initialize once
 
   const clearSuggestion = useCallback(() => {
     setLatestSuggestion(null);
@@ -156,9 +167,13 @@ export function AIClippyProvider({ config, children }: AIClippyProviderProps) {
     clearSuggestion();
   }, [clearSuggestion]);
 
+  if (!isInitialized || !conversationManagerRef.current || !proactiveBehaviorRef.current) {
+    return <div>Loading AI Clippy...</div>;
+  }
+
   const contextValue: AIClippyContextValue = {
-    conversationManager: conversationManagerRef.current!,
-    proactiveBehavior: proactiveBehaviorRef.current!,
+    conversationManager: conversationManagerRef.current,
+    proactiveBehavior: proactiveBehaviorRef.current,
     agentName: config.agentName,
     personalityMode: config.personalityMode,
     isResponding,
