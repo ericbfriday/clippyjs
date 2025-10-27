@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
+import { flushSync } from 'react-dom';
 import { useAIClippy } from './AIClippyContext';
 import type { StreamChunk } from '../providers/AIProvider';
 
@@ -72,8 +73,11 @@ export function useAIChat(): UseAIChatResult {
         timestamp: new Date(),
       };
 
-      setMessages((prev) => [...prev, userMessage]);
-      setIsStreaming(true);
+      // Use flushSync to ensure UI updates immediately before async work
+      flushSync(() => {
+        setMessages((prev) => [...prev, userMessage]);
+        setIsStreaming(true);
+      });
       cancelRef.current = false;
 
       // Create assistant message placeholder
@@ -88,7 +92,10 @@ export function useAIChat(): UseAIChatResult {
         isStreaming: true,
       };
 
-      setMessages((prev) => [...prev, assistantMessage]);
+      // Use flushSync to ensure assistant message placeholder appears immediately
+      flushSync(() => {
+        setMessages((prev) => [...prev, assistantMessage]);
+      });
 
       try {
         // Stream response from conversation manager
@@ -102,11 +109,11 @@ export function useAIChat(): UseAIChatResult {
           if (chunk.type === 'content_delta' && chunk.delta) {
             assistantContent += chunk.delta;
 
-            // Update assistant message with new content
+            // Update assistant message with new content, preserving isStreaming
             setMessages((prev) =>
               prev.map((msg) =>
                 msg.id === assistantMessageId
-                  ? { ...msg, content: assistantContent }
+                  ? { ...msg, content: assistantContent, isStreaming: true }
                   : msg
               )
             );
