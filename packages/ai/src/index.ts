@@ -122,6 +122,25 @@ export {
   type HistoryManagerProps,
 } from './react/HistoryManager';
 
+// Streaming control
+export {
+  StreamController,
+  type StreamProgress,
+  type StreamState,
+  type StreamControllerConfig,
+} from './streaming/StreamController';
+
+export {
+  StreamMonitor,
+  type StreamMetrics,
+  type StreamMonitorConfig,
+} from './streaming/StreamMonitor';
+
+export {
+  useStreamController,
+  type UseStreamControllerResult,
+} from './react/useStreamController';
+
 // Enhanced content block types
 export {
   type TextBlock,
