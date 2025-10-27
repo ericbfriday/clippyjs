@@ -28,14 +28,18 @@ type Story = StoryObj<typeof meta>;
  */
 export const BasicChat: Story = {
   render: () => {
-    const provider = useMemo(() => new MockAnthropicProvider(), []);
+    const provider = useMemo(() => {
+      const p = new MockAnthropicProvider();
+      p.setMockDelay(100);
+      return p;
+    }, []);
 
     return (
       <AIClippyProvider
         config={{
           provider,
-          agentName: 'clippy',
-          personalityMode: 'friendly',
+          agentName: 'Clippy',
+          personalityMode: 'classic',
         }}
       >
         <div style={{ padding: '20px', maxWidth: '600px' }}>
@@ -56,7 +60,7 @@ export const StreamingVisualization: Story = {
   render: () => {
     const provider = useMemo(() => {
       const p = new MockAnthropicProvider();
-      p.setMockDelay(100);
+      p.setMockDelay(100); // Fast delay for E2E tests (16 words * 100ms = ~1.6s total)
       return p;
     }, []);
 
@@ -64,8 +68,8 @@ export const StreamingVisualization: Story = {
       <AIClippyProvider
         config={{
           provider,
-          agentName: 'clippy',
-          personalityMode: 'friendly',
+          agentName: 'Clippy',
+          personalityMode: 'classic',
         }}
       >
         <div style={{ padding: '20px', maxWidth: '600px' }}>
@@ -93,8 +97,8 @@ export const WithMessageHistory: Story = {
       <AIClippyProvider
         config={{
           provider,
-          agentName: 'clippy',
-          personalityMode: 'friendly',
+          agentName: 'Clippy',
+          personalityMode: 'classic',
         }}
       >
         <div style={{ padding: '20px', maxWidth: '600px' }}>
@@ -126,8 +130,8 @@ export const WithCancelStream: Story = {
       <AIClippyProvider
         config={{
           provider,
-          agentName: 'clippy',
-          personalityMode: 'friendly',
+          agentName: 'Clippy',
+          personalityMode: 'classic',
         }}
       >
         <div style={{ padding: '20px', maxWidth: '600px' }}>
@@ -135,7 +139,7 @@ export const WithCancelStream: Story = {
           <p style={{ fontSize: '14px', color: '#666' }}>
             Click "Cancel" while streaming to stop the response!
           </p>
-          <ChatInterface showCancelButton />
+          <ChatInterface showCancelButton showStreamingIndicator />
         </div>
       </AIClippyProvider>
     );
@@ -155,8 +159,8 @@ export const WithClearHistory: Story = {
       <AIClippyProvider
         config={{
           provider,
-          agentName: 'clippy',
-          personalityMode: 'friendly',
+          agentName: 'Clippy',
+          personalityMode: 'classic',
         }}
       >
         <div style={{ padding: '20px', maxWidth: '600px' }}>
@@ -184,8 +188,8 @@ export const MultipleChatInstances: Story = {
       <AIClippyProvider
         config={{
           provider,
-          agentName: 'clippy',
-          personalityMode: 'friendly',
+          agentName: 'Clippy',
+          personalityMode: 'classic',
         }}
       >
         <div style={{ padding: '20px', maxWidth: '800px' }}>

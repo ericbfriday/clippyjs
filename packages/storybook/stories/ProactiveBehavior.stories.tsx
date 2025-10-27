@@ -37,8 +37,8 @@ export const BasicSuggestions: Story = {
 
     const config = useMemo(() => ({
       provider,
-      agentName: 'clippy' as const,
-      personalityMode: 'friendly' as const,
+      agentName: 'Clippy' as const,
+      personalityMode: 'classic' as const,
       proactiveConfig,
     }), [provider, proactiveConfig]);
 
@@ -88,8 +88,8 @@ export const IntrusionLevelComparison: Story = {
 
     const config = useMemo(() => ({
       provider,
-      agentName: 'clippy' as const,
-      personalityMode: 'friendly' as const,
+      agentName: 'Clippy' as const,
+      personalityMode: 'classic' as const,
       proactiveConfig,
     }), [provider, proactiveConfig]);
 
@@ -158,8 +158,8 @@ export const CooldownBehavior: Story = {
 
     const config = useMemo(() => ({
       provider,
-      agentName: 'clippy' as const,
-      personalityMode: 'friendly' as const,
+      agentName: 'Clippy' as const,
+      personalityMode: 'classic' as const,
       proactiveConfig,
     }), [provider, proactiveConfig]);
 
@@ -193,8 +193,8 @@ export const AcceptIgnoreTracking: Story = {
 
     const config = useMemo(() => ({
       provider,
-      agentName: 'clippy' as const,
-      personalityMode: 'friendly' as const,
+      agentName: 'Clippy' as const,
+      personalityMode: 'classic' as const,
       proactiveConfig,
     }), [provider, proactiveConfig]);
 
@@ -228,8 +228,8 @@ export const ConfigurationUpdates: Story = {
 
     const config = useMemo(() => ({
       provider,
-      agentName: 'clippy' as const,
-      personalityMode: 'friendly' as const,
+      agentName: 'Clippy' as const,
+      personalityMode: 'classic' as const,
       proactiveConfig,
     }), [provider, proactiveConfig]);
 
@@ -261,6 +261,10 @@ function ProactiveBehaviorDemo() {
 
   const handleTrigger = async () => {
     console.log('[ProactiveBehaviorDemo] handleTrigger called, proactiveBehavior:', proactiveBehavior);
+    if (!proactiveBehavior) {
+      console.error('ProactiveBehaviorEngine not initialized');
+      return;
+    }
     await proactiveBehavior.triggerSuggestion('manual');
     setTriggerCount((c) => c + 1);
   };
