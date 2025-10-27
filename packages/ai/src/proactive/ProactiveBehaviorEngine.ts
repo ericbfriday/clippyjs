@@ -73,6 +73,9 @@ export class ProactiveBehaviorEngine {
   private inCooldown = false;
   private listeners: Array<(suggestion: ProactiveSuggestion) => void> = [];
 
+  // Direct React callback property to avoid lookup issues
+  public reactCallback: ((suggestion: ProactiveSuggestion) => void) | null = null;
+
   constructor(config: Partial<ProactiveBehaviorConfig> = {}) {
     this.config = { ...DEFAULT_PROACTIVE_CONFIG, ...config };
   }
@@ -178,11 +181,29 @@ export class ProactiveBehaviorEngine {
    * Manually trigger a proactive suggestion
    */
   async triggerSuggestion(reason: ProactiveTriggerReason = 'manual'): Promise<void> {
-    if (!this.shouldTrigger()) {
+    console.log('[ProactiveBehaviorEngine] triggerSuggestion called with reason:', reason);
+
+    // For manual triggers, bypass time interval check
+    const isManual = reason === 'manual';
+    const canTrigger = this.shouldTrigger(isManual);
+    console.log('[ProactiveBehaviorEngine] shouldTrigger returned:', canTrigger);
+
+    if (!canTrigger) {
+      console.log('[ProactiveBehaviorEngine] Cannot trigger - config.enabled:', this.config.enabled, 'inCooldown:', this.inCooldown);
       return;
     }
 
-    const context = await this.gatherContext();
+    console.log('[ProactiveBehaviorEngine] Gathering context...');
+    let context;
+    try {
+      context = await this.gatherContext();
+      console.log('[ProactiveBehaviorEngine] Context gathered:', context);
+    } catch (error) {
+      console.error('[ProactiveBehaviorEngine] Error gathering context:', error);
+      // Use empty context if gathering fails
+      context = {};
+    }
+
     const suggestion: ProactiveSuggestion = {
       reason,
       context,
@@ -190,13 +211,15 @@ export class ProactiveBehaviorEngine {
     };
 
     this.lastSuggestionTime = suggestion.timestamp;
+    console.log('[ProactiveBehaviorEngine] Calling notifyListeners with suggestion:', suggestion);
     this.notifyListeners(suggestion);
+    console.log('[ProactiveBehaviorEngine] notifyListeners completed');
   }
 
   /**
    * Check if we should trigger a proactive suggestion
    */
-  private shouldTrigger(): boolean {
+  private shouldTrigger(bypassTimeCheck = false): boolean {
     if (!this.config.enabled) {
       return false;
     }
@@ -205,8 +228,8 @@ export class ProactiveBehaviorEngine {
       return false;
     }
 
-    // Don't trigger too frequently based on intrusion level
-    if (this.lastSuggestionTime) {
+    // Don't trigger too frequently based on intrusion level (unless bypassing time check)
+    if (!bypassTimeCheck && this.lastSuggestionTime) {
       const timeSinceLastSuggestion = Date.now() - this.lastSuggestionTime.getTime();
       const minInterval = this.getMinIntervalForIntrusionLevel();
 
@@ -290,13 +313,33 @@ export class ProactiveBehaviorEngine {
    * Notify all listeners of a suggestion
    */
   private notifyListeners(suggestion: ProactiveSuggestion): void {
-    this.listeners.forEach((listener) => {
+    console.log('[ProactiveBehaviorEngine] notifyListeners called');
+    console.log('[ProactiveBehaviorEngine] reactCallback:', !!this.reactCallback);
+    console.log('[ProactiveBehaviorEngine] listeners.length:', this.listeners.length);
+
+    // Call React callback first if set (direct property for React state updates)
+    if (this.reactCallback) {
       try {
-        listener(suggestion);
+        console.log('[ProactiveBehaviorEngine] Calling reactCallback');
+        this.reactCallback(suggestion);
+        console.log('[ProactiveBehaviorEngine] reactCallback completed successfully');
       } catch (error) {
-        console.error('Error in proactive suggestion listener:', error);
+        console.error('[ProactiveBehaviorEngine] Error in React callback:', error);
+      }
+    }
+
+    // Then call all registered listeners
+    this.listeners.forEach((listener, index) => {
+      try {
+        console.log(`[ProactiveBehaviorEngine] Calling listener ${index + 1}/${this.listeners.length}`);
+        listener(suggestion);
+        console.log(`[ProactiveBehaviorEngine] Listener ${index + 1} completed successfully`);
+      } catch (error) {
+        console.error('[ProactiveBehaviorEngine] Error in proactive suggestion listener:', error);
       }
     });
+
+    console.log('[ProactiveBehaviorEngine] notifyListeners finished calling all callbacks');
   }
 
   /**
