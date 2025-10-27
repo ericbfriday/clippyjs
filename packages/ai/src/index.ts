@@ -55,6 +55,7 @@ export {
   type ConversationHistory,
   LocalStorageHistoryStore,
   SessionStorageHistoryStore,
+  IndexedDBHistoryStore,
 } from './conversation/HistoryStore';
 
 // Personality system
