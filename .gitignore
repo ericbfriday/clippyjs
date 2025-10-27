@@ -6,3 +6,11 @@ node_modules
 **/.env
 **/.env.*
 **/.env.template
+
+# Serena MCP memories (local workspace knowledge)
+.serena/
+
+# Test artifacts and reports
+**/playwright-report/
+**/test-results/
+**/SESSION_SUMMARY.md
