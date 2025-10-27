@@ -79,6 +79,23 @@ export {
   type ProactiveSuggestion,
 } from './proactive/ProactiveBehaviorEngine';
 
+// Pre-built modes
+export {
+  type Mode,
+  type QuickAction,
+  type TriggerStrategy,
+  defaultTriggerStrategy,
+  helpAssistantMode,
+  codeReviewerMode,
+  shoppingAssistantMode,
+  formHelperMode,
+  accessibilityGuideMode,
+  PREBUILT_MODES,
+  getMode,
+  getAllModes,
+  hasMode,
+} from './modes/PrebuiltModes';
+
 // React integration
 export {
   AIClippyProvider,
