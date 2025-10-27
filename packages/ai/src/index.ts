@@ -211,3 +211,15 @@ export {
   type PerformanceMonitorConfig,
   DEFAULT_MONITOR_CONFIG,
 } from './cache/PerformanceMonitor';
+
+// Context Optimization
+export {
+  ContextOptimizer,
+  type ContextPriority,
+  type CompressionStrategy,
+  type SummarizationStrategy,
+  type ContextOptimizationConfig,
+  type OptimizationStats,
+  type ContextMiddleware,
+  DEFAULT_OPTIMIZATION_CONFIG,
+} from './optimization/ContextOptimizer';
