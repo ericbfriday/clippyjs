@@ -112,6 +112,16 @@ export {
   type UseAIChatResult,
 } from './react/useAIChat';
 
+export {
+  useHistoryManager,
+  type UseHistoryManagerResult,
+} from './react/useHistoryManager';
+
+export {
+  HistoryManager,
+  type HistoryManagerProps,
+} from './react/HistoryManager';
+
 // Enhanced content block types
 export {
   type TextBlock,
