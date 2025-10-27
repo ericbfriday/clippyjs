@@ -148,3 +148,44 @@ export {
   type ToolUseContentBlock,
   type ToolResultContentBlock,
 } from './providers/AIProvider';
+
+// Error handling & recovery
+export {
+  ErrorClassifier,
+  type ErrorType,
+  type ErrorInfo,
+  type ErrorClassifierConfig,
+} from './errors/ErrorClassifier';
+
+export {
+  RetryPolicy,
+  retry,
+  type BackoffStrategy,
+  type RetryPolicyConfig,
+  type RetryAttempt,
+  DEFAULT_RETRY_CONFIG,
+} from './errors/RetryPolicy';
+
+export {
+  CircuitBreaker,
+  CircuitBreakerRegistry,
+  type CircuitState,
+  type CircuitBreakerConfig,
+  DEFAULT_CIRCUIT_CONFIG,
+} from './errors/CircuitBreaker';
+
+export {
+  RecoveryStrategy,
+  RecoveryStrategies,
+  type RecoveryStrategyType,
+  type RecoveryAction,
+  type RecoveryStrategyConfig,
+} from './errors/RecoveryStrategies';
+
+export {
+  Telemetry,
+  type ErrorEvent,
+  type CircuitBreakerEvent,
+  type RetryEvent,
+  type TelemetryCallbacks,
+} from './errors/TelemetryHooks';
