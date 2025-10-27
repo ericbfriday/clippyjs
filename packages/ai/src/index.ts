@@ -189,3 +189,25 @@ export {
   type RetryEvent,
   type TelemetryCallbacks,
 } from './errors/TelemetryHooks';
+
+// Caching & Performance
+export {
+  ResponseCache,
+  type CacheStats,
+  type ResponseCacheConfig,
+  DEFAULT_CACHE_CONFIG,
+} from './cache/ResponseCache';
+
+export {
+  RequestDeduplicator,
+  type DeduplicationStats,
+  type RequestDeduplicatorConfig,
+  DEFAULT_DEDUPLICATOR_CONFIG,
+} from './cache/RequestDeduplicator';
+
+export {
+  PerformanceMonitor,
+  type PerformanceMetrics,
+  type PerformanceMonitorConfig,
+  DEFAULT_MONITOR_CONFIG,
+} from './cache/PerformanceMonitor';
