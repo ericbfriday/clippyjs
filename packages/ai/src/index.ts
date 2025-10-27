@@ -223,3 +223,33 @@ export {
   type ContextMiddleware,
   DEFAULT_OPTIMIZATION_CONFIG,
 } from './optimization/ContextOptimizer';
+
+// Debug & Developer Tools
+export {
+  DebugCollector,
+  globalDebugCollector,
+  type DebugEventType,
+  type DebugEvent,
+  type DebugEventListener,
+  type RequestDebugInfo,
+  type ResponseDebugInfo,
+  type StreamDebugInfo,
+  type ToolDebugInfo,
+  type ContextDebugInfo,
+  type CacheDebugInfo,
+  type ErrorDebugInfo,
+  type CircuitDebugInfo,
+  type DebugCollectorConfig,
+  DEFAULT_DEBUG_CONFIG,
+} from './debug/DebugCollector';
+
+export {
+  RequestInspector,
+  type InspectedRequest,
+} from './debug/RequestInspector';
+
+export {
+  PerformanceProfiler,
+  type PerformanceBottleneck,
+  type PerformanceProfile,
+} from './debug/PerformanceProfiler';
