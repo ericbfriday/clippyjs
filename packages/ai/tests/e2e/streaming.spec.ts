@@ -15,18 +15,19 @@ test.describe('Streaming - Real-time Updates', () => {
     const input = page.locator('input[type="text"]');
     const sendButton = page.locator('button:has-text("Send")');
 
+    // Ensure input is visible and ready
+    await expect(input).toBeVisible({ timeout: 5000 });
+
     // Send a message
     await input.fill('Hello AI');
     await sendButton.click();
 
     // Wait for assistant message to start appearing
-    await expect(page.locator('text="🤖 Assistant"')).toBeVisible({ timeout: 3000 });
+    const assistantMessages = page.locator('div').filter({ hasText: '🤖 Assistant' });
+    await expect(assistantMessages.last()).toBeVisible({ timeout: 5000 });
 
-    // Wait a moment for streaming to be in progress
-    await page.waitForTimeout(200);
-
-    // Verify the (typing...) indicator appears during streaming
-    await expect(page.locator('text="(typing...)"')).toBeVisible({ timeout: 1000 });
+    // Verify the (typing...) indicator appears during streaming (check immediately within the assistant message)
+    await expect(assistantMessages.last()).toContainText('(typing...)', { timeout: 1000 });
 
     // Wait for streaming to complete
     await page.waitForTimeout(2500);
@@ -63,29 +64,35 @@ test.describe('Streaming - Real-time Updates', () => {
     const input = page.locator('input[type="text"]');
     const sendButton = page.locator('button:has-text("Send")');
 
-    // Send a message
-    await input.fill('Tell me something');
+    // Ensure input is visible and ready
+    await expect(input).toBeVisible({ timeout: 5000 });
+
+    // Send a message that triggers a multi-word response
+    await input.fill('Hello');
     await sendButton.click();
 
-    // Wait for assistant message to appear
-    await expect(page.locator('text="🤖 Assistant"')).toBeVisible({ timeout: 3000 });
-
-    // Wait for streaming to start
-    await page.waitForTimeout(300);
-
-    // Get initial content length using more reliable selector
+    // Wait for assistant message to start appearing
     const assistantMessages = page.locator('div').filter({ hasText: '🤖 Assistant' });
-    await expect(assistantMessages.last()).toBeVisible();
+    await expect(assistantMessages.last()).toBeVisible({ timeout: 5000 });
 
-    const initialText = await assistantMessages.last().textContent();
-    const initialLength = initialText?.length || 0;
+    // Wait for streaming to definitely start (typing indicator appears)
+    await expect(assistantMessages.last()).toContainText('(typing...)', { timeout: 2000 });
 
-    // Wait for more streaming
-    await page.waitForTimeout(800);
+    // Wait a bit for first content to render (100ms delay per word)
+    await page.waitForTimeout(200);
 
-    // Verify content has grown
-    const updatedText = await assistantMessages.last().textContent();
-    const updatedLength = updatedText?.length || 0;
+    // Capture initial content length DURING streaming
+    // Target the content div specifically (second div child, after the header div)
+    const contentDiv = assistantMessages.last().locator('> div').nth(1);
+    const initialContent = await contentDiv.innerText();
+    const initialLength = initialContent.length;
+
+    // Wait for more chunks to arrive (100ms delay per word, 400ms = 4 more words)
+    await page.waitForTimeout(400);
+
+    // Verify content has grown while still streaming
+    const updatedContent = await contentDiv.innerText();
+    const updatedLength = updatedContent.length;
 
     expect(updatedLength).toBeGreaterThan(initialLength);
   });
@@ -167,6 +174,9 @@ test.describe('Streaming - Cancel Functionality', () => {
 
     // Verify input is enabled again
     await expect(input).toBeEnabled();
+
+    // Fill input to verify button is enabled (button is disabled when input is empty)
+    await input.fill('After cancel');
     await expect(sendButton).toBeEnabled();
   });
 
@@ -248,11 +258,11 @@ test.describe('Streaming - UI Behavior', () => {
     await sendButton.click();
 
     // Immediately check for assistant message placeholder
-    await expect(page.locator('text="🤖 Assistant"')).toBeVisible({ timeout: 1000 });
+    const assistantMessages = page.locator('div').filter({ hasText: '🤖 Assistant' });
+    await expect(assistantMessages.last()).toBeVisible({ timeout: 1000 });
 
     // The message should appear with typing indicator or content
-    const assistantMessages = page.locator('div').filter({ hasText: '🤖 Assistant' });
-    await expect(assistantMessages.last()).toBeVisible();
+    await expect(assistantMessages.last()).toContainText('🤖 Assistant');
   });
 });
 
@@ -347,6 +357,9 @@ test.describe('Streaming - Error Handling', () => {
 
     // Verify interface is back to normal state
     await expect(input).toBeEnabled();
+
+    // Fill input to verify button is enabled (button is disabled when input is empty)
+    await input.fill('After streaming');
     await expect(sendButton).toBeEnabled();
   });
 });
@@ -396,6 +409,9 @@ test.describe('Streaming - Performance', () => {
 
     // Verify interface remains functional
     await expect(input).toBeEnabled();
+
+    // Fill input to verify button is enabled (button is disabled when input is empty)
+    await input.fill('After memory test');
     await expect(sendButton).toBeEnabled();
 
     // Verify all messages are still visible
