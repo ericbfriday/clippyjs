@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useRef, useState, useCallback } from 'react';
+import React, { createContext, useContext, useEffect, useLayoutEffect, useRef, useState, useCallback } from 'react';
 import { ConversationManager } from '../conversation/ConversationManager';
 import { ProactiveBehaviorEngine, type ProactiveBehaviorConfig, type ProactiveSuggestion } from '../proactive/ProactiveBehaviorEngine';
 import type { AIProvider } from '../providers/AIProvider';
@@ -83,20 +83,12 @@ export interface AIClippyProviderProps {
  * ```
  */
 export function AIClippyProvider({ config, children }: AIClippyProviderProps) {
-  const conversationManagerRef = useRef<ConversationManager | null>(null);
-  const proactiveBehaviorRef = useRef<ProactiveBehaviorEngine | null>(null);
-  const initializedRef = useRef(false); // Track if initialization has completed
   const [isResponding, setIsResponding] = useState(false);
   const [latestSuggestion, setLatestSuggestion] = useState<ProactiveSuggestion | null>(null);
-  const [isInitialized, setIsInitialized] = useState(false);
 
-  // Initialize managers once - resilient to StrictMode double-invocation
-  useEffect(() => {
-    // Skip if already initialized (prevents StrictMode double-execution)
-    if (initializedRef.current) {
-      return;
-    }
-
+  // Synchronous initialization using lazy state initializers
+  // This ensures managers are created BEFORE the first render
+  const [managers] = useState(() => {
     // Create ConversationManager
     const conversationManager = new ConversationManager(
       config.provider,
@@ -106,7 +98,6 @@ export function AIClippyProvider({ config, children }: AIClippyProviderProps) {
       config.historyStore,
       config.customPrompt
     );
-    conversationManagerRef.current = conversationManager;
 
     // Create ProactiveBehaviorEngine
     const engine = new ProactiveBehaviorEngine(config.proactiveConfig);
@@ -118,62 +109,56 @@ export function AIClippyProvider({ config, children }: AIClippyProviderProps) {
       });
     }
 
-    // Subscribe to suggestions
-    const unsubscribe = engine.onSuggestion((suggestion) => {
+    return { conversationManager, engine };
+  });
+
+  // Subscribe to proactive suggestions using standard listener pattern
+  // This runs synchronously after render, ensuring the listener is attached before any user interaction
+  useLayoutEffect(() => {
+    console.log('[AIClippyContext] useLayoutEffect running - subscribing to engine');
+
+    // Subscribe using onSuggestion which adds to the listeners array
+    const unsubscribe = managers.engine.onSuggestion((suggestion) => {
+      console.log('[AIClippyContext] Listener callback invoked with suggestion:', suggestion);
       setLatestSuggestion(suggestion);
+      console.log('[AIClippyContext] setLatestSuggestion called');
     });
 
-    // Start the engine
-    engine.start();
-    proactiveBehaviorRef.current = engine;
+    console.log('[AIClippyContext] Listener subscribed, starting engine');
+    // Start the engine after listener is attached
+    managers.engine.start();
+    console.log('[AIClippyContext] Engine started');
 
-    // Mark as initialized
-    initializedRef.current = true;
-    setIsInitialized(true);
-
-    // Cleanup only on actual unmount
-    // In StrictMode, this will be called during development double-mount,
-    // but we DON'T want to destroy the engine then - only on real unmount.
-    // The initializedRef guard ensures we don't recreate on second mount.
+    // Cleanup: unsubscribe and stop engine
     return () => {
-      // Only cleanup subscription, but keep engine alive for StrictMode resilience
+      console.log('[AIClippyContext] Cleanup - unsubscribing and stopping engine');
       unsubscribe();
-      // Note: engine.destroy() intentionally NOT called here
-      // to preserve engine across StrictMode's development double-mount cycle
+      managers.engine.stop();
     };
-  }, []); // Empty deps - initialize once
+  }, [managers.engine]); // Only run once when engine is created
 
   const clearSuggestion = useCallback(() => {
     setLatestSuggestion(null);
   }, []);
 
   const updateProactiveConfig = useCallback((newConfig: Partial<ProactiveBehaviorConfig>) => {
-    if (proactiveBehaviorRef.current) {
-      proactiveBehaviorRef.current.updateConfig(newConfig);
-    }
-  }, []);
+    managers.engine.updateConfig(newConfig);
+  }, [managers.engine]);
 
   const recordIgnore = useCallback(() => {
-    if (proactiveBehaviorRef.current) {
-      proactiveBehaviorRef.current.recordIgnore();
-    }
+    managers.engine.recordIgnore();
     clearSuggestion();
-  }, [clearSuggestion]);
+  }, [managers.engine, clearSuggestion]);
 
   const recordAccept = useCallback(() => {
-    if (proactiveBehaviorRef.current) {
-      proactiveBehaviorRef.current.recordAccept();
-    }
+    managers.engine.recordAccept();
     clearSuggestion();
-  }, [clearSuggestion]);
+  }, [managers.engine, clearSuggestion]);
 
-  if (!isInitialized || !conversationManagerRef.current || !proactiveBehaviorRef.current) {
-    return <div>Loading AI Clippy...</div>;
-  }
-
+  // No loading screen needed - managers are initialized synchronously
   const contextValue: AIClippyContextValue = {
-    conversationManager: conversationManagerRef.current,
-    proactiveBehavior: proactiveBehaviorRef.current,
+    conversationManager: managers.conversationManager,
+    proactiveBehavior: managers.engine,
     agentName: config.agentName,
     personalityMode: config.personalityMode,
     isResponding,
