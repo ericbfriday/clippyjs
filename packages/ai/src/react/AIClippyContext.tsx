@@ -5,6 +5,7 @@ import type { AIProvider } from '../providers/AIProvider';
 import type { ContextProvider } from '../context/ContextProvider';
 import type { HistoryStore } from '../conversation/HistoryStore';
 import type { AgentName, PersonalityMode } from '../personality/PersonalityProfiles';
+import { type Mode, getMode } from '../modes/PrebuiltModes';
 
 /**
  * AI Clippy context configuration
@@ -16,6 +17,8 @@ export interface AIClippyConfig {
   agentName: AgentName;
   /** Personality mode */
   personalityMode: PersonalityMode;
+  /** Pre-built mode or mode name */
+  mode?: Mode | string;
   /** Context providers */
   contextProviders?: ContextProvider[];
   /** History store */
@@ -38,6 +41,8 @@ export interface AIClippyContextValue {
   agentName: AgentName;
   /** Current personality mode */
   personalityMode: PersonalityMode;
+  /** Current mode (if set) */
+  currentMode: Mode | null;
   /** Whether AI is currently responding */
   isResponding: boolean;
   /** Latest proactive suggestion */
@@ -89,28 +94,72 @@ export function AIClippyProvider({ config, children }: AIClippyProviderProps) {
   // Synchronous initialization using lazy state initializers
   // This ensures managers are created BEFORE the first render
   const [managers] = useState(() => {
+    // Resolve mode if provided (string to Mode object)
+    const resolvedMode: Mode | null = config.mode
+      ? typeof config.mode === 'string'
+        ? getMode(config.mode) || null
+        : config.mode
+      : null;
+
+    // Merge mode context providers with config context providers
+    const contextProviders = [
+      ...(resolvedMode?.contextProviders || []),
+      ...(config.contextProviders || []),
+    ];
+
+    // Merge mode system prompt with custom prompt
+    const systemPrompt = [
+      resolvedMode?.systemPromptExtension,
+      config.customPrompt,
+    ].filter(Boolean).join('\n\n');
+
+    // Use mode's proactive strategy if available, otherwise use config
+    const proactiveConfig = resolvedMode?.proactiveStrategy
+      ? {
+          ...config.proactiveConfig,
+          // Note: Mode's proactiveStrategy will be used by the engine if needed
+        }
+      : config.proactiveConfig;
+
     // Create ConversationManager
     const conversationManager = new ConversationManager(
       config.provider,
       config.agentName,
       config.personalityMode,
-      config.contextProviders || [],
+      contextProviders,
       config.historyStore,
-      config.customPrompt
+      systemPrompt || config.customPrompt
     );
 
     // Create ProactiveBehaviorEngine
-    const engine = new ProactiveBehaviorEngine(config.proactiveConfig);
+    const engine = new ProactiveBehaviorEngine(proactiveConfig);
 
     // Register context providers
-    if (config.contextProviders) {
-      config.contextProviders.forEach((provider) => {
-        engine.registerContextProvider(provider);
-      });
-    }
+    contextProviders.forEach((provider) => {
+      engine.registerContextProvider(provider);
+    });
 
-    return { conversationManager, engine };
+    return { conversationManager, engine, mode: resolvedMode };
   });
+
+  // Load conversation history on mount if historyStore is available
+  useEffect(() => {
+    const loadHistory = async () => {
+      if (config.historyStore) {
+        try {
+          const history = await config.historyStore.load(config.agentName);
+          if (history) {
+            console.log('[AIClippyContext] Loading conversation history:', history.messages.length, 'messages');
+            await managers.conversationManager.loadHistory(history);
+          }
+        } catch (error) {
+          console.error('[AIClippyContext] Failed to load conversation history:', error);
+        }
+      }
+    };
+
+    loadHistory();
+  }, [config.historyStore, config.agentName, managers.conversationManager]);
 
   // Subscribe to proactive suggestions using standard listener pattern
   // This runs synchronously after render, ensuring the listener is attached before any user interaction
@@ -161,6 +210,7 @@ export function AIClippyProvider({ config, children }: AIClippyProviderProps) {
     proactiveBehavior: managers.engine,
     agentName: config.agentName,
     personalityMode: config.personalityMode,
+    currentMode: managers.mode,
     isResponding,
     latestSuggestion,
     clearSuggestion,
