@@ -253,3 +253,136 @@ export {
   type PerformanceBottleneck,
   type PerformanceProfile,
 } from './debug/PerformanceProfiler';
+
+// Middleware & Production Features
+export {
+  RateLimiter,
+  type RateWindow,
+  type RateLimiterConfig,
+  type RateLimitStats,
+  DEFAULT_RATE_LIMITER_CONFIG,
+} from './middleware/RateLimiter';
+
+export {
+  UsageTracker,
+  type UsageQuota,
+  type UsageTrackerConfig,
+  type UsageStats,
+  type UsageRecord,
+  type UsageStorage,
+  MemoryUsageStorage,
+  DEFAULT_USAGE_TRACKER_CONFIG,
+} from './middleware/UsageTracker';
+
+export {
+  ValidationMiddleware,
+  type ValidationError,
+  type ValidationResult,
+  type ValidationRule,
+  type ValidationMiddlewareConfig,
+  DEFAULT_VALIDATION_CONFIG,
+} from './middleware/ValidationMiddleware';
+
+export {
+  SecurityMiddleware,
+  type SecurityThreatType,
+  type SecurityViolation,
+  type SecurityResult,
+  type SecurityMiddlewareConfig,
+  DEFAULT_SECURITY_CONFIG,
+} from './middleware/SecurityMiddleware';
+
+// Monitoring & Compliance
+export {
+  AuditLogger,
+  type LogLevel,
+  type AuditEventType,
+  type AuditLogEntry,
+  type AuditEventData,
+  type RequestAuditData,
+  type ResponseAuditData,
+  type ErrorAuditData,
+  type QuotaAuditData,
+  type RateLimitAuditData,
+  type AuthAuditData,
+  type ConfigChangeAuditData,
+  type DataAccessAuditData,
+  type SecurityEventAuditData,
+  type AuditLoggerConfig,
+  type AuditLogQuery,
+  type AuditLogBackend,
+  type AuditContext,
+  MemoryAuditLogBackend,
+  DEFAULT_AUDIT_CONFIG,
+} from './monitoring/AuditLogger';
+
+// Testing utilities
+export {
+  createTestProvider,
+  mockStreamingResponse,
+  generateTestMessages,
+  generateTestTools,
+  createTestChatOptions,
+  simulateNetworkLatency,
+  testErrorScenarios,
+  waitForCondition,
+  collectStreamChunks,
+  extractTextFromChunks,
+  assertStreamingBehavior,
+  type TestScenario,
+  type MockProviderConfig,
+  type MessageGenerationOptions,
+  type StreamingSimulationOptions,
+} from './testing/TestUtilities';
+
+// Mock scenarios
+export {
+  createRealisticMockProvider,
+  getConversationState,
+  resetConversationState,
+  createBatchScenarioTests,
+  ScenarioUtils,
+  LATENCY_PROFILES,
+  REALISTIC_SCENARIOS,
+  type ScenarioComplexity,
+  type LatencyProfile,
+  type TokenUsage,
+  type MockScenarioConfig,
+  type BatchScenarioTest,
+} from './testing/MockScenarios';
+
+// Performance benchmarking
+export {
+  runBenchmark,
+  formatBenchmarkReport,
+  exportBenchmarkResults,
+  compareBenchmarks,
+  type BenchmarkScenario,
+  type PerformanceAssertions,
+  type BenchmarkConfig,
+  type ScenarioDefinition,
+  type BenchmarkProgress,
+  type RequestMetrics,
+  type ScenarioMetrics,
+  type BenchmarkResults,
+  type AssertionResult,
+  type BenchmarkComparison,
+} from './testing/PerformanceBenchmark';
+
+// Load testing
+export {
+  runLoadTest,
+  formatLoadTestReport,
+  exportLoadTestResults,
+  type LoadPattern,
+  type LoadTestScenario,
+  type LoadPatternConfig,
+  type LoadTestConfig,
+  type RequestResult,
+  type LoadTestProgress,
+  type TimeWindowMetrics,
+  type DegradationPoint,
+  type Bottleneck,
+  type CapacityRecommendations,
+  type LoadTestResults,
+} from './testing/LoadTesting';
