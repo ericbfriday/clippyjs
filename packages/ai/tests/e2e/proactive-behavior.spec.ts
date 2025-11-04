@@ -290,19 +290,30 @@ test.describe('Proactive Behavior - Configuration', () => {
     await page.goto('/iframe.html?id=ai-proactivebehavior--configuration-updates');
     await page.waitForLoadState('networkidle');
 
-    // Change configuration
+    // Verify initial state
     const checkbox = page.locator('input[type="checkbox"]');
     const highRadio = page.locator('input[value="high"]');
 
-    await checkbox.click(); // Disable
-    await highRadio.click(); // Set to high
+    // Ensure feature is enabled before changing intrusion level
+    if (!(await checkbox.isChecked())) {
+      await checkbox.click();
+    }
+
+    // Wait for radio buttons to be enabled
+    await page.waitForTimeout(100);
+
+    // Change intrusion level to high
+    await highRadio.click();
+
+    // Verify high was selected
+    await expect(highRadio).toBeChecked();
 
     // Refresh the page
     await page.reload();
     await page.waitForLoadState('networkidle');
 
     // Note: Configuration state may or may not persist depending on implementation
-    // This test documents the behavior
+    // This test documents the behavior - state persistence would require storage integration
   });
 });
 
@@ -315,11 +326,8 @@ test.describe('Proactive Behavior - User Experience', () => {
     await page.click('button:has-text("Trigger Suggestion")');
     await page.waitForTimeout(500);
 
-    // Verify suggestion box is present
+    // Verify suggestion box with icon is present (emoji is part of heading text)
     await expect(page.locator('text="💡 Proactive Suggestion"')).toBeVisible();
-
-    // Verify icon is present
-    await expect(page.locator('text="💡"')).toBeVisible();
 
     // Verify buttons are styled distinctly
     const acceptButton = page.locator('button:has-text("✓ Accept")');
