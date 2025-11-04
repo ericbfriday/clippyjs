@@ -104,6 +104,7 @@ export {
   type AIClippyConfig,
   type AIClippyContextValue,
   type AIClippyProviderProps,
+  type ProviderInfo,
 } from './react/AIClippyContext';
 
 export {
@@ -121,6 +122,12 @@ export {
   HistoryManager,
   type HistoryManagerProps,
 } from './react/HistoryManager';
+
+export {
+  ProviderSelector,
+  type ProviderSelectorProps,
+  ProviderSelectorStyles,
+} from './react/ProviderSelector';
 
 // Streaming control
 export {
