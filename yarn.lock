@@ -499,6 +499,28 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@clippyjs/ai-openai@workspace:packages/ai-openai":
+  version: 0.0.0-use.local
+  resolution: "@clippyjs/ai-openai@workspace:packages/ai-openai"
+  dependencies:
+    "@clippyjs/ai": "workspace:*"
+    "@rollup/plugin-commonjs": "npm:^28.0.1"
+    "@rollup/plugin-node-resolve": "npm:^15.3.0"
+    "@rollup/plugin-replace": "npm:^6.0.2"
+    "@rollup/plugin-terser": "npm:^0.4.4"
+    "@rollup/plugin-typescript": "npm:^12.1.1"
+    "@types/node": "npm:^22.10.2"
+    "@vitest/coverage-v8": "npm:^3.0.5"
+    openai: "npm:^4.77.3"
+    rollup: "npm:^4.31.0"
+    tslib: "npm:^2.8.1"
+    typescript: "npm:^5.7.3"
+    vitest: "npm:^3.0.5"
+  peerDependencies:
+    "@clippyjs/ai": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@clippyjs/ai@workspace:*, @clippyjs/ai@workspace:^, @clippyjs/ai@workspace:packages/ai":
   version: 0.0.0-use.local
   resolution: "@clippyjs/ai@workspace:packages/ai"
@@ -8493,6 +8515,31 @@ __metadata:
     is-docker: "npm:^2.1.1"
     is-wsl: "npm:^2.2.0"
   checksum: 10c0/bb6b3a58401dacdb0aad14360626faf3fb7fba4b77816b373495988b724fb48941cad80c1b65d62bb31a17609b2cd91c41a181602caea597ca80dfbcc27e84c9
+  languageName: node
+  linkType: hard
+
+"openai@npm:^4.77.3":
+  version: 4.104.0
+  resolution: "openai@npm:4.104.0"
+  dependencies:
+    "@types/node": "npm:^18.11.18"
+    "@types/node-fetch": "npm:^2.6.4"
+    abort-controller: "npm:^3.0.0"
+    agentkeepalive: "npm:^4.2.1"
+    form-data-encoder: "npm:1.7.2"
+    formdata-node: "npm:^4.3.2"
+    node-fetch: "npm:^2.6.7"
+  peerDependencies:
+    ws: ^8.18.0
+    zod: ^3.23.8
+  peerDependenciesMeta:
+    ws:
+      optional: true
+    zod:
+      optional: true
+  bin:
+    openai: bin/cli
+  checksum: 10c0/c4f2e837684ed96b8cec58c65a584646d667c69918f29052775e2e8c05ff5c860d8b58214a7770bc6895ca8602480420c1db6a5392dd250179eb0b91c2b19a2f
   languageName: node
   linkType: hard
 
