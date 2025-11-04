@@ -126,9 +126,14 @@ export function AIClippyProvider({ config, children }: AIClippyProviderProps) {
   // Provider selection state (for multi-provider mode)
   const [currentProviderId, setCurrentProviderId] = useState<string>(() => {
     // Try localStorage first, then defaultProvider, then first provider, then single provider mode
-    const stored = typeof window !== 'undefined' ? localStorage.getItem('clippy-selected-provider') : null;
-    if (stored && config.providers?.some(p => p.id === stored)) {
-      return stored;
+    try {
+      const stored = typeof window !== 'undefined' ? localStorage.getItem('clippy-selected-provider') : null;
+      if (stored && config.providers?.some(p => p.id === stored)) {
+        return stored;
+      }
+    } catch (error) {
+      // localStorage not available (SSR or disabled)
+      console.debug('[AIClippyContext] localStorage not available, using default provider');
     }
     return config.defaultProvider || config.providers?.[0]?.id || 'single';
   });
@@ -306,8 +311,12 @@ export function AIClippyProvider({ config, children }: AIClippyProviderProps) {
     setCurrentProviderId(providerId);
 
     // Save to localStorage for persistence
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('clippy-selected-provider', providerId);
+    try {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('clippy-selected-provider', providerId);
+      }
+    } catch (error) {
+      console.debug('[AIClippyContext] Failed to save provider to localStorage');
     }
 
     // Update conversation manager with new provider
@@ -327,8 +336,12 @@ export function AIClippyProvider({ config, children }: AIClippyProviderProps) {
       setCurrentModel(model);
 
       // Save to localStorage
-      if (typeof window !== 'undefined') {
-        localStorage.setItem(`clippy-${currentProviderId}-model`, model);
+      try {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(`clippy-${currentProviderId}-model`, model);
+        }
+      } catch (error) {
+        console.debug('[AIClippyContext] Failed to save model to localStorage');
       }
     } else {
       console.warn('[AIClippyContext] Provider does not support model switching');
