@@ -181,3 +181,189 @@ export class SessionStorageHistoryStore implements HistoryStore {
     return `${this.prefix}:${agentName}`;
   }
 }
+
+/**
+ * IndexedDB implementation of HistoryStore
+ *
+ * Stores conversation history in browser IndexedDB.
+ * Best for large conversation histories and better performance.
+ * Provides more storage space than localStorage (typically 50MB+ vs 5-10MB).
+ *
+ * Usage:
+ * ```typescript
+ * const historyStore = new IndexedDBHistoryStore();
+ * await historyStore.initialize(); // Must call before use
+ * ```
+ */
+export class IndexedDBHistoryStore implements HistoryStore {
+  private dbName = 'clippy-ai-history';
+  private storeName = 'conversations';
+  private version = 1;
+  private db: IDBDatabase | null = null;
+  private initPromise: Promise<void> | null = null;
+
+  /**
+   * Initialize the IndexedDB connection.
+   * Must be called before using any other methods.
+   * Safe to call multiple times - will reuse existing connection.
+   */
+  async initialize(): Promise<void> {
+    if (this.db) return; // Already initialized
+    if (this.initPromise) return this.initPromise; // Initialization in progress
+
+    this.initPromise = new Promise((resolve, reject) => {
+      const request = indexedDB.open(this.dbName, this.version);
+
+      request.onerror = () => {
+        console.error('Failed to open IndexedDB:', request.error);
+        this.initPromise = null;
+        reject(request.error);
+      };
+
+      request.onsuccess = () => {
+        this.db = request.result;
+        this.initPromise = null;
+        resolve();
+      };
+
+      request.onupgradeneeded = (event) => {
+        const db = (event.target as IDBOpenDBRequest).result;
+
+        // Create object store if it doesn't exist
+        if (!db.objectStoreNames.contains(this.storeName)) {
+          db.createObjectStore(this.storeName, { keyPath: 'agentName' });
+        }
+      };
+    });
+
+    return this.initPromise;
+  }
+
+  /**
+   * Ensure database is initialized before operations
+   */
+  private async ensureInitialized(): Promise<void> {
+    if (!this.db) {
+      await this.initialize();
+    }
+  }
+
+  async save(history: ConversationHistory): Promise<void> {
+    await this.ensureInitialized();
+
+    if (!this.db) {
+      throw new Error('IndexedDB not initialized');
+    }
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db!.transaction([this.storeName], 'readwrite');
+      const store = transaction.objectStore(this.storeName);
+
+      // Store with agentName as key
+      const request = store.put({
+        agentName: history.agentName,
+        data: history,
+      });
+
+      request.onsuccess = () => resolve();
+      request.onerror = () => {
+        console.error('Failed to save conversation history:', request.error);
+        reject(request.error);
+      };
+    });
+  }
+
+  async load(agentName: AgentName): Promise<ConversationHistory | null> {
+    await this.ensureInitialized();
+
+    if (!this.db) {
+      throw new Error('IndexedDB not initialized');
+    }
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db!.transaction([this.storeName], 'readonly');
+      const store = transaction.objectStore(this.storeName);
+      const request = store.get(agentName);
+
+      request.onsuccess = () => {
+        const result = request.result;
+        if (!result) {
+          resolve(null);
+          return;
+        }
+
+        const history = result.data as ConversationHistory;
+
+        // Convert string dates back to Date objects
+        history.startedAt = new Date(history.startedAt);
+        history.lastInteraction = new Date(history.lastInteraction);
+        history.messages.forEach((msg) => {
+          msg.timestamp = new Date(msg.timestamp);
+          if (msg.context) {
+            msg.context.forEach((ctx) => {
+              ctx.timestamp = new Date(ctx.timestamp);
+            });
+          }
+        });
+
+        resolve(history);
+      };
+
+      request.onerror = () => {
+        console.error('Failed to load conversation history:', request.error);
+        reject(request.error);
+      };
+    });
+  }
+
+  async clear(agentName: AgentName): Promise<void> {
+    await this.ensureInitialized();
+
+    if (!this.db) {
+      throw new Error('IndexedDB not initialized');
+    }
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db!.transaction([this.storeName], 'readwrite');
+      const store = transaction.objectStore(this.storeName);
+      const request = store.delete(agentName);
+
+      request.onsuccess = () => resolve();
+      request.onerror = () => {
+        console.error('Failed to clear conversation history:', request.error);
+        reject(request.error);
+      };
+    });
+  }
+
+  async clearAll(): Promise<void> {
+    await this.ensureInitialized();
+
+    if (!this.db) {
+      throw new Error('IndexedDB not initialized');
+    }
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db!.transaction([this.storeName], 'readwrite');
+      const store = transaction.objectStore(this.storeName);
+      const request = store.clear();
+
+      request.onsuccess = () => resolve();
+      request.onerror = () => {
+        console.error('Failed to clear all conversation histories:', request.error);
+        reject(request.error);
+      };
+    });
+  }
+
+  /**
+   * Close the IndexedDB connection.
+   * Should be called when the store is no longer needed.
+   */
+  close(): void {
+    if (this.db) {
+      this.db.close();
+      this.db = null;
+    }
+  }
+}
