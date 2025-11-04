@@ -129,6 +129,13 @@ export {
   ProviderSelectorStyles,
 } from './react/ProviderSelector';
 
+export {
+  VisuallyHidden,
+  type VisuallyHiddenProps,
+  ScreenReaderAnnouncement,
+  type ScreenReaderAnnouncementProps,
+} from './react/VisuallyHidden';
+
 // Streaming control
 export {
   StreamController,

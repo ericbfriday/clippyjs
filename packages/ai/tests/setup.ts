@@ -4,6 +4,9 @@
  * Global test setup and configuration
  */
 
+// Import testing-library matchers
+import '@testing-library/jest-dom/vitest';
+
 // Polyfill for crypto.randomUUID if needed
 if (typeof crypto === 'undefined' || !crypto.randomUUID) {
   Object.defineProperty(globalThis, 'crypto', {
