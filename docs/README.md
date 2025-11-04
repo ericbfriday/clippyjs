@@ -46,7 +46,7 @@ Complete documentation for the AI-powered ClippyJS integration.
 
 ## 🚀 Quick Start
 
-### Basic Setup
+### Basic Setup (Single Provider)
 
 ```typescript
 import { ClippyProvider } from '@clippyjs/react';
@@ -55,24 +55,81 @@ import { AnthropicProvider } from '@clippyjs/ai-anthropic';
 
 function App() {
   const anthropicProvider = new AnthropicProvider();
+  await anthropicProvider.initialize({
+    apiKey: process.env.ANTHROPIC_API_KEY,
+  });
 
   return (
     <ClippyProvider>
       <AIClippyProvider
-        provider={anthropicProvider}
-        integrationMode="proxy"
-        endpoint="/api/ai/chat"
-        agentName="Clippy"
-        personalityMode="extended"
-        proactiveConfig={{
-          enabled: true,
-          intervalMs: 120000, // 2 minutes
-          intrusionLevel: 'medium',
+        config={{
+          provider: anthropicProvider,
+          agentName: 'Clippy',
+          personalityMode: 'helpful',
+          proactiveConfig: {
+            enabled: true,
+            intervalMs: 120000, // 2 minutes
+            intrusionLevel: 'medium',
+          },
         }}
       >
         <YourApp />
       </AIClippyProvider>
     </ClippyProvider>
+  );
+}
+```
+
+### Multi-Provider Setup (New in Phase 6!)
+
+```typescript
+import { AIClippyProvider, type ProviderInfo } from '@clippyjs/ai';
+import { AnthropicProvider } from '@clippyjs/ai-anthropic';
+import { OpenAIProvider } from '@clippyjs/ai-openai';
+
+// Initialize providers
+const anthropicProvider = new AnthropicProvider();
+await anthropicProvider.initialize({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+});
+
+const openaiProvider = new OpenAIProvider();
+await openaiProvider.initialize({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+// Define provider info
+const providers: ProviderInfo[] = [
+  {
+    id: 'anthropic',
+    name: 'Anthropic Claude',
+    models: ['claude-3-5-sonnet-20241022', 'claude-3-opus-20240229'],
+    supportsVision: true,
+    supportsTools: true,
+    instance: anthropicProvider,
+  },
+  {
+    id: 'openai',
+    name: 'OpenAI GPT',
+    models: ['gpt-4o', 'gpt-4-turbo'],
+    supportsVision: true,
+    supportsTools: true,
+    instance: openaiProvider,
+  },
+];
+
+function App() {
+  return (
+    <AIClippyProvider
+      config={{
+        providers,
+        defaultProvider: 'anthropic',
+        agentName: 'Clippy',
+        personalityMode: 'helpful',
+      }}
+    >
+      <YourApp />
+    </AIClippyProvider>
   );
 }
 ```
@@ -117,12 +174,24 @@ export async function POST(req: Request) {
 - [x] Comprehensive E2E tests
 - [x] Storybook stories
 
-### Next: Phase 4 - Advanced Features
-- [ ] Conversation history persistence
-- [ ] Pre-built modes (help-assistant, code-reviewer, shopping-assistant)
-- [ ] Tool use support (experimental)
-- [ ] Vision support (experimental)
-- [ ] Custom context provider documentation
+### Phase 6: Sprint 2 Complete ✅
+- [x] Multi-provider architecture support
+- [x] ProviderSelector React component
+- [x] Provider switching with conversation preservation
+- [x] Model selection and persistence
+- [x] localStorage configuration persistence
+- [x] SSR compatibility
+- [x] Comprehensive integration tests (18/18 passing)
+- [x] Complete package documentation
+- [x] Migration guide and examples
+
+### Next: Phase 6 - Sprint 3 (Enhanced Accessibility)
+- [ ] Enhanced keyboard navigation
+- [ ] Screen reader announcements
+- [ ] ARIA attributes and roles
+- [ ] High contrast mode support
+- [ ] Focus management
+- [ ] Accessibility testing
 
 ---
 
@@ -329,6 +398,6 @@ Timer → shouldTrigger() → gatherContext() → analyzeTriggers()
 
 ---
 
-**Last Updated**: 2025-10-27
-**Current Version**: 0.3.0 (Phase 3 Complete)
-**Status**: Active Development - Phase 4 Starting Soon
+**Last Updated**: 2025-11-04
+**Current Version**: 0.4.0 (Phase 6 Sprint 2 Complete - Multi-Provider Support)
+**Status**: Active Development - Sprint 3 (Accessibility) Starting Soon
