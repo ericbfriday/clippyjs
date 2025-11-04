@@ -485,3 +485,96 @@ export {
   type CapacityRecommendations,
   type LoadTestResults,
 } from './testing/LoadTesting';
+
+// Production Telemetry Infrastructure
+export {
+  TelemetryCollector,
+  type TelemetryEvent,
+  type TelemetryConfig,
+  type PerformanceMetric,
+  type ErrorEvent as TelemetryErrorEvent,
+  type UsageEvent,
+  type SamplingStrategy,
+  type TransportBackend,
+  type TransportFunction,
+} from './telemetry/TelemetryCollector';
+
+export {
+  PerformanceMetrics,
+  type CoreWebVitals,
+  type AIOperationMetrics,
+  type ResourceMetrics,
+  type PerformanceTiming,
+  type PerformanceMetricsSummary,
+  type PerformanceMetricsConfig,
+} from './telemetry/PerformanceMetrics';
+
+export {
+  UsageAnalytics,
+  type FeatureUsageEvent,
+  type ConversationMetrics,
+  type ProviderUsageStats,
+  type ProactiveBehaviorMetrics,
+  type FeatureAdoptionStats,
+  type UsageAnalyticsConfig,
+} from './telemetry/UsageAnalytics';
+
+export {
+  ErrorTracking,
+  ErrorSeverity,
+  ErrorCategory,
+  type Breadcrumb,
+  type CapturedError,
+  type ErrorGroupStats,
+  type ErrorTrackingConfig,
+} from './telemetry/ErrorTracking';
+
+export {
+  HealthCheck,
+  HealthStatus,
+  type ServiceCheckResult,
+  type DependencyHealth,
+  type HealthReport,
+  type HealthCheckFunction,
+  type HealthCheckConfig,
+} from './telemetry/HealthCheck';
+
+// Persistent Storage System
+export {
+  IndexedDBStorage,
+  isIndexedDBSupported,
+  StorageError,
+  StorageErrorType,
+  DEFAULT_INDEXEDDB_CONFIG,
+  type PersistentStorage,
+  type IndexedDBConfig,
+  type MigrationFunction,
+  type StorageStats,
+} from './storage/IndexedDBStorage';
+
+export {
+  PersistentHistoryStore,
+  createHistoryStore,
+  DEFAULT_RETENTION_POLICY,
+  type RetentionPolicy,
+  type SearchOptions,
+  type SearchResult,
+  type PaginationOptions,
+  type PaginatedResult,
+} from './storage/PersistentHistoryStore';
+
+export {
+  PersistentContextCache,
+  DEFAULT_TWO_TIER_CONFIG,
+  type TwoTierCacheConfig,
+} from './storage/PersistentContextCache';
+
+export {
+  PreferencesStore,
+  createPreferencesStore,
+  PreferenceValidationError,
+  DEFAULT_PREFERENCES,
+  type UserPreferences,
+  type PreferenceChangeEvent,
+  type PreferenceChangeListener,
+} from './storage/PreferencesStore';

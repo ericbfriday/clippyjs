@@ -1,7 +1,7 @@
 {
   "name": "@clippyjs/ai",
-  "version": "0.6.0",
-  "description": "AI integration core for ClippyJS - plugin architecture, context system, and conversation management",
+  "version": "0.7.0",
+  "description": "AI integration core for ClippyJS - plugin architecture, context system, conversation management, and production resilience",
   "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -52,6 +52,7 @@
     "@types/react": "^19.0.6",
     "@types/react-dom": "^19.0.3",
     "@vitest/coverage-v8": "^3.0.5",
+    "fake-indexeddb": "^6.2.4",
     "jsdom": "^25.0.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

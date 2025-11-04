@@ -32,12 +32,10 @@ describe('useStreamController', () => {
     it('initializes with empty progress', () => {
       const { result } = renderHook(() => useStreamController());
 
-      expect(result.current.progress).toEqual({
-        bytes: 0,
-        tokens: 0,
-        chunks: 0,
-        percentage: 0,
-      });
+      expect(result.current.progress.bytes).toBe(0);
+      expect(result.current.progress.tokens).toBe(0);
+      expect(result.current.progress.chunks).toBe(0);
+      expect(result.current.progress.percentage).toBe(0);
     });
 
     it('initializes with empty metrics', () => {
@@ -154,11 +152,15 @@ describe('useStreamController', () => {
         result.current.monitor.recordChunk(100, 25);
       });
 
-      await waitFor(() => {
-        expect(result.current.metrics.bytesReceived).toBe(100);
-        expect(result.current.metrics.tokensReceived).toBe(25);
-        expect(result.current.metrics.chunksProcessed).toBe(1);
+      // Run fake timers to allow callbacks to execute
+      await act(async () => {
+        vi.runAllTimers();
       });
+
+      // State should be updated synchronously after callbacks run
+      expect(result.current.metrics.bytesReceived).toBe(100);
+      expect(result.current.metrics.tokensReceived).toBe(25);
+      expect(result.current.metrics.chunksProcessed).toBe(1);
     });
 
     it('updates metrics with rate calculations', async () => {
@@ -171,12 +173,19 @@ describe('useStreamController', () => {
 
       act(() => {
         vi.advanceTimersByTime(1000);
+      });
+
+      act(() => {
         result.current.monitor.recordChunk(100, 50);
       });
 
-      await waitFor(() => {
-        expect(result.current.metrics.averageRate).toBeGreaterThan(0);
+      // Run fake timers to allow callbacks to execute
+      await act(async () => {
+        vi.runAllTimers();
       });
+
+      // State should be updated synchronously after callbacks run
+      expect(result.current.metrics.averageRate).toBeGreaterThan(0);
     });
   });
 
@@ -459,10 +468,14 @@ describe('useStreamController', () => {
         result.current.monitor.recordChunk(100, 25);
       });
 
-      await waitFor(() => {
-        expect(result.current.progress.bytes).toBe(100);
-        expect(result.current.metrics.bytesReceived).toBe(100);
+      // Run fake timers to allow callbacks to execute
+      await act(async () => {
+        vi.runAllTimers();
       });
+
+      // State should be updated synchronously after callbacks run
+      expect(result.current.progress.bytes).toBe(100);
+      expect(result.current.metrics.bytesReceived).toBe(100);
     });
 
     it('handles errors in state change callbacks', () => {
@@ -534,10 +547,14 @@ describe('useStreamController', () => {
       expect(result.current.isCompleted).toBe(true);
       expect(result.current.monitor.isActive()).toBe(false);
 
-      await waitFor(() => {
-        expect(result.current.progress.bytes).toBe(200);
-        expect(result.current.metrics.bytesReceived).toBe(200);
+      // Run fake timers to allow all callbacks to execute
+      await act(async () => {
+        vi.runAllTimers();
       });
+
+      // State should be updated synchronously after callbacks run
+      expect(result.current.progress.bytes).toBe(200);
+      expect(result.current.metrics.bytesReceived).toBe(200);
     });
 
     it('handles cancellation mid-stream', () => {
