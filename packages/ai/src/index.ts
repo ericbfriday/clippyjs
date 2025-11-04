@@ -44,6 +44,75 @@ export {
   AppStateContextProvider,
 } from './context/AppStateContext';
 
+export {
+  MemoryContextCache,
+  DEFAULT_CONTEXT_CACHE_CONFIG,
+  type ContextCache,
+  type CacheConfig,
+  type ContextCacheStats,
+  type InvalidationTrigger,
+  type InvalidationCallback,
+} from './context/ContextCache';
+
+export {
+  ViewportContextProvider,
+  type ViewportContextInfo,
+} from './context/ViewportContextProvider';
+
+export {
+  PerformanceContextProvider,
+  type PerformanceContextInfo,
+} from './context/PerformanceContextProvider';
+
+export {
+  FormStateContextProvider,
+  type FormStateContextInfo,
+  type FormField,
+  type FormInfo,
+} from './context/FormStateContextProvider';
+
+export {
+  NavigationContextProvider,
+  type NavigationContextInfo,
+  type CurrentUrlInfo,
+} from './context/NavigationContextProvider';
+
+export {
+  ContextManager,
+  DEFAULT_CONTEXT_MANAGER_CONFIG,
+  type ContextManagerConfig,
+  type GatherOptions,
+  type GatheredContext,
+  type ContextManagerStats,
+  type ContextEvent,
+  type ContextListener,
+} from './context/ContextManager';
+
+export {
+  ContextPrioritizer,
+  DEFAULT_PRIORITIZER_CONFIG,
+  type PrioritizerConfig,
+  type ScoredContext,
+  type PrioritizationOptions,
+} from './context/ContextPrioritizer';
+
+// Context Compression
+export {
+  ContextCompressor,
+  DEFAULT_COMPRESSION_CONFIG,
+  type CompressionConfig,
+  type CompressionResult,
+  type CompressionSavings,
+  type CompressionStrategy as ContextCompressionStrategy,
+} from './context/ContextCompressor';
+
+export {
+  RemoveRedundancyStrategy,
+  SummarizeVerboseStrategy,
+  KeepEssentialStrategy,
+  DEFAULT_COMPRESSION_STRATEGIES,
+} from './context/compression/CompressionStrategies';
+
 // Conversation management
 export {
   ConversationManager,
@@ -135,6 +204,22 @@ export {
   ScreenReaderAnnouncement,
   type ScreenReaderAnnouncementProps,
 } from './react/VisuallyHidden';
+
+// Developer Tools Components
+export {
+  ContextInspector,
+  type ContextInspectorProps,
+} from './react/ContextInspector';
+
+export {
+  ContextDiff,
+  type ContextDiffProps,
+} from './react/ContextDiff';
+
+export {
+  PerformanceProfiler,
+  type PerformanceProfilerProps,
+} from './react/PerformanceProfiler';
 
 // Streaming control
 export {
@@ -263,7 +348,7 @@ export {
 } from './debug/RequestInspector';
 
 export {
-  PerformanceProfiler,
+  PerformanceProfiler as DebugPerformanceProfiler,
   type PerformanceBottleneck,
   type PerformanceProfile,
 } from './debug/PerformanceProfiler';

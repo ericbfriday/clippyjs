@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useLayoutEffect, useRef, useState, useCallback } from 'react';
 import { ConversationManager } from '../conversation/ConversationManager';
 import { ProactiveBehaviorEngine, type ProactiveBehaviorConfig, type ProactiveSuggestion } from '../proactive/ProactiveBehaviorEngine';
+import { ContextManager, type ContextManagerConfig } from '../context/ContextManager';
 import type { AIProvider } from '../providers/AIProvider';
 import type { ContextProvider } from '../context/ContextProvider';
 import type { HistoryStore } from '../conversation/HistoryStore';
@@ -49,6 +50,8 @@ export interface AIClippyConfig {
   proactiveConfig?: Partial<ProactiveBehaviorConfig>;
   /** Custom system prompt (appended to personality) */
   customPrompt?: string;
+  /** Context manager configuration (Sprint 4) */
+  contextManagerConfig?: Partial<ContextManagerConfig>;
 }
 
 /**
@@ -59,6 +62,8 @@ export interface AIClippyContextValue {
   conversationManager: ConversationManager;
   /** Proactive behavior engine */
   proactiveBehavior: ProactiveBehaviorEngine;
+  /** Context manager (Sprint 4) */
+  contextManager: ContextManager;
   /** Current agent name */
   agentName: AgentName;
   /** Current personality mode */
@@ -203,6 +208,14 @@ export function AIClippyProvider({ config, children }: AIClippyProviderProps) {
       throw new Error('No AI provider configured');
     }
 
+    // Create ContextManager (Sprint 4)
+    const contextManager = new ContextManager(config.contextManagerConfig);
+
+    // Register context providers with ContextManager
+    contextProviders.forEach((provider) => {
+      contextManager.registerProvider(provider);
+    });
+
     // Create ConversationManager
     const conversationManager = new ConversationManager(
       activeProvider,
@@ -216,12 +229,12 @@ export function AIClippyProvider({ config, children }: AIClippyProviderProps) {
     // Create ProactiveBehaviorEngine
     const engine = new ProactiveBehaviorEngine(proactiveConfig);
 
-    // Register context providers
+    // Register context providers with engine (for backward compatibility)
     contextProviders.forEach((provider) => {
       engine.registerContextProvider(provider);
     });
 
-    return { conversationManager, engine, mode: resolvedMode };
+    return { conversationManager, engine, contextManager, mode: resolvedMode };
   });
 
   // Load conversation history on mount if historyStore is available
@@ -352,6 +365,7 @@ export function AIClippyProvider({ config, children }: AIClippyProviderProps) {
   const contextValue: AIClippyContextValue = {
     conversationManager: managers.conversationManager,
     proactiveBehavior: managers.engine,
+    contextManager: managers.contextManager,
     agentName: config.agentName,
     personalityMode: config.personalityMode,
     currentMode: managers.mode,
