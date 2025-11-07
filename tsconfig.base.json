@@ -21,13 +21,13 @@
     "paths": {
       "@/*": ["./src/*"],
       "@clippyjs/types": ["./packages/types/src"],
-      "@clippyjs/core": ["./packages/core/src"],
       "@clippyjs/react": ["./packages/react/src"],
       "@clippyjs/ai": ["./packages/ai/src"],
       "@clippyjs/ai-openai": ["./packages/ai-openai/src"],
       "@clippyjs/ai-anthropic": ["./packages/ai-anthropic/src"]
     },
-
+    "incremental": true,
+    "composite": true
   },
   "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.test.tsx"]
 }

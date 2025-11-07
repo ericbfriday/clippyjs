@@ -1,14 +1,12 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "../../tsconfig.react.json",
   "compilerOptions": {
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "jsx": "react-jsx",
     "outDir": "./dist",
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "allowImportingTsExtensions": false,
-    "noEmit": false
+    "rootDir": "./src"
   },
+  "references": [
+    { "path": "../types" }
+  ],
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "lib", "demo"]
 }

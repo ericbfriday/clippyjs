@@ -1,13 +1,14 @@
 {
   "extends": "../../tsconfig.react.json",
   "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": "./src"
+    "noEmit": true
   },
   "references": [
     { "path": "../types" },
-    { "path": "../ai" }
+    { "path": "../react" },
+    { "path": "../ai" },
+    { "path": "../ai-anthropic" }
   ],
-  "include": ["src/**/*"],
+  "include": [".storybook/**/*", "stories/**/*"],
   "exclude": ["node_modules", "dist"]
 }
