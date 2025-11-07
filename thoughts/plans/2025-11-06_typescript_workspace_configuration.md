@@ -221,9 +221,9 @@ Add to devDependencies:
 ### Success Criteria:
 
 #### Automated Verification:
-- [ ] New packages build: `yarn workspace @clippyjs/types build`
-- [ ] Base configs are valid JSON: `cat tsconfig.base.json | jq .`
-- [ ] TypeScript compiles types package: `yarn workspace @clippyjs/types typecheck`
+- [x] New packages build: `yarn workspace @clippyjs/types build`
+- [x] Base configs are valid JSON: `cat tsconfig.base.json | jq .`
+- [x] TypeScript compiles types package: `yarn workspace @clippyjs/types typecheck`
 
 #### Manual Verification:
 - [ ] Types package exports are accessible
@@ -457,10 +457,10 @@ import type { UseAgentOptions, UseAgentReturn, AgentName } from "@clippyjs/types
 ### Success Criteria:
 
 #### Automated Verification:
-- [ ] All packages build: `yarn build`
-- [ ] TypeScript compiles across workspace: `yarn typecheck`
-- [ ] Project references resolve: `tsc --build`
-- [ ] All packages use TypeScript 5.7.3: `grep -r '"typescript.*5\.7\.3' packages/`
+- [x] All packages build: `yarn build`
+- [x] TypeScript compiles across workspace: `yarn typecheck`
+- [x] Project references resolve: `tsc --build`
+- [x] All packages use TypeScript 5.7.3: `grep -r '"typescript.*5\.7\.3' packages/`
 
 #### Manual Verification:
 - [ ] IDE resolves @/* paths correctly
@@ -597,10 +597,10 @@ All packages use TypeScript project references for improved type checking and in
 ### Success Criteria:
 
 #### Automated Verification:
-- [ ] CI/CD builds pass: `yarn build`
-- [ ] Full workspace type check passes: `yarn typecheck`
-- [ ] No references to @clippyjs/core remain: `grep -r "@clippyjs/core" packages/ --exclude-dir=node_modules`
-- [ ] All project references resolve: `tsc --build --dry`
+- [x] CI/CD builds pass: `yarn build`
+- [x] Full workspace type check passes: `yarn typecheck`
+- [x] No references to @clippyjs/core remain: `grep -r "@clippyjs/core" packages/ --exclude-dir=node_modules`
+- [x] All project references resolve: `tsc --build --dry`
 
 #### Manual Verification:
 - [ ] Documentation is accurate and helpful

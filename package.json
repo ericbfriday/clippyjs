@@ -20,7 +20,9 @@
     "test:ai": "yarn workspace @clippyjs/ai test",
     "test:all": "yarn workspaces foreach -Apt run test",
     "lint": "yarn workspaces foreach -Apt run lint",
-    "typecheck": "yarn workspaces foreach -Apt exec tsc --noEmit"
+    "typecheck": "npx tsc --build",
+    "typecheck:watch": "npx tsc --build --watch",
+    "clean:types": "yarn workspace @clippyjs/types clean"
   },
   "repository": {
     "type": "git",
