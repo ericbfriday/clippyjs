@@ -3,7 +3,19 @@
  */
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import type { Agent, AgentName } from "@clippyjs/core";
+import type { Agent } from "./Agent";
+
+export type AgentName =
+  | "Clippy"
+  | "Bonzi"
+  | "F1"
+  | "Genie"
+  | "Genius"
+  | "Links"
+  | "Merlin"
+  | "Peedy"
+  | "Rocky"
+  | "Rover";
 import { useClippy } from "./ClippyProvider";
 
 export interface UseAgentOptions {

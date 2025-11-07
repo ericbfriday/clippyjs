@@ -4,7 +4,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { useClippy } from "./ClippyProvider";
-import type { Agent } from "@clippyjs/core";
+import type { Agent } from "./Agent";
 
 export interface ClippyProps {
   /** Name of the agent to load (e.g., 'Clippy', 'Bonzi', 'Rover') */

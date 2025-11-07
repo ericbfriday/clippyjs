@@ -16,8 +16,8 @@
  */
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import type { Agent } from '@clippyjs/core';
-import { load } from '@clippyjs/core';
+import type { Agent } from './Agent';
+import { load } from './loader';
 
 /**
  * Context value provided by ClippyProvider

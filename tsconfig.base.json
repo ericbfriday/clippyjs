@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "lib": ["ES2020"],
+    "strict": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@clippyjs/types": ["./packages/types/src"],
+      "@clippyjs/core": ["./packages/core/src"],
+      "@clippyjs/react": ["./packages/react/src"],
+      "@clippyjs/ai": ["./packages/ai/src"],
+      "@clippyjs/ai-openai": ["./packages/ai-openai/src"],
+      "@clippyjs/ai-anthropic": ["./packages/ai-anthropic/src"]
+    },
+
+  },
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.test.tsx"]
+}
