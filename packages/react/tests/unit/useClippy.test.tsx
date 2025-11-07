@@ -8,8 +8,18 @@ import type { ReactNode } from 'react';
  * Tests context hook for managing multiple agents
  */
 
-// Mock the core load function
-vi.mock('@clippyjs/core', () => ({
+// Mock the Agent class and loader
+vi.mock('../src/Agent', () => ({
+  Agent: vi.fn().mockImplementation(() => ({
+    name: 'Clippy',
+    show: vi.fn(() => Promise.resolve()),
+    hide: vi.fn(() => Promise.resolve()),
+    destroy: vi.fn(),
+    isVisible: vi.fn(() => false),
+  })),
+}));
+
+vi.mock('../src/loader', () => ({
   load: vi.fn((name: string) =>
     Promise.resolve({
       name,

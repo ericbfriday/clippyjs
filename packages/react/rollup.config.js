@@ -23,7 +23,7 @@ export default {
     'react',
     'react-dom',
     'react/jsx-runtime',
-    '@clippyjs/core',
+    '@clippyjs/types',
   ],
   plugins: [
     resolve(),
@@ -37,7 +37,7 @@ export default {
     }),
     copy({
       targets: [
-        { src: '../core/assets', dest: 'dist' },
+        { src: '../clippyjs-lib/assets', dest: 'dist' },
         { src: 'src/styles.css', dest: 'dist' },
       ],
     }),

@@ -13,7 +13,7 @@ import type { ReactNode } from 'react';
  */
 
 // Mock the core load function
-vi.mock('@clippyjs/core', () => ({
+vi.mock('../src', () => ({
   load: vi.fn((name: string) =>
     Promise.resolve({
       name,

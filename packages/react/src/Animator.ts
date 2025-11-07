@@ -2,7 +2,7 @@
  * Animator class for handling sprite animations
  */
 
-import { AgentData, Animation, Frame, AnimationState, SoundMap } from './types';
+import { AgentData, Animation, Frame, AnimationState, SoundMap } from '@clippyjs/types';
 
 export type AnimatorStateCallback = (name: string, state: AnimationState) => void;
 

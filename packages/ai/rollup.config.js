@@ -23,7 +23,7 @@ export default {
     'react',
     'react-dom',
     'react/jsx-runtime',
-    '@clippyjs/core',
+    '@clippyjs/types',
   ],
   plugins: [
     replace({

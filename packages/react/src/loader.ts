@@ -3,7 +3,7 @@
  */
 
 import { Agent } from './Agent';
-import { AgentData, SoundMap, LoadOptions } from './types';
+import { AgentData, SoundMap, LoadOptions } from '@clippyjs/types';
 
 // Global registry for loaded data
 const loadedMaps: Map<string, Promise<void>> = new Map();

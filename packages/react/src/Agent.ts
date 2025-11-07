@@ -5,7 +5,7 @@
 import { Queue } from './Queue';
 import { Animator } from './Animator';
 import { Balloon } from './Balloon';
-import { AgentData, SoundMap, Direction, AnimationState } from './types';
+import { AgentData, SoundMap, Direction, AnimationState } from '@clippyjs/types';
 
 export interface AgentOptions {
   onDoubleClick?: () => void;

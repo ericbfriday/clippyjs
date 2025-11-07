@@ -21,4 +21,4 @@ export { Queue } from "./Queue";
 export { load, ready, soundsReady } from "./loader";
 
 // Types
-export type * from "./types";
+export type * from "@clippyjs/types";
