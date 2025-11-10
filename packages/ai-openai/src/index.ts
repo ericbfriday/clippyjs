@@ -1,15 +1,8 @@
 /**
- * @clippyjs/ai-openai
- * OpenAI provider for ClippyJS AI
+ * @clippyjs/ai-openai - OpenAI provider for ClippyJS
  *
- * Provides GPT-4 and GPT-4o integration for the ClippyJS AI assistant.
- *
- * @packageDocumentation
+ * Implements AI provider interface for OpenAI's Chat Completion API.
+ * Supports GPT-4, GPT-4o, and GPT-3.5-turbo with streaming, tools, and vision.
  */
 
-// TODO: Export OpenAIProvider when implemented
-// TODO: Export StreamHandler when implemented
-// TODO: Export ToolAdapter when implemented
-// TODO: Export types when defined
-
-export {};
+export { OpenAIProvider } from './OpenAIProvider';

@@ -17,3 +17,7 @@ node_modules
 **/playwright-report/
 **/test-results/
 **/SESSION_SUMMARY.md
+
+# Build artifacts
+**/*.tsbuildinfo
+**/.rollup.cache/

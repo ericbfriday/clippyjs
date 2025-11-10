@@ -3,57 +3,9 @@
  */
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import type { Agent, AgentName } from "@clippyjs/core";
+import type { Agent } from "./Agent";
+import type { AgentName, UseAgentOptions, UseAgentReturn } from "@clippyjs/types";
 import { useClippy } from "./ClippyProvider";
-
-export interface UseAgentOptions {
-  /** Auto-load agent on mount */
-  autoLoad?: boolean;
-  /** Auto-show agent after loading */
-  autoShow?: boolean;
-  /** Auto-cleanup agent on unmount (default: true) */
-  autoCleanup?: boolean;
-  /** Initial position */
-  initialPosition?: { x: number; y: number };
-  /** Initial message to speak */
-  initialMessage?: string;
-  /** Base path for assets (optional override) */
-  basePath?: string;
-}
-
-export interface UseAgentReturn {
-  // State
-  agent: Agent | null;
-  loading: boolean;
-  error: Error | null;
-
-  // Lifecycle
-  load: () => Promise<Agent>;
-  unload: () => void;
-  reload: () => Promise<Agent>;
-
-  // Core Methods
-  show: () => Promise<void>;
-  hide: () => Promise<void>;
-  play: (animation: string) => Promise<void>;
-  animate: () => Promise<void>;
-  speak: (text: string, hold?: boolean) => Promise<void>;
-  moveTo: (x: number, y: number, duration?: number) => Promise<void>;
-  gestureAt: (x: number, y: number) => Promise<void>;
-
-  // Control Methods
-  stop: () => void;
-  stopCurrent: () => void;
-  pause: () => void;
-  resume: () => void;
-  delay: (ms: number) => Promise<void>;
-  closeBalloon: () => void;
-
-  // Utility Methods
-  getAnimations: () => string[];
-  hasAnimation: (name: string) => boolean;
-  isVisible: () => boolean;
-}
 
 /**
  * Enhanced useAgent hook with all Agent methods exposed
@@ -297,6 +249,7 @@ export function useAgent(
   return {
     // State
     agent,
+    isLoading: loading,
     loading,
     error,
 

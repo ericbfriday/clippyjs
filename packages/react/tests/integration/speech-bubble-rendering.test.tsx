@@ -18,7 +18,7 @@ import { useState } from 'react';
  */
 
 // Mock the core load function with CSS loading verification
-vi.mock('@clippyjs/core', () => ({
+vi.mock('../src', () => ({
   load: vi.fn((name: string) =>
     Promise.resolve({
       name,
