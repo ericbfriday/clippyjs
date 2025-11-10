@@ -527,7 +527,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@clippyjs/ai@workspace:packages/ai"
   dependencies:
-    "@clippyjs/core": "workspace:*"
     "@clippyjs/types": "workspace:*"
     "@playwright/test": "npm:^1.49.1"
     "@rollup/plugin-commonjs": "npm:^28.0.1"
@@ -555,25 +554,10 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@clippyjs/core@workspace:*, @clippyjs/core@workspace:^, @clippyjs/core@workspace:packages/core":
-  version: 0.0.0-use.local
-  resolution: "@clippyjs/core@workspace:packages/core"
-  dependencies:
-    "@rollup/plugin-commonjs": "npm:^28.0.2"
-    "@rollup/plugin-node-resolve": "npm:^16.0.0"
-    "@rollup/plugin-terser": "npm:^0.4.4"
-    "@rollup/plugin-typescript": "npm:^12.1.2"
-    rollup: "npm:^4.31.0"
-    tslib: "npm:^2.8.1"
-    typescript: "npm:^5.7.3"
-  languageName: unknown
-  linkType: soft
-
 "@clippyjs/react@workspace:^, @clippyjs/react@workspace:packages/react":
   version: 0.0.0-use.local
   resolution: "@clippyjs/react@workspace:packages/react"
   dependencies:
-    "@clippyjs/core": "workspace:^"
     "@clippyjs/types": "workspace:*"
     "@playwright/test": "npm:^1.49.1"
     "@rollup/plugin-commonjs": "npm:^28.0.2"
@@ -4794,7 +4778,7 @@ __metadata:
     "@vitejs/plugin-react": "npm:^5.0.4"
     react: "npm:^19.0.0"
     react-dom: "npm:^19.0.0"
-    typescript: "npm:^4.9.5"
+    typescript: "npm:^5.7.3"
     vite: "npm:^5.3.1"
     web-vitals: "npm:^2.1.4"
   languageName: unknown
@@ -4857,6 +4841,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "clippyjs@workspace:packages/clippyjs-lib"
   dependencies:
+    "@clippyjs/types": "workspace:*"
     "@rollup/plugin-commonjs": "npm:^28.0.2"
     "@rollup/plugin-node-resolve": "npm:^16.0.0"
     "@rollup/plugin-replace": "npm:^6.0.2"
@@ -10460,16 +10445,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^4.9.5":
-  version: 4.9.5
-  resolution: "typescript@npm:4.9.5"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: 10c0/5f6cad2e728a8a063521328e612d7876e12f0d8a8390d3b3aaa452a6a65e24e9ac8ea22beb72a924fd96ea0a49ea63bb4e251fb922b12eedfb7f7a26475e5c56
-  languageName: node
-  linkType: hard
-
 "typescript@npm:^5, typescript@npm:^5.7.3":
   version: 5.9.3
   resolution: "typescript@npm:5.9.3"
@@ -10487,16 +10462,6 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 10c0/b7580d716cf1824736cc6e628ab4cd8b51877408ba2be0869d2866da35ef8366dd6ae9eb9d0851470a39be17cbd61df1126f9e211d8799d764ea7431d5435afa
-  languageName: node
-  linkType: hard
-
-"typescript@patch:typescript@npm%3A^4.9.5#optional!builtin<compat/typescript>":
-  version: 4.9.5
-  resolution: "typescript@patch:typescript@npm%3A4.9.5#optional!builtin<compat/typescript>::version=4.9.5&hash=289587"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: 10c0/e3333f887c6829dfe0ab6c1dbe0dd1e3e2aeb56c66460cb85c5440c566f900c833d370ca34eb47558c0c69e78ced4bfe09b8f4f98b6de7afed9b84b8d1dd06a1
   languageName: node
   linkType: hard
 
