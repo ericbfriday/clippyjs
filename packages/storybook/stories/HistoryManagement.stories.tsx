@@ -8,8 +8,8 @@ import {
   LocalStorageHistoryStore,
   SessionStorageHistoryStore,
   IndexedDBHistoryStore,
+  createTestProvider,
 } from '@clippyjs/ai';
-import { MockProvider } from '@clippyjs/ai/dist/providers/MockProvider';
 
 const meta: Meta = {
   title: 'AI/History Management',
@@ -105,7 +105,12 @@ function ChatInterface() {
  */
 export const LocalStoragePersistence: StoryObj = {
   render: () => {
-    const provider = new MockProvider();
+    const provider = createTestProvider({
+      scenario: 'success',
+      responseText: 'Hello! I can help you with that.',
+      delay: 300,
+      chunkDelay: 50,
+    });
     const historyStore = new LocalStorageHistoryStore();
 
     return (
@@ -148,7 +153,12 @@ export const LocalStoragePersistence: StoryObj = {
  */
 export const SessionStoragePersistence: StoryObj = {
   render: () => {
-    const provider = new MockProvider();
+    const provider = createTestProvider({
+      scenario: 'success',
+      responseText: 'Hello! How can I help you today?',
+      delay: 300,
+      chunkDelay: 50,
+    });
     const historyStore = new SessionStorageHistoryStore();
 
     return (
@@ -191,7 +201,12 @@ export const SessionStoragePersistence: StoryObj = {
  */
 export const IndexedDBPersistence: StoryObj = {
   render: () => {
-    const provider = new MockProvider();
+    const provider = createTestProvider({
+      scenario: 'success',
+      responseText: 'This is a test response from IndexedDB persistence.',
+      delay: 300,
+      chunkDelay: 50,
+    });
     const [historyStore] = useState(() => {
       const store = new IndexedDBHistoryStore();
       store.initialize(); // Initialize on mount
@@ -292,7 +307,12 @@ function CustomHistoryUI() {
 
 export const CustomHookUsage: StoryObj = {
   render: () => {
-    const provider = new MockProvider();
+    const provider = createTestProvider({
+      scenario: 'success',
+      responseText: 'Custom hook usage example response.',
+      delay: 300,
+      chunkDelay: 50,
+    });
     const historyStore = new LocalStorageHistoryStore();
 
     return (
