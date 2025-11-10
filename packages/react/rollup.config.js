@@ -12,11 +12,13 @@ export default {
       format: 'cjs',
       sourcemap: true,
       exports: 'named',
+      banner: '"use client";',
     },
     {
       file: 'dist/index.esm.js',
       format: 'esm',
       sourcemap: true,
+      banner: '"use client";',
     },
   ],
   external: [
@@ -41,6 +43,10 @@ export default {
         { src: 'src/styles.css', dest: 'dist' },
       ],
     }),
-    terser(),
+    terser({
+      format: {
+        preamble: '"use client";',
+      },
+    }),
   ],
 };
