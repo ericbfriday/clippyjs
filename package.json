@@ -22,7 +22,16 @@
     "lint": "yarn workspaces foreach -Apt run lint",
     "typecheck": "npx tsc --build",
     "typecheck:watch": "npx tsc --build --watch",
-    "clean:types": "yarn workspace @clippyjs/types clean"
+    "clean:types": "yarn workspace @clippyjs/types clean",
+    "publish:types": "yarn workspace @clippyjs/types npm publish",
+    "publish:react": "yarn workspace @clippyjs/react npm publish",
+    "publish:ai": "yarn workspace @clippyjs/ai npm publish",
+    "publish:ai-anthropic": "yarn workspace @clippyjs/ai-anthropic npm publish",
+    "publish:ai-openai": "yarn workspace @clippyjs/ai-openai npm publish",
+    "publish:all": "yarn build && yarn publish:types && yarn publish:react && yarn publish:ai && yarn publish:ai-anthropic && yarn publish:ai-openai",
+    "version:patch": "yarn workspaces foreach --no-private version patch",
+    "version:minor": "yarn workspaces foreach --no-private version minor",
+    "version:major": "yarn workspaces foreach --no-private version major"
   },
   "repository": {
     "type": "git",
