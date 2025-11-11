@@ -16,7 +16,7 @@
       "executor": "@nx/vite:test",
       "outputs": ["{workspaceRoot}/coverage/packages/ai-openai"],
       "options": {
-        "config": "packages/ai-openai/vite.config.ts",
+        "config": "packages/ai-openai/vitest.config.ts",
         "passWithNoTests": false,
         "reportsDirectory": "../../coverage/packages/ai-openai"
       }

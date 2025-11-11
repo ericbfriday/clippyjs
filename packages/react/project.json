@@ -16,7 +16,7 @@
       "executor": "@nx/vite:test",
       "outputs": ["{workspaceRoot}/coverage/packages/react"],
       "options": {
-        "config": "packages/react/vite.config.ts",
+        "config": "packages/react/vitest.config.ts",
         "passWithNoTests": false,
         "reportsDirectory": "../../coverage/packages/react"
       }
