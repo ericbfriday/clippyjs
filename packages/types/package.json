@@ -14,7 +14,8 @@
   "scripts": {
     "build": "tsc",
     "clean": "rm -rf dist",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "yarn build"
   },
   "devDependencies": {
     "tslib": "^2.8.1",

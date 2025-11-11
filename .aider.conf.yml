@@ -1,0 +1,25 @@
+# Aider AI Assistant Configuration
+# Project context file: AGENTS.md
+
+# Read project instructions from AGENTS.md
+read: AGENTS.md
+
+# Git integration
+auto-commits: true
+dirty-commits: false
+
+# Model preferences (can be overridden via CLI)
+# model: gpt-4-turbo-preview
+
+# File patterns to watch
+watch-files:
+  - "packages/**/*.ts"
+  - "packages/**/*.tsx"
+  - "*.md"
+
+# Exclude patterns
+skip-patterns:
+  - "**/node_modules/**"
+  - "**/dist/**"
+  - "**/.git/**"
+  - "**/coverage/**"

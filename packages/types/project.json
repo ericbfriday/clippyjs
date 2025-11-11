@@ -1,0 +1,39 @@
+{
+  "name": "@clippyjs/types",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/types/src",
+  "projectType": "library",
+  "tags": ["type:lib", "scope:types", "platform:agnostic"],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{projectRoot}/dist"],
+      "options": {
+        "outputPath": "packages/types/dist",
+        "main": "packages/types/src/index.ts",
+        "tsConfig": "packages/types/tsconfig.json",
+        "assets": [
+          {
+            "glob": "packages/types/README.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    },
+    "typecheck": {
+      "executor": "@nx/js:tsc",
+      "outputs": [],
+      "options": {
+        "tsConfig": "packages/types/tsconfig.json",
+        "noEmit": true
+      }
+    },
+    "clean": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "rm -rf packages/types/dist"
+      }
+    }
+  }
+}

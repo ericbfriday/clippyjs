@@ -1,0 +1,17 @@
+{
+  "projectInstructions": "AGENTS.md",
+  "includePatterns": [
+    "packages/**/*.ts",
+    "packages/**/*.tsx",
+    "packages/**/package.json",
+    "*.md"
+  ],
+  "excludePatterns": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/.git/**",
+    "**/coverage/**",
+    "**/*.test.ts",
+    "**/*.test.tsx"
+  ]
+}

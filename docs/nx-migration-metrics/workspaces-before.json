@@ -1,0 +1,12 @@
+{"location":".","name":"clippyjs-workspace"}
+{"location":"packages/ai","name":"@clippyjs/ai"}
+{"location":"packages/ai-anthropic","name":"@clippyjs/ai-anthropic"}
+{"location":"packages/ai-openai","name":"@clippyjs/ai-openai"}
+{"location":"packages/clippyjs-demo-react","name":"clippyjs-demo-react"}
+{"location":"packages/clippyjs-demo-vanilla","name":"clippyjs-demo-vanilla"}
+{"location":"packages/clippyjs-lib","name":"clippyjs"}
+{"location":"packages/react","name":"@clippyjs/react"}
+{"location":"packages/storybook","name":"@clippyjs/storybook"}
+{"location":"packages/templates/nextjs-starter","name":"clippyjs-nextjs-starter"}
+{"location":"packages/templates/vite-starter","name":"clippyjs-vite-starter"}
+{"location":"packages/types","name":"@clippyjs/types"}

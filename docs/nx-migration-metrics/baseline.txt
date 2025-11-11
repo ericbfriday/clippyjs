@@ -1,0 +1,236 @@
+=== Baseline Metrics Capture ===
+Date: Tue Nov 11 01:04:27 CST 2025
+Branch: feature/nx-migration
+
+=== Cold Build Baseline ===
+[36m
+[1msrc/index.ts[22m → [1mdist/index.js, dist/index.esm.js[22m...[39m
+[1m[33m(!) [plugin typescript] src/AnthropicProvider.ts (11:8): @rollup/plugin-typescript TS6305: Output file '/Users/ericfriday/dev/clippyjs/packages/ai/dist/index.d.ts' has not been built from source file '/Users/ericfriday/dev/clippyjs/packages/ai/src/index.ts'.[39m[22m
+[1m/Users/ericfriday/dev/clippyjs/packages/ai-anthropic/src/AnthropicProvider.ts:11:8[22m
+[90m
+[7m11[0m } from '@clippyjs/ai';
+[7m  [0m [91m       ~~~~~~~~~~~~~~[0m
+[39m
+[1m[33m(!) [plugin typescript] @rollup/plugin-typescript: outputToFilesystem option is defaulting to true.[39m[22m
+[32mcreated [1mdist/index.js, dist/index.esm.js[22m in [1m782ms[22m[39m
+[36m
+[1msrc/index.ts[22m → [1mdist/index.js, dist/index.esm.js[22m...[39m
+[1m[33m(!) [plugin typescript] src/__tests__/OpenAIProvider.test.ts (3:43): @rollup/plugin-typescript TS6305: Output file '/Users/ericfriday/dev/clippyjs/packages/ai/dist/index.d.ts' has not been built from source file '/Users/ericfriday/dev/clippyjs/packages/ai/src/index.ts'.[39m[22m
+[1m/Users/ericfriday/dev/clippyjs/packages/ai-openai/src/__tests__/OpenAIProvider.test.ts:3:43[22m
+[90m
+[7m3[0m import type { Message, ChatOptions } from '@clippyjs/ai';
+[7m [0m [91m                                          ~~~~~~~~~~~~~~[0m
+[39m
+[1m[33m(!) [plugin typescript] src/OpenAIProvider.ts (17:8): @rollup/plugin-typescript TS6305: Output file '/Users/ericfriday/dev/clippyjs/packages/ai/dist/index.d.ts' has not been built from source file '/Users/ericfriday/dev/clippyjs/packages/ai/src/index.ts'.[39m[22m
+[1m/Users/ericfriday/dev/clippyjs/packages/ai-openai/src/OpenAIProvider.ts:17:8[22m
+[90m
+[7m17[0m } from '@clippyjs/ai';
+[7m  [0m [91m       ~~~~~~~~~~~~~~[0m
+[39m
+[1m[33m(!) [plugin typescript] @rollup/plugin-typescript: outputToFilesystem option is defaulting to true.[39m[22m
+[32mcreated [1mdist/index.js, dist/index.esm.js[22m in [1m1s[22m[39m
+src/Agent.ts(8,64): error TS6305: Output file '/Users/ericfriday/dev/clippyjs/packages/types/dist/index.d.ts' has not been built from source file '/Users/ericfriday/dev/clippyjs/packages/types/src/index.ts'.
+src/Animator.ts(5,71): error TS6305: Output file '/Users/ericfriday/dev/clippyjs/packages/types/dist/index.d.ts' has not been built from source file '/Users/ericfriday/dev/clippyjs/packages/types/src/index.ts'.
+src/index.ts(26,20): error TS6305: Output file '/Users/ericfriday/dev/clippyjs/packages/types/dist/index.d.ts' has not been built from source file '/Users/ericfriday/dev/clippyjs/packages/types/src/index.ts'.
+src/loader.ts(6,50): error TS6305: Output file '/Users/ericfriday/dev/clippyjs/packages/types/dist/index.d.ts' has not been built from source file '/Users/ericfriday/dev/clippyjs/packages/types/src/index.ts'.
+src/useAgent.ts(7,65): error TS6305: Output file '/Users/ericfriday/dev/clippyjs/packages/types/dist/index.d.ts' has not been built from source file '/Users/ericfriday/dev/clippyjs/packages/types/src/index.ts'.
+[36m
+[1msrc/index.ts[22m → [1mdist/index.js, dist/index.esm.js[22m...[39m
+[1m[33m(!) [plugin typescript] src/errors/RetryPolicy.ts (160:13): @rollup/plugin-typescript TS2554: Expected 0-1 arguments, but got 2.[39m[22m
+[1m/Users/ericfriday/dev/clippyjs/packages/ai/src/errors/RetryPolicy.ts:160:13[22m
+[90m
+[7m160[0m             { cause: lastError }
+[7m   [0m [91m            ~~~~~~~~~~~~~~~~~~~~[0m
+[39m
+[1m[33m(!) [plugin typescript] src/modes/PrebuiltModes.ts (63:3): @rollup/plugin-typescript TS2322: Type '"idle"' is not assignable to type 'ProactiveTriggerReason'.[39m[22m
+[1m/Users/ericfriday/dev/clippyjs/packages/ai/src/modes/PrebuiltModes.ts:63:3[22m
+[90m
+[7m63[0m   reason: 'idle',
+[7m  [0m [91m  ~~~~~~[0m
+
+  [96msrc/modes/PrebuiltModes.ts[0m:[93m30[0m:[93m3[0m
+    [7m30[0m   reason: ProactiveTriggerReason;
+    [7m  [0m [96m  ~~~~~~[0m
+    The expected type comes from property 'reason' which is declared here on type 'TriggerStrategy'
+[39m
+[1m[33m(!) [plugin typescript] src/optimization/ContextOptimizer.ts (288:65): @rollup/plugin-typescript TS18048: 'threshold' is possibly 'undefined'.[39m[22m
+[1m/Users/ericfriday/dev/clippyjs/packages/ai/src/optimization/ContextOptimizer.ts:288:65[22m
+[90m
+[7m288[0m     if (!this.config.summarization.enabled || messages.length < threshold) {
+[7m   [0m [91m                                                                ~~~~~~~~~[0m
+[39m
+[1m[33m(!) [plugin typescript] src/optimization/ContextOptimizer.ts (295:44): @rollup/plugin-typescript TS18048: 'keepCount' is possibly 'undefined'.[39m[22m
+[1m/Users/ericfriday/dev/clippyjs/packages/ai/src/optimization/ContextOptimizer.ts:295:44[22m
+[90m
+[7m295[0m     const toSummarize = messages.slice(0, -keepCount);
+[7m   [0m [91m                                           ~~~~~~~~~[0m
+[39m
+[1m[33m(!) [plugin typescript] src/optimization/ContextOptimizer.ts (296:36): @rollup/plugin-typescript TS18048: 'keepCount' is possibly 'undefined'.[39m[22m
+[1m/Users/ericfriday/dev/clippyjs/packages/ai/src/optimization/ContextOptimizer.ts:296:36[22m
+[90m
+[7m296[0m     const toKeep = messages.slice(-keepCount);
+[7m   [0m [91m                                   ~~~~~~~~~[0m
+[39m
+[1m[33m(!) [plugin typescript] src/react/HistoryManager.tsx (36:26): @rollup/plugin-typescript TS2503: Cannot find namespace 'JSX'.[39m[22m
+[1m/Users/ericfriday/dev/clippyjs/packages/ai/src/react/HistoryManager.tsx:36:26[22m
+[90m
+[7m36[0m }: HistoryManagerProps): JSX.Element {
+[7m  [0m [91m                         ~~~[0m
+[39m
+[1m[33m(!) [plugin typescript] src/react/HistoryManager.tsx (136:14): @rollup/plugin-typescript TS2322: Type '{ children: string; jsx: true; }' is not assignable to type 'DetailedHTMLProps<StyleHTMLAttributes<HTMLStyleElement>, HTMLStyleElement>'.
+  Property 'jsx' does not exist on type 'DetailedHTMLProps<StyleHTMLAttributes<HTMLStyleElement>, HTMLStyleElement>'.[39m[22m
+[1m/Users/ericfriday/dev/clippyjs/packages/ai/src/react/HistoryManager.tsx:136:14[22m
+[90m
+[7m136[0m       <style jsx>{`
+[7m   [0m [91m             ~~~[0m
+[39m
+[1m[33m(!) [plugin typescript] src/react/ProviderSelector.tsx (69:28): @rollup/plugin-typescript TS2503: Cannot find namespace 'JSX'.[39m[22m
+[1m/Users/ericfriday/dev/clippyjs/packages/ai/src/react/ProviderSelector.tsx:69:28[22m
+[90m
+[7m69[0m }: ProviderSelectorProps): JSX.Element {
+[7m  [0m [91m                           ~~~[0m
+[39m
+[1m[33m(!) [plugin typescript] src/react/useHistoryManager.ts (46:32): @rollup/plugin-typescript TS2339: Property 'config' does not exist on type 'AIClippyContextValue'.[39m[22m
+[1m/Users/ericfriday/dev/clippyjs/packages/ai/src/react/useHistoryManager.ts:46:32[22m
+[90m
+[7m46[0m   const { conversationManager, config } = useAIClippy();
+[7m  [0m [91m                               ~~~~~~[0m
+[39m
+[1m[33m(!) [plugin typescript] src/react/useHistoryManager.ts (57:45): @rollup/plugin-typescript TS2341: Property 'agentName' is private and only accessible within class 'ConversationManager'.[39m[22m
+[1m/Users/ericfriday/dev/clippyjs/packages/ai/src/react/useHistoryManager.ts:57:45[22m
+[90m
+[7m57[0m       const agentName = conversationManager.agentName as AgentName;
+[7m  [0m [91m                                            ~~~~~~~~~[0m
+[39m
+[1m[33m(!) [plugin typescript] src/react/useHistoryManager.ts (66:48): @rollup/plugin-typescript TS2341: Property 'agentName' is private and only accessible within class 'ConversationManager'.[39m[22m
+[1m/Users/ericfriday/dev/clippyjs/packages/ai/src/react/useHistoryManager.ts:66:48[22m
+[90m
+[7m66[0m   }, [config.historyStore, conversationManager.agentName]);
+[7m  [0m [91m                                               ~~~~~~~~~[0m
+[39m
+[1m[33m(!) [plugin typescript] src/react/useHistoryManager.ts (74:45): @rollup/plugin-typescript TS2341: Property 'agentName' is private and only accessible within class 'ConversationManager'.[39m[22m
+[1m/Users/ericfriday/dev/clippyjs/packages/ai/src/react/useHistoryManager.ts:74:45[22m
+[90m
+[7m74[0m       const agentName = conversationManager.agentName as AgentName;
+[7m  [0m [91m                                            ~~~~~~~~~[0m
+[39m
+[1m[33m(!) [plugin typescript] src/react/VisuallyHidden.tsx (35:26): @rollup/plugin-typescript TS2503: Cannot find namespace 'JSX'.[39m[22m
+[1m/Users/ericfriday/dev/clippyjs/packages/ai/src/react/VisuallyHidden.tsx:35:26[22m
+[90m
+[7m35[0m }: VisuallyHiddenProps): JSX.Element {
+[7m  [0m [91m                         ~~~[0m
+[39m
+[1m[33m(!) [plugin typescript] src/react/VisuallyHidden.tsx (86:36): @rollup/plugin-typescript TS2503: Cannot find namespace 'JSX'.[39m[22m
+[1m/Users/ericfriday/dev/clippyjs/packages/ai/src/react/VisuallyHidden.tsx:86:36[22m
+[90m
+[7m86[0m }: ScreenReaderAnnouncementProps): JSX.Element | null {
+[7m  [0m [91m                                   ~~~[0m
+[39m
+[1m[33m(!) [plugin typescript] src/testing/MockScenarios.ts (292:11): @rollup/plugin-typescript TS2322: Type '(messages: Message[], options?: ChatOptions | undefined) => Promise<Message>' is not assignable to type '(messages: Message[], options?: ChatOptions | undefined) => AsyncIterableIterator<StreamChunk>'.
+  Type 'Promise<Message>' is missing the following properties from type 'AsyncIterableIterator<StreamChunk>': [Symbol.asyncIterator], next[39m[22m
+[1m/Users/ericfriday/dev/clippyjs/packages/ai/src/testing/MockScenarios.ts:292:11[22m
+[90m
+[7m292[0m     async chat(messages: Message[], options?: ChatOptions): Promise<Message> {
+[7m   [0m [91m          ~~~~[0m
+
+  [96msrc/providers/AIProvider.ts[0m:[93m180[0m:[93m12[0m
+    [7m180[0m   abstract chat(
+    [7m   [0m [96m           ~~~~[0m
+    The expected type comes from property 'chat' which is declared here on type 'AIProvider'
+[39m
+[1m[33m(!) [plugin typescript] src/testing/TestUtilities.ts (113:11): @rollup/plugin-typescript TS2322: Type '(messages: Message[], options?: ChatOptions | undefined) => Promise<Message>' is not assignable to type '(messages: Message[], options?: ChatOptions | undefined) => AsyncIterableIterator<StreamChunk>'.
+  Type 'Promise<Message>' is missing the following properties from type 'AsyncIterableIterator<StreamChunk>': [Symbol.asyncIterator], next[39m[22m
+[1m/Users/ericfriday/dev/clippyjs/packages/ai/src/testing/TestUtilities.ts:113:11[22m
+[90m
+[7m113[0m     async chat(messages: Message[], options?: ChatOptions): Promise<Message> {
+[7m   [0m [91m          ~~~~[0m
+
+  [96msrc/providers/AIProvider.ts[0m:[93m180[0m:[93m12[0m
+    [7m180[0m   abstract chat(
+    [7m   [0m [96m           ~~~~[0m
+    The expected type comes from property 'chat' which is declared here on type 'AIProvider'
+[39m
+[1m[33m(!) [plugin typescript] src/testing/TestUtilities.ts (370:9): @rollup/plugin-typescript TS2322: Type 'ToolUseBlock' is not assignable to type 'string | ContentBlock'.
+  Property 'type' is missing in type 'ToolUseBlock' but required in type 'ToolUseContentBlock'.[39m[22m
+[1m/Users/ericfriday/dev/clippyjs/packages/ai/src/testing/TestUtilities.ts:370:9[22m
+[90m
+[7m370[0m         {
+[7m   [0m [91m        ~[0m
+[7m371[0m           type: 'tool_use',
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m...[0m 
+[7m374[0m           input: { operation: 'add', a: 5, b: 3 },
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m375[0m         } as ToolUseBlock,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+  [96msrc/providers/AIProvider.ts[0m:[93m66[0m:[93m3[0m
+    [7m66[0m   type: 'tool_use';
+    [7m  [0m [96m  ~~~~[0m
+    'type' is declared here.
+[39m
+[32mcreated [1mdist/index.js, dist/index.esm.js[22m in [1m1.1s[22m[39m
+[36m
+[1msrc/index.ts[22m → [1mdist/index.js, dist/index.esm.js[22m...[39m
+[1m[33m(!) [plugin typescript] src/AnthropicProvider.ts (11:8): @rollup/plugin-typescript TS6305: Output file '/Users/ericfriday/dev/clippyjs/packages/ai/dist/index.d.ts' has not been built from source file '/Users/ericfriday/dev/clippyjs/packages/ai/src/index.ts'.[39m[22m
+[1m/Users/ericfriday/dev/clippyjs/packages/ai-anthropic/src/AnthropicProvider.ts:11:8[22m
+[90m
+[7m11[0m } from '@clippyjs/ai';
+[7m  [0m [91m       ~~~~~~~~~~~~~~[0m
+[39m
+[32mcreated [1mdist/index.js, dist/index.esm.js[22m in [1m460ms[22m[39m
+[36m
+[1msrc/index.ts[22m → [1mdist/index.js, dist/index.esm.js[22m...[39m
+[1m[33m(!) [plugin typescript] src/__tests__/OpenAIProvider.test.ts (3:43): @rollup/plugin-typescript TS6305: Output file '/Users/ericfriday/dev/clippyjs/packages/ai/dist/index.d.ts' has not been built from source file '/Users/ericfriday/dev/clippyjs/packages/ai/src/index.ts'.[39m[22m
+[1m/Users/ericfriday/dev/clippyjs/packages/ai-openai/src/__tests__/OpenAIProvider.test.ts:3:43[22m
+[90m
+[7m3[0m import type { Message, ChatOptions } from '@clippyjs/ai';
+[7m [0m [91m                                          ~~~~~~~~~~~~~~[0m
+[39m
+[1m[33m(!) [plugin typescript] src/OpenAIProvider.ts (17:8): @rollup/plugin-typescript TS6305: Output file '/Users/ericfriday/dev/clippyjs/packages/ai/dist/index.d.ts' has not been built from source file '/Users/ericfriday/dev/clippyjs/packages/ai/src/index.ts'.[39m[22m
+[1m/Users/ericfriday/dev/clippyjs/packages/ai-openai/src/OpenAIProvider.ts:17:8[22m
+[90m
+[7m17[0m } from '@clippyjs/ai';
+[7m  [0m [91m       ~~~~~~~~~~~~~~[0m
+[39m
+[32mcreated [1mdist/index.js, dist/index.esm.js[22m in [1m610ms[22m[39m
+The command failed in workspace clippyjs-workspace@workspace:. with exit code 2
+The command failed for workspaces that are depended upon by other workspaces; can't satisfy the dependency graph
+Failed with errors in 7s 409ms
+
+real	0m8.087s
+user	0m16.263s
+sys	0m1.197s
+
+=== Workspace List ===
+{"location":".","name":"clippyjs-workspace"}
+{"location":"packages/ai","name":"@clippyjs/ai"}
+{"location":"packages/ai-anthropic","name":"@clippyjs/ai-anthropic"}
+{"location":"packages/ai-openai","name":"@clippyjs/ai-openai"}
+{"location":"packages/clippyjs-demo-react","name":"clippyjs-demo-react"}
+{"location":"packages/clippyjs-demo-vanilla","name":"clippyjs-demo-vanilla"}
+{"location":"packages/clippyjs-lib","name":"clippyjs"}
+{"location":"packages/react","name":"@clippyjs/react"}
+{"location":"packages/storybook","name":"@clippyjs/storybook"}
+{"location":"packages/templates/nextjs-starter","name":"clippyjs-nextjs-starter"}
+{"location":"packages/templates/vite-starter","name":"clippyjs-vite-starter"}
+{"location":"packages/types","name":"@clippyjs/types"}
+
+=== Package Sizes ===
+3.7M	packages/ai
+224K	packages/ai-anthropic
+420K	packages/ai-openai
+ 20K	packages/clippyjs-demo-deno
+ 30M	packages/clippyjs-demo-react
+ 56K	packages/clippyjs-demo-vanilla
+ 14M	packages/clippyjs-lib
+568K	packages/react
+ 24M	packages/storybook
+ 49M	packages/templates
+ 60K	packages/types
+
+=== Baseline Summary ===
+Cold build time: 8.087s (with TypeScript errors)
+Total packages: 12 workspaces
+Pre-existing TS errors: ~20 errors (documented)
+Note: Build completes with errors, dist files generated

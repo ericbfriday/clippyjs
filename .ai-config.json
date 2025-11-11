@@ -1,0 +1,64 @@
+{
+  "version": "1.0",
+  "name": "ClippyJS",
+  "description": "Modern TypeScript React library for Clippy agents",
+  "instructions": {
+    "file": "AGENTS.md",
+    "priority": "high"
+  },
+  "tools": {
+    "claude": {
+      "config": ".claude.json",
+      "instructions": "AGENTS.md"
+    },
+    "cursor": {
+      "config": ".cursorrules",
+      "instructions": "AGENTS.md"
+    },
+    "copilot": {
+      "config": ".github/copilot-instructions.md",
+      "instructions": "AGENTS.md"
+    },
+    "aider": {
+      "config": ".aider.conf.yml",
+      "instructions": "AGENTS.md"
+    },
+    "gemini": {
+      "instructions": "AGENTS.md"
+    },
+    "openai-codex": {
+      "instructions": "AGENTS.md"
+    },
+    "opencode": {
+      "instructions": "AGENTS.md"
+    }
+  },
+  "workspace": {
+    "type": "monorepo",
+    "packageManager": "yarn",
+    "packages": [
+      "packages/clippyjs-react",
+      "packages/clippyjs-ai",
+      "packages/clippyjs-ai-anthropic",
+      "packages/clippyjs-ai-openai"
+    ]
+  },
+  "conventions": {
+    "typescript": {
+      "strict": true,
+      "target": "ES2020"
+    },
+    "react": {
+      "style": "functional-hooks-only"
+    },
+    "testing": {
+      "unit": "vitest",
+      "e2e": "playwright"
+    },
+    "naming": {
+      "variables": "camelCase",
+      "components": "PascalCase",
+      "files": "kebab-case"
+    }
+  }
+}

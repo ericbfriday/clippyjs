@@ -1,0 +1,10 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./packages/types" },
+    { "path": "./packages/react" },
+    { "path": "./packages/ai" },
+    { "path": "./packages/ai-openai" },
+    { "path": "./packages/ai-anthropic" }
+  ]
+}
