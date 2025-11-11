@@ -33,7 +33,7 @@
     "@clippyjs/ai": "workspace:*"
   },
   "dependencies": {
-    "openai": "^4.77.3"
+    "openai": "^6.8.1"
   },
   "devDependencies": {
     "@clippyjs/ai": "workspace:*",

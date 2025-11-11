@@ -1,0 +1,12 @@
+# Cursor AI Instructions
+# Project context file: AGENTS.md
+
+Project instructions are located in AGENTS.md at the root of this workspace.
+Please read and follow all guidelines in AGENTS.md before making any changes.
+
+Key points:
+- TypeScript strict mode required
+- React functional components only
+- Vitest for unit tests, Playwright for e2e
+- Workspace references (workspace:*) for internal dependencies
+- Follow naming conventions in AGENTS.md

@@ -132,7 +132,6 @@ describe('OpenAIProvider', () => {
       ];
 
       // Test by calling chat and checking the mock
-      const OpenAI = await import('openai');
       const mockCreate = vi.fn().mockResolvedValue({
         async *[Symbol.asyncIterator]() {
           yield {
@@ -141,7 +140,14 @@ describe('OpenAIProvider', () => {
         },
       });
 
-      (OpenAI.default as any).prototype.chat.completions.create = mockCreate;
+      // Mock the client instance's chat.completions.create method
+      if ((provider as any).client) {
+        (provider as any).client.chat = {
+          completions: {
+            create: mockCreate,
+          },
+        };
+      }
 
       const stream = provider.chat(messages);
       await stream.next(); // Trigger the call
@@ -163,7 +169,6 @@ describe('OpenAIProvider', () => {
         systemPrompt: 'You are a helpful assistant.',
       };
 
-      const OpenAI = await import('openai');
       const mockCreate = vi.fn().mockResolvedValue({
         async *[Symbol.asyncIterator]() {
           yield {
@@ -172,7 +177,14 @@ describe('OpenAIProvider', () => {
         },
       });
 
-      (OpenAI.default as any).prototype.chat.completions.create = mockCreate;
+      // Mock the client instance's chat.completions.create method
+      if ((provider as any).client) {
+        (provider as any).client.chat = {
+          completions: {
+            create: mockCreate,
+          },
+        };
+      }
 
       const stream = provider.chat(messages, options);
       await stream.next();
@@ -202,7 +214,6 @@ describe('OpenAIProvider', () => {
         },
       ];
 
-      const OpenAI = await import('openai');
       const mockCreate = vi.fn().mockResolvedValue({
         async *[Symbol.asyncIterator]() {
           yield {
@@ -211,7 +222,14 @@ describe('OpenAIProvider', () => {
         },
       });
 
-      (OpenAI.default as any).prototype.chat.completions.create = mockCreate;
+      // Mock the client instance's chat.completions.create method
+      if ((provider as any).client) {
+        (provider as any).client.chat = {
+          completions: {
+            create: mockCreate,
+          },
+        };
+      }
 
       const stream = provider.chat(messages);
       await stream.next();
@@ -247,7 +265,6 @@ describe('OpenAIProvider', () => {
         },
       ];
 
-      const OpenAI = await import('openai');
       const mockCreate = vi.fn().mockResolvedValue({
         async *[Symbol.asyncIterator]() {
           yield {
@@ -256,7 +273,14 @@ describe('OpenAIProvider', () => {
         },
       });
 
-      (OpenAI.default as any).prototype.chat.completions.create = mockCreate;
+      // Mock the client instance's chat.completions.create method
+      if ((provider as any).client) {
+        (provider as any).client.chat = {
+          completions: {
+            create: mockCreate,
+          },
+        };
+      }
 
       const stream = provider.chat(messages);
       await stream.next();
@@ -299,7 +323,6 @@ describe('OpenAIProvider', () => {
         ],
       };
 
-      const OpenAI = await import('openai');
       const mockCreate = vi.fn().mockResolvedValue({
         async *[Symbol.asyncIterator]() {
           yield {
@@ -308,7 +331,14 @@ describe('OpenAIProvider', () => {
         },
       });
 
-      (OpenAI.default as any).prototype.chat.completions.create = mockCreate;
+      // Mock the client instance's chat.completions.create method
+      if ((provider as any).client) {
+        (provider as any).client.chat = {
+          completions: {
+            create: mockCreate,
+          },
+        };
+      }
 
       const stream = provider.chat(messages, options);
       await stream.next();
@@ -345,7 +375,6 @@ describe('OpenAIProvider', () => {
         { role: 'user', content: 'Hello' },
       ];
 
-      const OpenAI = await import('openai');
       const mockCreate = vi.fn().mockResolvedValue({
         async *[Symbol.asyncIterator]() {
           yield {
@@ -360,7 +389,14 @@ describe('OpenAIProvider', () => {
         },
       });
 
-      (OpenAI.default as any).prototype.chat.completions.create = mockCreate;
+      // Mock the client instance's chat.completions.create method
+      if ((provider as any).client) {
+        (provider as any).client.chat = {
+          completions: {
+            create: mockCreate,
+          },
+        };
+      }
 
       const chunks = [];
       for await (const chunk of provider.chat(messages)) {
@@ -394,7 +430,6 @@ describe('OpenAIProvider', () => {
         ],
       };
 
-      const OpenAI = await import('openai');
       const mockCreate = vi.fn().mockResolvedValue({
         async *[Symbol.asyncIterator]() {
           yield {
@@ -434,7 +469,14 @@ describe('OpenAIProvider', () => {
         },
       });
 
-      (OpenAI.default as any).prototype.chat.completions.create = mockCreate;
+      // Mock the client instance's chat.completions.create method
+      if ((provider as any).client) {
+        (provider as any).client.chat = {
+          completions: {
+            create: mockCreate,
+          },
+        };
+      }
 
       const chunks = [];
       for await (const chunk of provider.chat(messages, options)) {
@@ -452,10 +494,16 @@ describe('OpenAIProvider', () => {
         { role: 'user', content: 'Hello' },
       ];
 
-      const OpenAI = await import('openai');
       const mockCreate = vi.fn().mockRejectedValue(new Error('API Error'));
 
-      (OpenAI.default as any).prototype.chat.completions.create = mockCreate;
+      // Mock the client instance's chat.completions.create method
+      if ((provider as any).client) {
+        (provider as any).client.chat = {
+          completions: {
+            create: mockCreate,
+          },
+        };
+      }
 
       const chunks = [];
       for await (const chunk of provider.chat(messages)) {
