@@ -47,6 +47,13 @@
   "private": true,
   "packageManager": "yarn@4.9.2",
   "devDependencies": {
+    "@nx/eslint": "^22.0.3",
+    "@nx/js": "^22.0.3",
+    "@nx/playwright": "^22.0.3",
+    "@nx/react": "^22.0.3",
+    "@nx/rollup": "^22.0.3",
+    "@nx/vite": "^22.0.3",
+    "nx": "^22.0.3",
     "typescript": "^5.7.3"
   },
   "workspaces": [
