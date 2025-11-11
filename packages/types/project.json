@@ -6,19 +6,10 @@
   "tags": ["type:lib", "scope:types", "platform:agnostic"],
   "targets": {
     "build": {
-      "executor": "@nx/js:tsc",
+      "executor": "nx:run-commands",
       "outputs": ["{projectRoot}/dist"],
       "options": {
-        "outputPath": "packages/types/dist",
-        "main": "packages/types/src/index.ts",
-        "tsConfig": "packages/types/tsconfig.json",
-        "assets": [
-          {
-            "glob": "packages/types/README.md",
-            "input": ".",
-            "output": "."
-          }
-        ]
+        "command": "yarn workspace @clippyjs/types build"
       }
     },
     "typecheck": {

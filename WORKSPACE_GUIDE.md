@@ -321,6 +321,91 @@ yarn nx show cache-stats
 
 ## 🔍 Troubleshooting
 
+### TypeScript Output Directory Issues
+
+**Problem**: TypeScript files compiled to `dist/src/` instead of `dist/`
+
+**Root Cause**: Nx `@nx/js:tsc` executor may not respect `rootDir` configuration in `tsconfig.json` when it conflicts with `tsconfig.base.json`.
+
+**Solution**: Use `nx:run-commands` executor instead:
+
+```json
+// packages/types/project.json
+{
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "outputs": ["{projectRoot}/dist"],
+      "options": {
+        "command": "yarn workspace @clippyjs/types build"
+      }
+    }
+  }
+}
+```
+
+**tsconfig.json Configuration**:
+```json
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": false,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "module": "ESNext",
+    "target": "ES2020"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
+```
+
+### TypeScript Project References Validation Errors
+
+**Problem**: Error TS6305: "Output file has not been built from source file"
+
+**Root Cause**: TypeScript project references validate that `.d.ts` files were actually built from their source `.ts` files.
+
+**Solution Steps**:
+1. Ensure dependency packages are built first
+2. Clean incremental build cache: `rm -f tsconfig.tsbuildinfo`
+3. Build dependencies without cache: `yarn nx run @clippyjs/types:build --skip-nx-cache`
+4. Verify output structure matches expectations
+
+### Stale Build Artifacts
+
+**Problem**: Inconsistent build outputs or reference errors
+
+**Solution**:
+```bash
+# Remove incremental build info files
+find . -name "tsconfig.tsbuildinfo" -delete
+
+# Clean and rebuild
+yarn nx run @clippyjs/types:clean
+yarn nx run @clippyjs/types:build
+```
+
+### Demo or Storybook Won't Start
+
+**Problem**: Demo or Storybook fails to load or shows errors
+
+**Solutions**:
+1. Verify build: `yarn nx run @clippyjs/react:build`
+2. Check console: Open browser DevTools
+3. Verify server: Ensure demo is running on correct port
+4. Clear cache: Hard refresh (⌘+Shift+R or Ctrl+Shift+R)
+
+**For Storybook specifically**:
+```bash
+# Known issue: Yarn PnP resolution with Storybook
+# Workaround: Use React demo instead
+yarn demo:react
+```
+
 ### "Cannot find module" errors
 ```bash
 # Reinstall dependencies
@@ -358,6 +443,8 @@ yarn nx:build --verbose
 # View cache statistics
 yarn nx show cache-stats
 ```
+
+**For detailed troubleshooting**, see [NX_COMMANDS.md](./docs/NX_COMMANDS.md#troubleshooting)
 
 ## 📚 Additional Resources
 

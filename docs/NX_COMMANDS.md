@@ -283,11 +283,73 @@ yarn nx:build:affected  # Only builds react + dependents
 
 ## Troubleshooting
 
+### TypeScript Output Directory Issues
+
+**Problem**: TypeScript files compiled to `dist/src/` instead of `dist/`
+
+**Root Cause**: Nx `@nx/js:tsc` executor may not respect `rootDir` configuration in `tsconfig.json` when it conflicts with `tsconfig.base.json`.
+
+**Solution**: Use `nx:run-commands` executor instead:
+
+```json
+// packages/types/project.json
+{
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "outputs": ["{projectRoot}/dist"],
+      "options": {
+        "command": "yarn workspace @clippyjs/types build"
+      }
+    }
+  }
+}
+```
+
+**tsconfig.json Configuration**:
+```json
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": false,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "module": "ESNext",
+    "target": "ES2020"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
+```
+
+### TypeScript Project References Validation Errors
+
+**Problem**: Error TS6305: "Output file has not been built from source file"
+
+**Root Cause**: TypeScript project references validate that `.d.ts` files were actually built from their source `.ts` files.
+
+**Solution Steps**:
+1. Ensure dependency packages are built first
+2. Clean incremental build cache: `rm -f tsconfig.tsbuildinfo`
+3. Build dependencies without cache: `yarn nx run @clippyjs/types:build --skip-nx-cache`
+4. Verify output structure matches expectations
+
 ### Cache Not Working
 ```bash
 # Reset cache and verify
 yarn nx:reset
 yarn nx:build --verbose
+```
+
+### Stale Build Artifacts
+```bash
+# Clean all packages and rebuild
+yarn clean
+yarn nx:reset
+yarn nx:build
 ```
 
 ### Build Order Issues
@@ -306,6 +368,16 @@ NX_PROFILE=profile.json yarn nx:build
 ```bash
 # Check base comparison
 yarn nx affected --target=build --base=master --dry-run
+```
+
+### Incremental Build Issues
+```bash
+# Remove tsbuildinfo files
+find . -name "tsconfig.tsbuildinfo" -delete
+
+# Clean rebuild
+yarn nx run @clippyjs/types:clean
+yarn nx run @clippyjs/types:build
 ```
 
 ## Related Documentation

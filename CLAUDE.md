@@ -327,6 +327,76 @@ Follow Conventional Commits:
 
 ## Common Issues & Solutions
 
+### TypeScript Build Output Directory Issues
+
+**Problem**: TypeScript compiling to `dist/src/` instead of `dist/`
+
+**Root Cause**: Nx `@nx/js:tsc` executor doesn't respect `rootDir` when `tsconfig.base.json` has conflicting settings
+
+**Solution**: Use `nx:run-commands` executor to delegate to yarn workspace commands
+
+```json
+// packages/*/project.json
+{
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "outputs": ["{projectRoot}/dist"],
+      "options": {
+        "command": "yarn workspace @clippyjs/[package] build"
+      }
+    }
+  }
+}
+```
+
+**Key tsconfig.json settings**:
+```json
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "emitDeclarationOnly": false
+  }
+}
+```
+
+### TypeScript Project References Validation (TS6305)
+
+**Problem**: "Output file has not been built from source file"
+
+**Solution**:
+```bash
+# Clean incremental build cache
+rm -f tsconfig.tsbuildinfo
+
+# Build dependency without cache
+yarn nx run @clippyjs/types:build --skip-nx-cache
+
+# Then build dependent package
+yarn nx run @clippyjs/react:build
+```
+
+### Storybook Yarn PnP Resolution Issues
+
+**Problem**: `Cannot find module '@storybook/react-vite/preset'`
+
+**Known Issue**: Yarn PnP module resolution with Storybook packages
+
+**Workaround**: Use React demo for testing and screenshots
+```bash
+yarn demo:react  # http://localhost:5173
+```
+
+### Screenshot Capture
+
+**Methods**:
+1. **Chrome DevTools MCP** (recommended): Use MCP tools for programmatic capture
+2. **TypeScript Script**: `scripts/capture-screenshots.ts` with Playwright
+3. **Manual**: Browser DevTools or OS screenshot tools
+
+**See**: [SCREENSHOTS.md](./docs/SCREENSHOTS.md) for complete guide
+
 ### Nx Cache Not Working
 
 ```bash
@@ -368,6 +438,10 @@ yarn nx:typecheck
 # Check specific package
 yarn nx run @clippyjs/react:typecheck
 ```
+
+**For detailed troubleshooting**, see:
+- [NX_COMMANDS.md](./docs/NX_COMMANDS.md#troubleshooting)
+- [WORKSPACE_GUIDE.md](./WORKSPACE_GUIDE.md#troubleshooting)
 
 ---
 
