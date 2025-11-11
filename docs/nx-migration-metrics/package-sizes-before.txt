@@ -1,0 +1,11 @@
+3.7M	packages/ai
+224K	packages/ai-anthropic
+420K	packages/ai-openai
+ 20K	packages/clippyjs-demo-deno
+ 30M	packages/clippyjs-demo-react
+ 56K	packages/clippyjs-demo-vanilla
+ 14M	packages/clippyjs-lib
+568K	packages/react
+ 24M	packages/storybook
+ 49M	packages/templates
+ 60K	packages/types
