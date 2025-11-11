@@ -1,64 +1,62 @@
-# ClippyJS AI Integration Documentation
+# ClippyJS Documentation
 
-Complete documentation for the AI-powered ClippyJS integration.
+**Version**: 1.0.0 (Phase 6 Sprint 2 Complete)  
+**Last Updated**: 2025-11-11  
+**Build System**: Nx 22.0.3 with intelligent caching
 
----
-
-## 📚 Documentation Index
-
-### Getting Started
-1. **[AI Integration Specification](./AI_INTEGRATION_SPECIFICATION.md)** - Complete technical specification and architecture
-   - System architecture and package structure
-   - Core component specifications
-   - React integration patterns
-   - Anthropic provider implementation
-   - Pre-built modes and personality system
-
-2. **[Implementation Tasks](./AI_INTEGRATION_ISSUES.md)** - Detailed implementation roadmap
-   - Phase 1: Foundation (Package Structure & Core Interfaces)
-   - Phase 2: Core Features (Provider Implementation & UI Components)
-   - Phase 3: Proactive Behavior (Engine & Trigger Strategies) ✅ **COMPLETE**
-   - Phase 4: Advanced Features (History, Modes, Tools)
-   - Phase 5: Polish & Documentation
-
-3. **[Implementation Log](./AI_INTEGRATION_IMPLEMENTATION_LOG.md)** - Development journal and learnings
-   - Recent commits and changes
-   - Technical patterns discovered
-   - React StrictMode resilience strategies
-   - Build system requirements
-   - Performance metrics
-   - Lessons learned
-
-### Technical Guides
-
-4. **[React 19 TypeScript Fixes](./react19-typescript-fixes.md)** - React 19 migration and type fixes
-   - Type system changes
-   - Hook type improvements
-   - Component type patterns
-
-5. **[CHANGELOG](../CHANGELOG.md)** - Version history and release notes
-   - Feature additions
-   - Bug fixes
-   - Breaking changes
-   - Migration guides
+Complete documentation for building AI-powered Clippy agents with React.
 
 ---
 
-## 🚀 Quick Start
+## 📚 Quick Navigation
 
-### Basic Setup (Single Provider)
+### For New Users
+1. **[Getting Started](#-getting-started)** - Installation and basic setup
+2. **[Quick Examples](#-quick-examples)** - Copy-paste code to get started
+3. **[Core Concepts](#-core-concepts)** - Understand the architecture
 
-```typescript
-import { ClippyProvider } from '@clippyjs/react';
+### For Developers
+1. **[Workspace Guide](../WORKSPACE_GUIDE.md)** - Development workflow with Nx
+2. **[Nx Commands](./NX_COMMANDS.md)** - Build system reference
+3. **[Testing Guide](#-testing-documentation)** - Writing and running tests
+4. **[Code Style](../AGENTS.md#code-style-guidelines)** - Conventions and patterns
+
+### For Contributors
+1. **[Contributing Guide](../CONTRIBUTING.md)** - How to contribute
+2. **[Nx Architecture](./NX_ARCHITECTURE.md)** - Build system design
+3. **[Publishing Workflow](../PUBLISHING.md)** - Release process
+
+---
+
+## 🚀 Getting Started
+
+### Installation
+
+```bash
+# Install core React package
+npm install @clippyjs/react
+
+# Choose your AI provider
+npm install @clippyjs/ai-anthropic  # For Claude
+# OR
+npm install @clippyjs/ai-openai     # For GPT
+```
+
+### Basic Usage
+
+```tsx
+import { ClippyProvider, useClippy } from '@clippyjs/react';
 import { AIClippyProvider } from '@clippyjs/ai';
 import { AnthropicProvider } from '@clippyjs/ai-anthropic';
 
-function App() {
-  const anthropicProvider = new AnthropicProvider();
-  await anthropicProvider.initialize({
-    apiKey: process.env.ANTHROPIC_API_KEY,
-  });
+// Initialize provider
+const anthropicProvider = new AnthropicProvider();
+await anthropicProvider.initialize({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+});
 
+// Wrap your app
+function App() {
   return (
     <ClippyProvider>
       <AIClippyProvider
@@ -66,11 +64,6 @@ function App() {
           provider: anthropicProvider,
           agentName: 'Clippy',
           personalityMode: 'helpful',
-          proactiveConfig: {
-            enabled: true,
-            intervalMs: 120000, // 2 minutes
-            intrusionLevel: 'medium',
-          },
         }}
       >
         <YourApp />
@@ -78,9 +71,50 @@ function App() {
     </ClippyProvider>
   );
 }
+
+// Use in any component
+function YourComponent() {
+  const { ask, isVisible, toggle } = useClippy();
+  
+  return (
+    <button onClick={() => ask('Help me with this')}>
+      Ask Clippy
+    </button>
+  );
+}
 ```
 
-### Multi-Provider Setup (New in Phase 6!)
+---
+
+## 📖 Core Documentation
+
+### Getting Started Guides
+- **[Installation Guide](./getting-started/installation.md)** - Detailed setup instructions
+- **[Basic Usage](./getting-started/basic-usage.md)** - First steps with ClippyJS
+- **[Configuration](./getting-started/configuration.md)** - Configure your assistant
+
+### AI Integration
+- **[AI Integration Overview](./AI_INTEGRATION_SPECIFICATION.md)** - Complete technical specification
+- **[Provider Setup](./getting-started/providers.md)** - Configure AI providers
+- **[Multi-Provider Setup](#multi-provider-setup)** - Use multiple AI providers
+- **[Personality Modes](./MODES_GUIDE.md)** - Assistant personalities
+
+### React Integration
+- **[React Components](./api-reference/components.md)** - Component documentation
+- **[React Hooks](./api-reference/hooks.md)** - Hook reference
+- **[Context Providers](./api-reference/providers.md)** - Provider APIs
+
+### Advanced Features
+- **[Proactive Behavior](#proactive-behavior)** - Automatic suggestions
+- **[Context Gathering](#context-gathering)** - Smart context awareness
+- **[Streaming Chat](#streaming-chat)** - Real-time responses
+- **[Conversation History](#conversation-history)** - Persistent conversations
+
+---
+
+## 🎯 Quick Examples
+
+### Multi-Provider Setup
 
 ```typescript
 import { AIClippyProvider, type ProviderInfo } from '@clippyjs/ai';
@@ -89,16 +123,12 @@ import { OpenAIProvider } from '@clippyjs/ai-openai';
 
 // Initialize providers
 const anthropicProvider = new AnthropicProvider();
-await anthropicProvider.initialize({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
+await anthropicProvider.initialize({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 const openaiProvider = new OpenAIProvider();
-await openaiProvider.initialize({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+await openaiProvider.initialize({ apiKey: process.env.OPENAI_API_KEY });
 
-// Define provider info
+// Configure providers
 const providers: ProviderInfo[] = [
   {
     id: 'anthropic',
@@ -134,270 +164,312 @@ function App() {
 }
 ```
 
-### Backend Proxy (Next.js)
+### Streaming Chat
 
 ```typescript
-// app/api/ai/chat/route.ts
-import { Anthropic } from '@anthropic-ai/sdk';
+import { useAIChat } from '@clippyjs/ai';
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY!,
-});
-
-export async function POST(req: Request) {
-  const { messages, systemPrompt, maxTokens } = await req.json();
-
-  const stream = await anthropic.messages.create({
-    model: 'claude-3-5-sonnet-20241022',
-    max_tokens: maxTokens || 1024,
-    system: systemPrompt,
-    messages,
-    stream: true,
-  });
-
-  // Stream response as SSE...
+function ChatComponent() {
+  const { sendMessage, messages, isStreaming } = useAIChat();
+  
+  const handleSend = async () => {
+    await sendMessage('Hello, Clippy!');
+  };
+  
+  return (
+    <div>
+      {messages.map((msg, i) => (
+        <div key={i}>{msg.content}</div>
+      ))}
+      {isStreaming && <Spinner />}
+      <button onClick={handleSend}>Send</button>
+    </div>
+  );
 }
 ```
 
----
+### Proactive Behavior
 
-## 🎯 Current Status
-
-### Phase 3: Complete ✅
-- [x] Proactive behavior engine with timer management
-- [x] Ignore detection and cooldown system
-- [x] Manual trigger support for testing
-- [x] Intrusion level configuration
-- [x] User interaction tracking
-- [x] Accept/ignore statistics
-- [x] React StrictMode resilience
-- [x] Comprehensive E2E tests
-- [x] Storybook stories
-
-### Phase 6: Sprint 2 Complete ✅
-- [x] Multi-provider architecture support
-- [x] ProviderSelector React component
-- [x] Provider switching with conversation preservation
-- [x] Model selection and persistence
-- [x] localStorage configuration persistence
-- [x] SSR compatibility
-- [x] Comprehensive integration tests (18/18 passing)
-- [x] Complete package documentation
-- [x] Migration guide and examples
-
-### Next: Phase 6 - Sprint 3 (Enhanced Accessibility)
-- [ ] Enhanced keyboard navigation
-- [ ] Screen reader announcements
-- [ ] ARIA attributes and roles
-- [ ] High contrast mode support
-- [ ] Focus management
-- [ ] Accessibility testing
+```typescript
+const config: AIClippyConfig = {
+  provider: anthropicProvider,
+  agentName: 'Clippy',
+  personalityMode: 'helpful',
+  proactiveConfig: {
+    enabled: true,
+    intervalMs: 120000,      // Check every 2 minutes
+    intrusionLevel: 'medium', // low | medium | high
+  },
+};
+```
 
 ---
 
-## 📊 Key Achievements
+## 🏗️ Core Concepts
 
-### Performance Metrics
+### Package Architecture
+
+```
+@clippyjs/types          # Shared TypeScript types
+    ↓
+@clippyjs/ai             # Core AI integration
+    ↓
+@clippyjs/ai-anthropic   # Anthropic provider
+@clippyjs/ai-openai      # OpenAI provider
+    ↓
+@clippyjs/react          # React components
+```
+
+### Provider System
+
+ClippyJS uses a provider pattern for AI integration:
+
+- **BaseAIProvider**: Abstract interface all providers implement
+- **AnthropicProvider**: Claude AI integration
+- **OpenAIProvider**: GPT integration
+- **Custom Providers**: Extend BaseAIProvider
+
+### Context System
+
+The context system gathers information for AI:
+
+- **Page context**: URL, title, DOM structure
+- **User interaction**: Scroll, clicks, time on page
+- **Form data**: Current form values (optional)
+- **Custom context**: App-specific data
+
+### Personality Modes
+
+Pre-configured assistant personalities:
+
+- **helpful**: Friendly, detailed explanations
+- **concise**: Brief, to-the-point responses
+- **technical**: Developer-focused, technical details
+- **creative**: Imaginative, conversational
+
+---
+
+## 🔧 Development Documentation
+
+### Workspace & Build System
+- **[Workspace Guide](../WORKSPACE_GUIDE.md)** - Complete development workflow
+- **[Workspace Index](../WORKSPACE_INDEX.md)** - Package and script reference
+- **[Nx Commands](./NX_COMMANDS.md)** - Build system commands
+- **[Nx Architecture](./NX_ARCHITECTURE.md)** - Build system design
+- **[Nx Quick Start](./NX_QUICK_START.md)** - Get started with Nx
+- **[Nx Migration Complete](./NX_MIGRATION_COMPLETE.md)** - Migration summary
+
+### Testing Documentation
+- **[Testing Overview](../packages/react/TESTING.md)** - Testing strategy
+- **Unit Testing**: Vitest with @testing-library/react
+- **E2E Testing**: Playwright integration and visual tests
+- **Test Patterns**: React StrictMode resilience patterns
+
+### TypeScript & React
+- **[TypeScript Configuration](./typescript-configuration.md)** - TS setup
+- **[React 19 Migration](./react19-typescript-fixes.md)** - Type fixes
+- **[Code Conventions](../AGENTS.md#code-style-guidelines)** - Style guide
+
+### AI Integration
+- **[AI Integration Specification](./AI_INTEGRATION_SPECIFICATION.md)** - Complete spec
+- **[Implementation Log](./AI_INTEGRATION_IMPLEMENTATION_LOG.md)** - Dev journal
+- **[Implementation Tasks](./AI_INTEGRATION_ISSUES.md)** - Roadmap
+
+---
+
+## 📚 API Reference
+
+### React Components
+- **ClippyProvider** - Root provider for Clippy functionality
+- **AIClippyProvider** - AI integration provider
+- **ProviderSelector** - Multi-provider selection UI
+- **ClippyAgent** - Visual Clippy character component
+
+### React Hooks
+- **useClippy()** - Core Clippy functionality
+- **useAIChat()** - AI chat integration
+- **useAIClippy()** - Full AI assistant features
+- **useProactiveBehavior()** - Proactive suggestions
+
+### AI Providers
+- **BaseAIProvider** - Provider interface
+- **AnthropicProvider** - Claude integration
+- **OpenAIProvider** - GPT integration
+
+### Configuration Types
+- **AIClippyConfig** - Main configuration
+- **ProviderInfo** - Provider metadata
+- **ProactiveConfig** - Proactive behavior settings
+- **PersonalityMode** - Personality configuration
+
+---
+
+## 📊 Current Status
+
+### ✅ Phase 6 Sprint 2 Complete (2025-11-04)
+- Multi-provider architecture support
+- ProviderSelector React component
+- Provider switching with conversation preservation
+- Model selection and persistence
+- localStorage configuration persistence
+- SSR compatibility
+- 18/18 integration tests passing
+- Complete package documentation
+- Migration guide and examples
+
+### 🚧 Next: Phase 6 Sprint 3 (Accessibility)
+- Enhanced keyboard navigation
+- Screen reader announcements
+- ARIA attributes and roles
+- High contrast mode support
+- Focus management
+- Accessibility testing
+
+### 📈 Performance Metrics
 | Metric | Target | Actual | Status |
 |--------|--------|--------|--------|
-| Context Gathering | < 200ms | ~50ms | ✅ Excellent |
-| E2E Test Suite | < 30s | ~6.9s | ✅ Excellent |
-| Package Build | < 60s | ~8s | ✅ Excellent |
-
-### Test Coverage
-- **E2E Tests**: 100% passing (60+ tests)
-- **Proactive Behavior**: All scenarios covered
-- **Streaming Chat**: All edge cases tested
-- **Execution Time**: ~6.9s (down from 30s+ timeouts)
-
-### Technical Victories
-- ✅ React StrictMode race condition resolved
-- ✅ Streaming UI gaps eliminated with flushSync
-- ✅ E2E test reliability improved
-- ✅ Build system requirements documented
-- ✅ Comprehensive diagnostic logging added
-
----
-
-## 🔧 Development Workflow
-
-### Before Running Tests
-```bash
-# Always build first
-yarn build
-
-# Then run tests
-yarn test:e2e
-```
-
-### Testing Specific Features
-```bash
-# Proactive behavior tests
-yarn test:e2e --grep "Proactive"
-
-# Streaming tests
-yarn test:e2e --grep "Streaming"
-
-# Single test
-yarn test:e2e --grep "triggers proactive suggestion manually"
-```
-
-### Storybook Development
-```bash
-# Start Storybook
-yarn storybook
-
-# Build Storybook
-yarn build-storybook
-```
-
----
-
-## 🏗️ Architecture Highlights
-
-### Package Structure
-```
-packages/
-├── ai/                       # @clippyjs/ai (core)
-│   ├── src/
-│   │   ├── providers/        # AI provider plugin interface
-│   │   ├── context/          # Context gathering system
-│   │   ├── proactive/        # Proactive behavior engine
-│   │   ├── conversation/     # Conversation management
-│   │   ├── personality/      # Personality profiles
-│   │   └── react/            # React integration
-│   └── tests/e2e/            # E2E tests
-│
-└── ai-anthropic/             # @clippyjs/ai-anthropic
-    └── src/                  # Claude SDK provider
-```
-
-### React Integration Pattern
-```
-AIClippyProvider
-├── Lazy State Initialization (useState(() => {...}))
-├── useLayoutEffect for Subscriptions
-├── flushSync for Immediate UI Updates
-└── Proper Cleanup and Resource Management
-```
-
-### Proactive Behavior Flow
-```
-Timer → shouldTrigger() → gatherContext() → analyzeTriggers()
-→ triggerSuggestion() → notifyListeners() → UI Update
-```
+| Build (cold) | < 10s | 5.2s | ✅ |
+| Build (cached) | < 5s | 1.8s | ✅ |
+| E2E Tests | < 30s | 6.9s | ✅ |
+| Context Gathering | < 200ms | ~50ms | ✅ |
 
 ---
 
 ## 🐛 Troubleshooting
 
-### Tests Failing?
-1. **Run build first**: `yarn build`
-2. **Check React StrictMode**: Development has double-mounting
-3. **Review logs**: Look for `[ProactiveBehaviorEngine]` and `[AIClippyContext]` messages
-4. **Verify versions**: Ensure React 19+ and latest dependencies
+### Common Issues
 
-### Proactive Behavior Not Working?
-1. **Check console logs**: Look for diagnostic messages
-2. **Verify listener attachment**: Should see "[AIClippyContext] Listener subscribed"
-3. **Test manual trigger**: Use manual trigger button in Storybook
-4. **Check configuration**: Ensure `enabled: true` and not in cooldown
+**Build Errors**
+```bash
+# Clean and rebuild with Nx
+yarn nx:reset
+yarn clean
+yarn nx:build
+```
 
-### Streaming Issues?
-1. **Verify flushSync**: Check useAIChat implementation
-2. **Test mock provider**: Rule out API issues
-3. **Review selectors**: E2E tests should target correct elements
-4. **Check timing**: Adjust waitForTimeout values if needed
+**Test Failures**
+```bash
+# Always build before E2E tests
+yarn nx run @clippyjs/react:build
+yarn workspace @clippyjs/react test:integration
+```
+
+**TypeScript Errors**
+```bash
+# Check all packages
+yarn nx:typecheck
+
+# Check specific package
+yarn nx run @clippyjs/react:typecheck
+```
+
+**Nx Cache Issues**
+```bash
+# Clear cache
+yarn nx:reset
+
+# View cache stats
+yarn nx show cache-stats
+```
 
 ---
 
-## 📖 Key Learnings
+## 📝 Technical Guides
 
-### React StrictMode Resilience
-**Pattern**: Lazy State Initialization + useLayoutEffect
-- Use `useState(() => {...})` for synchronous manager creation
-- Use `useLayoutEffect` for subscriptions before first paint
-- Avoid async initialization patterns that race with double-mounting
+### React Patterns
+- **[React StrictMode Resilience](#react-strictmode-patterns)** - Handle double-mounting
+- **[flushSync Usage](#flushsync-patterns)** - Async coordination
+- **[Hook Patterns](#hook-patterns)** - Custom hook development
 
-### flushSync for Async Coordination
-**Pattern**: Force immediate rendering before async work
-- Wrap state updates in `flushSync()` before async operations
-- Ensures UI updates complete before async work begins
-- Critical for streaming and real-time interactions
+### Testing Patterns
+- **[E2E Test Strategies](#e2e-test-strategies)** - Reliable E2E tests
+- **[Visual Test Patterns](#visual-test-patterns)** - Visual regression
+- **[Integration Test Patterns](#integration-test-patterns)** - Component integration
 
-### E2E Selector Strategies
-**Pattern**: Split compound selectors for reliability
-- Use `.filter()` for complex targeting
-- Split text selectors to avoid whitespace issues
-- Target specific descendants with `> selector`
+### Build & Deploy
+- **[Rollup Configuration](#rollup-configuration)** - Package builds
+- **[Nx Optimization](#nx-optimization)** - Build performance
+- **[Publishing Guide](../PUBLISHING.md)** - Release process
 
 ---
 
 ## 🤝 Contributing
 
-### Development Guidelines
-1. **Test-Driven**: Write tests alongside implementation
-2. **StrictMode**: Always develop with StrictMode enabled
-3. **Build First**: Run `yarn build` before testing
-4. **Document Changes**: Update relevant docs and CHANGELOG
-5. **Conventional Commits**: Use semantic commit messages
+### Getting Started
+1. Fork the repository
+2. Clone: `git clone https://github.com/your-username/clippyjs.git`
+3. Install: `yarn install`
+4. Build: `yarn nx:build`
+5. Test: `yarn nx:test`
 
-### Code Review Checklist
-- [ ] Tests pass with `yarn build && yarn test:e2e`
-- [ ] Works in React StrictMode
-- [ ] No console errors or warnings
-- [ ] Documentation updated
-- [ ] CHANGELOG entry added
-- [ ] Storybook stories created/updated (if UI changes)
+### Development Workflow
+```bash
+# Make changes
+git checkout -b feature/my-feature
+
+# Build affected packages
+yarn nx:build:affected
+
+# Test affected packages
+yarn nx:test:affected
+
+# View dependency graph
+yarn nx:graph
+
+# Commit and push
+git commit -m "feat: add my feature"
+git push origin feature/my-feature
+```
+
+### Code Standards
+- TypeScript strict mode
+- React 19 functional components only
+- Comprehensive tests required
+- JSDoc on public APIs
+- Conventional commit messages
 
 ---
 
-## 📚 Further Reading
+## 📚 Additional Resources
 
-### External Resources
-- [React 19 Documentation](https://react.dev/)
-- [Anthropic Claude Documentation](https://docs.anthropic.com/)
-- [Playwright Testing Guide](https://playwright.dev/)
-- [Storybook Documentation](https://storybook.js.org/)
+### Internal
+- **[Main README](../README.md)** - Project overview
+- **[Agent Reference](../AGENTS.md)** - Command reference
+- **[Changelog](../CHANGELOG.md)** - Version history
+- **[Storybook](http://localhost:6006)** - Interactive docs (run `yarn storybook`)
 
-### Internal Resources
-- [Main Project README](../README.md)
-- [Workspace Guide](../WORKSPACE_GUIDE.md)
-- [Agent Personalities](../AGENTS.md)
+### External
+- **[React Documentation](https://react.dev/)** - React 19 docs
+- **[Nx Documentation](https://nx.dev)** - Nx build system
+- **[Anthropic Docs](https://docs.anthropic.com/)** - Claude API
+- **[OpenAI Docs](https://platform.openai.com/docs)** - GPT API
+- **[Vitest Docs](https://vitest.dev/)** - Testing framework
+- **[Playwright Docs](https://playwright.dev/)** - E2E testing
 
 ---
 
-## 🔮 Roadmap
+## 🗂️ Archived Documentation
 
-### Version 0.4.0 - Phase 4
-- Conversation history persistence
-- Pre-built modes
-- Tool use support
-- Vision support
-
-### Version 0.5.0 - Phase 5
-- 90%+ test coverage
-- Complete API documentation
-- Usage examples and tutorials
-- Starter templates
-
-### Version 1.0.0 - Production Release
-- OpenAI provider support
-- Multi-agent coordination
-- Voice input/output
-- Analytics and tracking
+Historical documentation preserved in `docs/archive/`:
+- Phase 5 implementation docs
+- Phase 6 planning docs
+- Sprint summaries and retrospectives
+- Validation reports
+- Migration guides
+- Workspace audits
 
 ---
 
 ## 💬 Support
 
-- **Issues**: [GitHub Issues](https://github.com/clippyjs/clippy/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/clippyjs/clippy/discussions)
-- **Documentation**: This directory
-- **Examples**: `packages/storybook/stories/`
+- **Issues**: [GitHub Issues](https://github.com/ericbfriday/clippyjs/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/ericbfriday/clippyjs/discussions)
+- **npm**: [@clippyjs](https://www.npmjs.com/org/clippyjs)
+- **Email**: Support via GitHub issues
 
 ---
 
-**Last Updated**: 2025-11-04
-**Current Version**: 0.4.0 (Phase 6 Sprint 2 Complete - Multi-Provider Support)
-**Status**: Active Development - Sprint 3 (Accessibility) Starting Soon
+**Documentation Version**: 1.0.0  
+**Last Updated**: 2025-11-11  
+**Maintainer**: Eric Friday  
+**License**: MIT
