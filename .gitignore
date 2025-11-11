@@ -18,6 +18,7 @@ node_modules
 **/playwright-report/
 **/test-results/
 **/SESSION_SUMMARY.md
+**/storybook-static/
 
 # Build artifacts
 **/*.tsbuildinfo
