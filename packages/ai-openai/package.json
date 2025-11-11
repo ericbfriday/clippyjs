@@ -15,10 +15,12 @@
   },
   "scripts": {
     "build": "rollup -c",
+    "clean": "rm -rf dist",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "yarn build"
   },
   "keywords": [
     "clippy",

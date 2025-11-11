@@ -15,6 +15,7 @@
   },
   "scripts": {
     "build": "rollup -c",
+    "clean": "rm -rf dist",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
@@ -22,7 +23,8 @@
     "test:e2e:ui": "playwright test --ui",
     "test:all": "vitest run && playwright test",
     "typecheck": "tsc --noEmit",
-    "playwright:install": "playwright install chromium --with-deps"
+    "playwright:install": "playwright install chromium --with-deps",
+    "prepublishOnly": "yarn build"
   },
   "keywords": [
     "clippy",

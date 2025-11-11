@@ -26,7 +26,8 @@
     "test:integration": "playwright test tests/integration",
     "test:visual": "playwright test tests/visual",
     "test:all": "yarn test && yarn test:integration && yarn test:visual",
-    "test:ci": "vitest --run && playwright test"
+    "test:ci": "vitest --run && playwright test",
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [
     "clippy",
