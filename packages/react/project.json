@@ -1,0 +1,46 @@
+{
+  "name": "@clippyjs/react",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/react/src",
+  "projectType": "library",
+  "tags": ["type:lib", "scope:react", "platform:web"],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "outputs": ["{projectRoot}/dist"],
+      "options": {
+        "command": "yarn workspace @clippyjs/react build"
+      }
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["{workspaceRoot}/coverage/packages/react"],
+      "options": {
+        "config": "packages/react/vite.config.ts",
+        "passWithNoTests": false,
+        "reportsDirectory": "../../coverage/packages/react"
+      }
+    },
+    "test:integration": {
+      "executor": "@nx/playwright:playwright",
+      "outputs": ["{workspaceRoot}/playwright-report"],
+      "options": {
+        "config": "packages/react/playwright.config.ts"
+      }
+    },
+    "typecheck": {
+      "executor": "@nx/js:tsc",
+      "outputs": [],
+      "options": {
+        "tsConfig": "packages/react/tsconfig.json",
+        "noEmit": true
+      }
+    },
+    "clean": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "rm -rf packages/react/dist"
+      }
+    }
+  }
+}
