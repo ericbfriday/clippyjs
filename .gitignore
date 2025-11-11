@@ -25,8 +25,7 @@ node_modules
 **/.rollup.cache/
 .npmrc
 
-
-
+# Nx cache and local workspace data
 .nx/cache
 .nx/workspace-data
 .cursor/rules/nx-rules.mdc
