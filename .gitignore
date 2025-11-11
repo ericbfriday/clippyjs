@@ -24,3 +24,7 @@ node_modules
 **/*.tsbuildinfo
 **/.rollup.cache/
 .npmrc
+
+# Nx cache and local workspace data
+.nx/cache
+.nx/workspace-data
