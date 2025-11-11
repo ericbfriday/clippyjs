@@ -6,6 +6,7 @@ node_modules
 **/.env
 **/.env.*
 **/.env.template
+**/.DS_Store
 
 # Yarn artifacts
 .yarn/install-state.gz
