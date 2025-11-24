@@ -26,11 +26,7 @@
     },
     "playwright": {
       "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "@executeautomation/playwright-mcp-server"
-      ]
+      "command": ["npx", "-y", "@executeautomation/playwright-mcp-server"]
     },
     "serena": {
       "type": "local",
@@ -49,33 +45,21 @@
     },
     "tavily": {
       "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "@modelcontextprotocol/server-tavily"
-      ],
+      "command": ["npx", "-y", "@modelcontextprotocol/server-tavily"],
       "environment": {
         "TAVILY_API_KEY": "{env:TAVILY_API_KEY}"
       }
     },
     "magic": {
       "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "@21st-dev/mcp-server-magic"
-      ],
+      "command": ["npx", "-y", "@21st-dev/mcp-server-magic"],
       "environment": {
         "API_KEY": "{env:TWENTYFIRST_API_KEY}"
       }
     },
     "morphllm-fast-apply": {
       "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "@morphllm/mcp-server-fast-apply"
-      ],
+      "command": ["npx", "-y", "@morphllm/mcp-server-fast-apply"],
       "environment": {
         "MORPH_API_KEY": "{env:MORPH_API_KEY}"
       }
