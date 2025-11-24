@@ -1,0 +1,29 @@
+{
+  "mcpServers": {
+    "nx-mcp": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "nx",
+        "mcp"
+      ]
+    },
+    "serena": {
+      "type": "stdio",
+      "command": [
+        "uvx"
+      ],
+      "args": [
+        "--from",
+        "git+https://github.com/oraios/serena",
+        "serena",
+        "serena-mcp-server",
+        "--context",
+        "ide-assistant"
+      ],
+      "environment": {
+        "SERENA_LOG_LEVEL": "INFO"
+      }
+    }
+  }
+}

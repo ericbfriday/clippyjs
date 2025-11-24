@@ -1,0 +1,7 @@
+{
+    "recommendations": [
+        "nrwl.angular-console",
+        "yoavbls.pretty-ts-errors",
+        "orta.vscode-twoslash-queries"
+    ]
+}

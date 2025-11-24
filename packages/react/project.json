@@ -3,18 +3,26 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/react/src",
   "projectType": "library",
-  "tags": ["type:lib", "scope:react", "platform:web"],
+  "tags": [
+    "type:lib",
+    "scope:react",
+    "platform:web"
+  ],
   "targets": {
     "build": {
       "executor": "nx:run-commands",
-      "outputs": ["{projectRoot}/dist"],
+      "outputs": [
+        "{projectRoot}/dist"
+      ],
       "options": {
         "command": "yarn workspace @clippyjs/react build"
       }
     },
     "test": {
       "executor": "@nx/vite:test",
-      "outputs": ["{workspaceRoot}/coverage/packages/react"],
+      "outputs": [
+        "{workspaceRoot}/coverage/packages/react"
+      ],
       "options": {
         "config": "packages/react/vitest.config.ts",
         "passWithNoTests": false,
@@ -23,7 +31,9 @@
     },
     "test:integration": {
       "executor": "@nx/playwright:playwright",
-      "outputs": ["{workspaceRoot}/playwright-report"],
+      "outputs": [
+        "{workspaceRoot}/playwright-report"
+      ],
       "options": {
         "config": "packages/react/playwright.config.ts"
       }
