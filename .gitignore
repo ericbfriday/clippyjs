@@ -6,6 +6,10 @@ node_modules
 **/.env
 **/.env.*
 **/.env.template
+**/.DS_Store
+
+# Yarn artifacts
+.yarn/install-state.gz
 
 # Serena MCP memories (local workspace knowledge)
 .serena/
@@ -14,3 +18,20 @@ node_modules
 **/playwright-report/
 **/test-results/
 **/SESSION_SUMMARY.md
+**/storybook-static/
+
+# Build artifacts
+**/*.tsbuildinfo
+**/.rollup.cache/
+.npmrc
+
+# Nx cache and local workspace data
+.nx/cache
+.nx/workspace-data
+.cursor/rules/nx-rules.mdc
+.github/instructions/nx.instructions.md
+
+.opencode/
+!.opencode/agent/
+!.opencode/command/
+*.tsbuildinfo

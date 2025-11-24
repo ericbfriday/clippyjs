@@ -12,18 +12,20 @@ export default {
       format: 'cjs',
       sourcemap: true,
       exports: 'named',
+      banner: '"use client";',
     },
     {
       file: 'dist/index.esm.js',
       format: 'esm',
       sourcemap: true,
+      banner: '"use client";',
     },
   ],
   external: [
     'react',
     'react-dom',
     'react/jsx-runtime',
-    '@clippyjs/core',
+    '@clippyjs/types',
   ],
   plugins: [
     resolve(),
@@ -37,10 +39,14 @@ export default {
     }),
     copy({
       targets: [
-        { src: '../core/assets', dest: 'dist' },
+        { src: '../clippyjs-lib/assets', dest: 'dist' },
         { src: 'src/styles.css', dest: 'dist' },
       ],
     }),
-    terser(),
+    terser({
+      format: {
+        preamble: '"use client";',
+      },
+    }),
   ],
 };

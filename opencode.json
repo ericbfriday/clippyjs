@@ -1,0 +1,60 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  // Theme configuration
+  "theme": "opencode",
+  "model": "zai-coding-plan/glm-4.6",
+  "autoupdate": true,
+  "tools": {
+    "write": true,
+    "bash": true
+  },
+  "mcp": {
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp",
+      "headers": {
+        "CONTEXT7_API_KEY": "{env:CONTEXT7_API_KEY}"
+      }
+    },
+    "sequential-thinking": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ]
+    },
+    "playwright": {
+      "type": "local",
+      "command": ["npx", "-y", "@executeautomation/playwright-mcp-server"]
+    },
+    "serena": {
+      "type": "local",
+      "command": ["uvx", "serena-mcp"],
+      "environment": {
+        "SERENA_LOG_LEVEL": "INFO"
+      }
+    },
+    "tavily": {
+      "type": "local",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-tavily"],
+      "environment": {
+        "TAVILY_API_KEY": "{env:TAVILY_API_KEY}"
+      }
+    },
+    "magic": {
+      "type": "local",
+      "command": ["npx", "-y", "@21st-dev/mcp-server-magic"],
+      "environment": {
+        "API_KEY": "{env:MAGIC_API_KEY}"
+      }
+    },
+    "morphllm-fast-apply": {
+      "type": "local",
+      "command": ["npx", "-y", "@morphllm/mcp-server-fast-apply"],
+      "environment": {
+        "MORPH_API_KEY": "{env:MORPH_API_KEY}"
+      }
+    }
+  }
+}

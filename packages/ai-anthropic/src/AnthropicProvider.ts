@@ -97,12 +97,15 @@ export class AnthropicProvider extends AIProvider {
     }
 
     try {
-      const stream = await this.client.messages.create(params);
+      const response = await this.client.messages.create(params);
 
-      for await (const event of stream) {
-        const chunk = this.convertStreamEvent(event);
-        if (chunk) {
-          yield chunk;
+      // Type guard: check if response is a stream
+      if (Symbol.asyncIterator in response) {
+        for await (const event of response) {
+          const chunk = this.convertStreamEvent(event);
+          if (chunk) {
+            yield chunk;
+          }
         }
       }
 
@@ -261,17 +264,18 @@ export class AnthropicProvider extends AIProvider {
    */
   private convertContent(
     content: string | ContentBlock[]
-  ): string | Anthropic.ContentBlock[] {
+  ): string | Anthropic.ContentBlockParam[] {
     if (typeof content === 'string') {
       return content;
     }
 
-    return content.map((block): Anthropic.ContentBlock => {
+    return content.map((block): Anthropic.ContentBlockParam => {
       switch (block.type) {
         case 'text':
           return {
             type: 'text' as const,
             text: block.text,
+            citations: null,
           };
 
         case 'image': {

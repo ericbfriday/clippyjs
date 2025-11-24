@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * @clippyjs/react - React components for Clippy
  */
@@ -11,5 +13,14 @@ export { useAgent } from "./useAgent";
 // Components (optional declarative API)
 export { Clippy } from "./Clippy";
 
-// Re-export types from core
-export type * from "@clippyjs/core";
+// Core classes
+export { Agent } from "./Agent";
+export { Animator } from "./Animator";
+export { Balloon } from "./Balloon";
+export { Queue } from "./Queue";
+
+// Loader functions
+export { load, ready, soundsReady } from "./loader";
+
+// Types
+export type * from "@clippyjs/types";

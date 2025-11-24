@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.react.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "references": [
+    { "path": "../types" },
+    { "path": "../react" },
+    { "path": "../ai" },
+    { "path": "../ai-anthropic" }
+  ],
+  "include": [".storybook/**/*", "stories/**/*"],
+  "exclude": ["node_modules", "dist"]
+}

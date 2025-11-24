@@ -12,7 +12,7 @@ import { useEffect, useState, useRef } from 'react';
  */
 
 // Mock the core load function
-vi.mock('@clippyjs/core', () => ({
+vi.mock('../src', () => ({
   load: vi.fn(() =>
     Promise.resolve({
       show: vi.fn(() => Promise.resolve()),

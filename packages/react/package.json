@@ -10,6 +10,9 @@
     "dist",
     "assets"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "yarn clean && yarn build:ts && yarn build:bundle",
     "build:ts": "tsc",
@@ -23,7 +26,8 @@
     "test:integration": "playwright test tests/integration",
     "test:visual": "playwright test tests/visual",
     "test:all": "yarn test && yarn test:integration && yarn test:visual",
-    "test:ci": "vitest --run && playwright test"
+    "test:ci": "vitest --run && playwright test",
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [
     "clippy",
@@ -44,7 +48,7 @@
     "react-dom": "^18.0.0 || ^19.0.0"
   },
   "dependencies": {
-    "@clippyjs/core": "workspace:^"
+    "@clippyjs/types": "workspace:*"
   },
   "devDependencies": {
     "@playwright/test": "^1.49.1",
@@ -58,8 +62,8 @@
     "@types/react": "^19.0.6",
     "@types/react-dom": "^19.0.2",
     "@vitejs/plugin-react": "^4.3.4",
-    "@vitest/coverage-v8": "^2.1.8",
-    "@vitest/ui": "^2.1.8",
+    "@vitest/coverage-v8": "^3.0.5",
+    "@vitest/ui": "^3.0.5",
     "jsdom": "^25.0.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -68,6 +72,6 @@
     "tslib": "^2.8.1",
     "typescript": "^5.7.3",
     "vite": "^6.0.11",
-    "vitest": "^2.1.8"
+    "vitest": "^3.0.5"
   }
 }

@@ -91,6 +91,7 @@ describe('AnthropicProvider', () => {
             {
               type: 'text',
               text: 'Hello, Claude!',
+              citations: null,
             },
           ],
         },

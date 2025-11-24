@@ -34,6 +34,14 @@ export class ConversationManager {
   }
 
   /**
+   * Update the AI provider
+   * Allows switching providers without losing conversation history
+   */
+  updateProvider(newProvider: AIProvider): void {
+    this.provider = newProvider;
+  }
+
+  /**
    * Send a message and stream the response
    * @param userMessage User's message text
    * @returns Async iterator of response chunks

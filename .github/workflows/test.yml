@@ -14,6 +14,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Enable Corepack
+        run: corepack enable
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -42,6 +45,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Enable Corepack
+        run: corepack enable
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -74,6 +80,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Enable Corepack
+        run: corepack enable
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -115,6 +124,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Enable Corepack
+        run: corepack enable
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -125,7 +137,13 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Build packages
-        run: yarn workspaces foreach -pt run build
+        run: |
+          yarn install --frozen-lockfile
+          yarn build
+          yarn typecheck
+          npx tsc --build --verbose
 
-      - name: Check TypeScript
-        run: yarn workspaces foreach -pt run build:ts
+      - name: Full Workspace Type Check
+        run: |
+          yarn install --frozen-lockfile
+          npx tsc --build --force
