@@ -18,7 +18,7 @@ const config: StorybookConfig = {
   docs: {
     autodocs: 'tag',
   },
-  staticDirs: ['../../core/assets'],
+  staticDirs: ['../../clippyjs-lib/assets'],
 };
 
 export default config;
