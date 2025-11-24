@@ -3,7 +3,11 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/storybook",
   "projectType": "application",
-  "tags": ["type:app", "scope:storybook", "platform:web"],
+  "tags": [
+    "type:app",
+    "scope:storybook",
+    "platform:web"
+  ],
   "targets": {
     "storybook": {
       "executor": "nx:run-commands",
@@ -13,7 +17,9 @@
     },
     "build": {
       "executor": "nx:run-commands",
-      "outputs": ["{projectRoot}/storybook-static"],
+      "outputs": [
+        "{projectRoot}/storybook-static"
+      ],
       "options": {
         "command": "yarn workspace @clippyjs/storybook build-storybook"
       }
