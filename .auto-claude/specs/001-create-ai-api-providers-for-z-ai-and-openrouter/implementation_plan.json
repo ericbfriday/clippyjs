@@ -1,29 +1,49 @@
 {
+<<<<<<< Updated upstream
   "feature": "Create Z.AI and OpenRouter AI Providers",
+=======
+  "feature": "Create xAI and OpenRouter AI Providers",
+>>>>>>> Stashed changes
   "workflow_type": "feature",
   "workflow_rationale": "This is a new feature implementation that adds two new provider packages to the existing AI provider system. Both providers follow the established OpenAIProvider pattern and can be developed in parallel as they are independent packages.",
   "phases": [
     {
+<<<<<<< Updated upstream
       "id": "phase-1-zai-package-setup",
       "name": "Z.AI Package Setup",
       "type": "implementation",
       "description": "Create the @clippyjs/ai-zai package structure with all configuration files",
+=======
+      "id": "phase-1-xai-package-setup",
+      "name": "XAI Package Setup",
+      "type": "implementation",
+      "description": "Create the @clippyjs/ai-xai package structure with all configuration files",
+>>>>>>> Stashed changes
       "depends_on": [],
       "parallel_safe": true,
       "subtasks": [
         {
           "id": "subtask-1-1",
+<<<<<<< Updated upstream
           "description": "Create package.json for ai-zai with correct dependencies and scripts",
           "service": "ai-zai",
           "files_to_modify": [],
           "files_to_create": [
             "packages/ai-zai/package.json"
+=======
+          "description": "Create package.json for ai-xai with correct dependencies and scripts",
+          "service": "ai-xai",
+          "files_to_modify": [],
+          "files_to_create": [
+            "packages/ai-xai/package.json"
+>>>>>>> Stashed changes
           ],
           "patterns_from": [
             "packages/ai-openai/package.json"
           ],
           "verification": {
             "type": "command",
+<<<<<<< Updated upstream
             "command": "cat packages/ai-zai/package.json | jq '.name'",
             "expected": "\"@clippyjs/ai-zai\""
           },
@@ -38,12 +58,29 @@
           "files_to_modify": [],
           "files_to_create": [
             "packages/ai-zai/tsconfig.json"
+=======
+            "command": "cat packages/ai-xai/package.json | jq '.name'",
+            "expected": "\"@clippyjs/ai-xai\""
+          },
+          "status": "completed",
+          "notes": "Created packages/ai-xai/package.json following ai-openai pattern. Uses openai npm package (^6.8.1) for OpenAI-compatible xAI API. Verification passed: jq '.name' returns \"@clippyjs/ai-xai\".",
+          "updated_at": "2025-12-28T09:48:35.019056+00:00"
+        },
+        {
+          "id": "subtask-1-2",
+          "description": "Create tsconfig.json for ai-xai package",
+          "service": "ai-xai",
+          "files_to_modify": [],
+          "files_to_create": [
+            "packages/ai-xai/tsconfig.json"
+>>>>>>> Stashed changes
           ],
           "patterns_from": [
             "packages/ai-openai/tsconfig.json"
           ],
           "verification": {
             "type": "command",
+<<<<<<< Updated upstream
             "command": "test -f packages/ai-zai/tsconfig.json && echo 'OK'",
             "expected": "OK"
           },
@@ -58,12 +95,29 @@
           "files_to_modify": [],
           "files_to_create": [
             "packages/ai-zai/rollup.config.js"
+=======
+            "command": "test -f packages/ai-xai/tsconfig.json && echo 'OK'",
+            "expected": "OK"
+          },
+          "status": "completed",
+          "notes": "Created tsconfig.json for ai-xai package following the exact pattern from ai-openai/tsconfig.json. Extends tsconfig.react.json, references types and ai packages, includes src/**/* and excludes node_modules and dist.",
+          "updated_at": "2025-12-28T09:49:28.835870+00:00"
+        },
+        {
+          "id": "subtask-1-3",
+          "description": "Create rollup.config.js for ai-xai build configuration",
+          "service": "ai-xai",
+          "files_to_modify": [],
+          "files_to_create": [
+            "packages/ai-xai/rollup.config.js"
+>>>>>>> Stashed changes
           ],
           "patterns_from": [
             "packages/ai-openai/rollup.config.js"
           ],
           "verification": {
             "type": "command",
+<<<<<<< Updated upstream
             "command": "test -f packages/ai-zai/rollup.config.js && echo 'OK'",
             "expected": "OK"
           },
@@ -78,18 +132,43 @@
           "files_to_modify": [],
           "files_to_create": [
             "packages/ai-zai/vitest.config.ts"
+=======
+            "command": "test -f packages/ai-xai/rollup.config.js && echo 'OK'",
+            "expected": "OK"
+          },
+          "status": "completed",
+          "notes": "Created rollup.config.js for ai-xai following the exact pattern from ai-openai. Configuration includes CJS and ESM outputs, external dependencies (@clippyjs/ai, openai), and standard plugins (typescript, resolve, commonjs, terser, replace).",
+          "updated_at": "2025-12-28T09:50:26.700583+00:00"
+        },
+        {
+          "id": "subtask-1-4",
+          "description": "Create vitest.config.ts for ai-xai test configuration",
+          "service": "ai-xai",
+          "files_to_modify": [],
+          "files_to_create": [
+            "packages/ai-xai/vitest.config.ts"
+>>>>>>> Stashed changes
           ],
           "patterns_from": [
             "packages/ai-openai/vitest.config.ts"
           ],
           "verification": {
             "type": "command",
+<<<<<<< Updated upstream
             "command": "test -f packages/ai-zai/vitest.config.ts && echo 'OK'",
             "expected": "OK"
           },
           "status": "completed",
           "notes": "Created vitest.config.ts for ai-zai package.",
           "updated_at": "2025-12-28T11:45:00.000000+00:00"
+=======
+            "command": "test -f packages/ai-xai/vitest.config.ts && echo 'OK'",
+            "expected": "OK"
+          },
+          "status": "completed",
+          "notes": "Created vitest.config.ts for ai-xai package following the exact pattern from ai-openai. File verified to exist.",
+          "updated_at": "2025-12-28T09:51:19.695364+00:00"
+>>>>>>> Stashed changes
         }
       ]
     },
@@ -105,59 +184,145 @@
           "id": "subtask-2-1",
           "description": "Create package.json for ai-openrouter with correct dependencies and scripts",
           "service": "ai-openrouter",
+<<<<<<< Updated upstream
           "status": "completed",
           "notes": "Created package.json for ai-openrouter following the ai-openai pattern.",
+=======
+          "files_to_modify": [],
+          "files_to_create": [
+            "packages/ai-openrouter/package.json"
+          ],
+          "patterns_from": [
+            "packages/ai-openai/package.json"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "cat packages/ai-openrouter/package.json | jq '.name'",
+            "expected": "\"@clippyjs/ai-openrouter\""
+          },
+          "status": "completed",
+          "notes": "Created package.json for ai-openrouter following the ai-openai pattern. Uses openai SDK as OpenRouter is OpenAI API compatible. Verification passed: package name is @clippyjs/ai-openrouter.",
+>>>>>>> Stashed changes
           "updated_at": "2025-12-28T09:52:35.414459+00:00"
         },
         {
           "id": "subtask-2-2",
           "description": "Create tsconfig.json for ai-openrouter package",
           "service": "ai-openrouter",
+<<<<<<< Updated upstream
           "status": "completed",
           "notes": "Created tsconfig.json for ai-openrouter package.",
+=======
+          "files_to_modify": [],
+          "files_to_create": [
+            "packages/ai-openrouter/tsconfig.json"
+          ],
+          "patterns_from": [
+            "packages/ai-openai/tsconfig.json"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "test -f packages/ai-openrouter/tsconfig.json && echo 'OK'",
+            "expected": "OK"
+          },
+          "status": "completed",
+          "notes": "Created tsconfig.json for ai-openrouter package following the exact pattern from ai-openai/tsconfig.json. File extends ../../tsconfig.react.json, references types and ai packages, and includes src/**/* while excluding node_modules and dist.",
+>>>>>>> Stashed changes
           "updated_at": "2025-12-28T09:53:25.321863+00:00"
         },
         {
           "id": "subtask-2-3",
           "description": "Create rollup.config.js for ai-openrouter build configuration",
           "service": "ai-openrouter",
+<<<<<<< Updated upstream
           "status": "completed",
           "notes": "Created rollup.config.js for ai-openrouter.",
+=======
+          "files_to_modify": [],
+          "files_to_create": [
+            "packages/ai-openrouter/rollup.config.js"
+          ],
+          "patterns_from": [
+            "packages/ai-openai/rollup.config.js"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "test -f packages/ai-openrouter/rollup.config.js && echo 'OK'",
+            "expected": "OK"
+          },
+          "status": "completed",
+          "notes": "Created rollup.config.js for ai-openrouter following ai-openai pattern. External dependencies: @clippyjs/ai and openai. Outputs CJS and ESM formats with sourcemaps.",
+>>>>>>> Stashed changes
           "updated_at": "2025-12-28T09:54:29.054641+00:00"
         },
         {
           "id": "subtask-2-4",
           "description": "Create vitest.config.ts for ai-openrouter test configuration",
           "service": "ai-openrouter",
+<<<<<<< Updated upstream
           "status": "completed",
           "notes": "Created vitest.config.ts for ai-openrouter.",
+=======
+          "files_to_modify": [],
+          "files_to_create": [
+            "packages/ai-openrouter/vitest.config.ts"
+          ],
+          "patterns_from": [
+            "packages/ai-openai/vitest.config.ts"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "test -f packages/ai-openrouter/vitest.config.ts && echo 'OK'",
+            "expected": "OK"
+          },
+          "status": "completed",
+          "notes": "Created vitest.config.ts for ai-openrouter following the exact pattern from ai-openai. File includes globals: true, node environment, and v8 coverage configuration.",
+>>>>>>> Stashed changes
           "updated_at": "2025-12-28T09:55:27.162900+00:00"
         }
       ]
     },
     {
+<<<<<<< Updated upstream
       "id": "phase-3-zai-provider",
       "name": "Z.AI Provider Implementation",
       "type": "implementation",
       "description": "Implement the ZAIProvider class with full streaming, tools, vision, and thinking mode support",
       "depends_on": [
         "phase-1-zai-package-setup"
+=======
+      "id": "phase-3-xai-provider",
+      "name": "XAI Provider Implementation",
+      "type": "implementation",
+      "description": "Implement the XAIProvider class with full streaming, tools, and vision support",
+      "depends_on": [
+        "phase-1-xai-package-setup"
+>>>>>>> Stashed changes
       ],
       "parallel_safe": true,
       "subtasks": [
         {
           "id": "subtask-3-1",
+<<<<<<< Updated upstream
           "description": "Create ZAIProvider.ts implementing AIProvider interface with Z.AI-specific configuration (baseURL: https://api.z.ai/api/paas/v4, default model: glm-4.6)",
           "service": "ai-zai",
           "files_to_modify": [],
           "files_to_create": [
             "packages/ai-zai/src/ZAIProvider.ts"
+=======
+          "description": "Create XAIProvider.ts implementing AIProvider interface with xAI-specific configuration (baseURL: https://api.x.ai/v1, default model: grok-4)",
+          "service": "ai-xai",
+          "files_to_modify": [],
+          "files_to_create": [
+            "packages/ai-xai/src/XAIProvider.ts"
+>>>>>>> Stashed changes
           ],
           "patterns_from": [
             "packages/ai-openai/src/OpenAIProvider.ts"
           ],
           "verification": {
             "type": "command",
+<<<<<<< Updated upstream
             "command": "grep -c 'extends AIProvider' packages/ai-zai/src/ZAIProvider.ts",
             "expected": "1"
           },
@@ -172,12 +337,29 @@
           "files_to_modify": [],
           "files_to_create": [
             "packages/ai-zai/src/index.ts"
+=======
+            "command": "grep -c 'extends AIProvider' packages/ai-xai/src/XAIProvider.ts",
+            "expected": "1"
+          },
+          "status": "completed",
+          "notes": "Created XAIProvider.ts implementing AIProvider interface with xAI-specific configuration (baseURL: https://api.x.ai/v1, default model: grok-4). Follows OpenAIProvider pattern since xAI uses OpenAI-compatible API. Supports streaming, tool use, and vision capabilities.",
+          "updated_at": "2025-12-28T09:58:13.797395+00:00"
+        },
+        {
+          "id": "subtask-3-2",
+          "description": "Create index.ts exporting XAIProvider",
+          "service": "ai-xai",
+          "files_to_modify": [],
+          "files_to_create": [
+            "packages/ai-xai/src/index.ts"
+>>>>>>> Stashed changes
           ],
           "patterns_from": [
             "packages/ai-openai/src/index.ts"
           ],
           "verification": {
             "type": "command",
+<<<<<<< Updated upstream
             "command": "grep -c 'ZAIProvider' packages/ai-zai/src/index.ts",
             "expected": "1"
           },
@@ -192,18 +374,43 @@
           "files_to_modify": [],
           "files_to_create": [
             "packages/ai-zai/src/__tests__/ZAIProvider.test.ts"
+=======
+            "command": "grep -c 'XAIProvider' packages/ai-xai/src/index.ts",
+            "expected": "1"
+          },
+          "status": "completed",
+          "notes": "Created index.ts with XAIProvider export following ai-openai pattern. Verification passed (grep count = 1).",
+          "updated_at": "2025-12-28T09:59:18.056728+00:00"
+        },
+        {
+          "id": "subtask-3-3",
+          "description": "Create XAIProvider.test.ts with comprehensive unit tests",
+          "service": "ai-xai",
+          "files_to_modify": [],
+          "files_to_create": [
+            "packages/ai-xai/src/__tests__/XAIProvider.test.ts"
+>>>>>>> Stashed changes
           ],
           "patterns_from": [
             "packages/ai-openai/src/__tests__/OpenAIProvider.test.ts"
           ],
           "verification": {
             "type": "command",
+<<<<<<< Updated upstream
             "command": "cd packages/ai-zai && yarn test 2>&1 | grep -c 'PASS\\|passed'",
             "expected": "1"
           },
           "status": "completed",
           "notes": "Created comprehensive ZAIProvider.test.ts with tests covering initialization, model management, thinking mode, feature support, message conversion, tool conversion, streaming, proxy mode, and cleanup. Tests require yarn install to update lockfile before running.",
           "updated_at": "2025-12-28T11:45:00.000000+00:00"
+=======
+            "command": "cd packages/ai-xai && yarn test 2>&1 | grep -c 'PASS\\|passed'",
+            "expected": "1"
+          },
+          "status": "completed",
+          "notes": "Created comprehensive XAIProvider.test.ts with 686 lines of tests covering initialization, model management, feature support, message conversion, tool conversion, streaming, chat options, and cleanup. Tests follow the exact pattern from OpenAIProvider.test.ts. Note: Tests cannot run until yarn install is executed to update lockfile with new workspace packages.",
+          "updated_at": "2025-12-28T10:04:34.433659+00:00"
+>>>>>>> Stashed changes
         }
       ]
     },
@@ -219,26 +426,79 @@
       "subtasks": [
         {
           "id": "subtask-4-1",
+<<<<<<< Updated upstream
           "description": "Create OpenRouterProvider.ts implementing AIProvider interface",
           "service": "ai-openrouter",
           "status": "completed",
           "notes": "Created OpenRouterProvider.ts implementing AIProvider interface with OpenRouter-specific configuration.",
+=======
+          "description": "Create OpenRouterProvider.ts implementing AIProvider interface with OpenRouter-specific configuration (baseURL: https://openrouter.ai/api/v1, model format: provider/model-name)",
+          "service": "ai-openrouter",
+          "files_to_modify": [],
+          "files_to_create": [
+            "packages/ai-openrouter/src/OpenRouterProvider.ts"
+          ],
+          "patterns_from": [
+            "packages/ai-openai/src/OpenAIProvider.ts"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "grep -c 'extends AIProvider' packages/ai-openrouter/src/OpenRouterProvider.ts",
+            "expected": "1"
+          },
+          "status": "completed",
+          "notes": "Created OpenRouterProvider.ts implementing AIProvider interface with OpenRouter-specific configuration:\n- baseURL: https://openrouter.ai/api/v1\n- Default model: openai/gpt-4o (provider/model-name format)\n- HTTP-Referer and X-Title header support\n- Dual-mode operation (direct SDK and proxy mode)\n- Streaming chat with tool use support\n- Vision detection for common vision-capable models\n- API key format validation warning\nCommitted as b237f9b",
+>>>>>>> Stashed changes
           "updated_at": "2025-12-28T10:08:25.945954+00:00"
         },
         {
           "id": "subtask-4-2",
           "description": "Create index.ts exporting OpenRouterProvider",
           "service": "ai-openrouter",
+<<<<<<< Updated upstream
           "status": "completed",
           "notes": "Created index.ts exporting OpenRouterProvider.",
+=======
+          "files_to_modify": [],
+          "files_to_create": [
+            "packages/ai-openrouter/src/index.ts"
+          ],
+          "patterns_from": [
+            "packages/ai-openai/src/index.ts"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "grep -c 'OpenRouterProvider' packages/ai-openrouter/src/index.ts",
+            "expected": "1"
+          },
+          "status": "completed",
+          "notes": "Created index.ts exporting OpenRouterProvider following the pattern from ai-openai package. Verification passed (1 match found).",
+>>>>>>> Stashed changes
           "updated_at": "2025-12-28T10:09:38.117884+00:00"
         },
         {
           "id": "subtask-4-3",
           "description": "Create OpenRouterProvider.test.ts with comprehensive unit tests",
           "service": "ai-openrouter",
+<<<<<<< Updated upstream
           "status": "completed",
           "notes": "Created comprehensive OpenRouterProvider.test.ts with 39 passing tests.",
+=======
+          "files_to_modify": [],
+          "files_to_create": [
+            "packages/ai-openrouter/src/__tests__/OpenRouterProvider.test.ts"
+          ],
+          "patterns_from": [
+            "packages/ai-openai/src/__tests__/OpenAIProvider.test.ts"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "cd packages/ai-openrouter && yarn test 2>&1 | grep -c 'PASS\\|passed'",
+            "expected": "1"
+          },
+          "status": "completed",
+          "notes": "Created comprehensive OpenRouterProvider.test.ts with 860 lines of tests following the OpenAIProvider.test.ts pattern. Tests cover initialization, model management, feature support, message conversion, tool conversion, streaming, proxy mode, and cleanup. Tests require yarn install to update lockfile before running.",
+>>>>>>> Stashed changes
           "updated_at": "2025-12-28T10:14:28.977418+00:00"
         }
       ]
@@ -249,7 +509,11 @@
       "type": "integration",
       "description": "Install dependencies, build both packages, and verify outputs",
       "depends_on": [
+<<<<<<< Updated upstream
         "phase-3-zai-provider",
+=======
+        "phase-3-xai-provider",
+>>>>>>> Stashed changes
         "phase-4-openrouter-provider"
       ],
       "parallel_safe": false,
@@ -258,6 +522,7 @@
           "id": "subtask-5-1",
           "description": "Install dependencies for both packages",
           "all_services": true,
+<<<<<<< Updated upstream
           "status": "pending",
           "notes": "Requires running 'yarn install' from the root to register the new ai-zai package in the workspace.",
           "updated_at": "2025-12-28T11:45:00.000000+00:00"
@@ -269,30 +534,100 @@
           "status": "pending",
           "notes": "After yarn install, run: cd packages/ai-zai && yarn build",
           "updated_at": "2025-12-28T11:45:00.000000+00:00"
+=======
+          "files_to_modify": [],
+          "files_to_create": [],
+          "patterns_from": [],
+          "verification": {
+            "type": "command",
+            "command": "cd packages/ai-xai && yarn install --check-files 2>&1 | tail -1 && cd ../ai-openrouter && yarn install --check-files 2>&1 | tail -1",
+            "expected": "success"
+          },
+          "status": "completed",
+          "notes": "Dependencies installed successfully. yarn.lock updated with new packages. Both @clippyjs/ai-xai and @clippyjs/ai-openrouter have their workspace dependencies (@clippyjs/ai, @clippyjs/types) and openai SDK properly installed.",
+          "updated_at": "2025-12-28T10:18:20.705063+00:00"
+        },
+        {
+          "id": "subtask-5-2",
+          "description": "Build ai-xai package and verify output files",
+          "service": "ai-xai",
+          "files_to_modify": [],
+          "files_to_create": [],
+          "patterns_from": [],
+          "verification": {
+            "type": "command",
+            "command": "cd packages/ai-xai && yarn build && test -f dist/index.js && test -f dist/index.esm.js && test -f dist/index.d.ts && echo 'OK'",
+            "expected": "OK"
+          },
+          "status": "completed",
+          "notes": "Build verification successful. All required output files generated: dist/index.js, dist/index.esm.js, dist/index.d.ts. Build completed in 949ms with only a minor warning about composite tsconfig setting in referenced project.",
+          "updated_at": "2025-12-28T10:20:00.575494+00:00"
+>>>>>>> Stashed changes
         },
         {
           "id": "subtask-5-3",
           "description": "Build ai-openrouter package and verify output files",
           "service": "ai-openrouter",
+<<<<<<< Updated upstream
           "status": "completed",
           "notes": "Build verification successful.",
+=======
+          "files_to_modify": [],
+          "files_to_create": [],
+          "patterns_from": [],
+          "verification": {
+            "type": "command",
+            "command": "cd packages/ai-openrouter && yarn build && test -f dist/index.js && test -f dist/index.esm.js && test -f dist/index.d.ts && echo 'OK'",
+            "expected": "OK"
+          },
+          "status": "completed",
+          "notes": "Build verification successful. All required output files are present in dist/: index.js, index.esm.js, index.d.ts, plus OpenRouterProvider.d.ts and source maps. Build command: npm run build (rollup -c) completed successfully.",
+>>>>>>> Stashed changes
           "updated_at": "2025-12-28T10:21:33.483306+00:00"
         },
         {
           "id": "subtask-5-4",
           "description": "Run TypeScript type checking for both packages",
           "all_services": true,
+<<<<<<< Updated upstream
           "status": "pending",
           "notes": "After yarn install, run: cd packages/ai-zai && yarn typecheck",
           "updated_at": "2025-12-28T11:45:00.000000+00:00"
+=======
+          "files_to_modify": [],
+          "files_to_create": [],
+          "patterns_from": [],
+          "verification": {
+            "type": "command",
+            "command": "cd packages/ai-xai && yarn typecheck && cd ../ai-openrouter && yarn typecheck && echo 'OK'",
+            "expected": "OK"
+          },
+          "status": "completed",
+          "notes": "TypeScript type checking passes for both ai-xai and ai-openrouter packages. Required adding composite, declaration, and declarationMap settings to packages/ai/tsconfig.json to enable proper project references.",
+          "updated_at": "2025-12-28T10:23:57.362649+00:00"
+>>>>>>> Stashed changes
         },
         {
           "id": "subtask-5-5",
           "description": "Run all unit tests for both packages",
           "all_services": true,
+<<<<<<< Updated upstream
           "status": "pending",
           "notes": "After yarn install, run: cd packages/ai-zai && yarn test",
           "updated_at": "2025-12-28T11:45:00.000000+00:00"
+=======
+          "files_to_modify": [],
+          "files_to_create": [],
+          "patterns_from": [],
+          "verification": {
+            "type": "command",
+            "command": "cd packages/ai-xai && yarn test && cd ../ai-openrouter && yarn test && echo 'OK'",
+            "expected": "OK"
+          },
+          "status": "completed",
+          "notes": "All unit tests passed successfully. ai-xai: 27 tests passed, ai-openrouter: 39 tests passed. Verification command returned OK.",
+          "updated_at": "2025-12-28T10:25:01.297212+00:00"
+>>>>>>> Stashed changes
         }
       ]
     }
@@ -301,7 +636,11 @@
     "total_phases": 5,
     "total_subtasks": 18,
     "services_involved": [
+<<<<<<< Updated upstream
       "ai-zai",
+=======
+      "ai-xai",
+>>>>>>> Stashed changes
       "ai-openrouter"
     ],
     "parallelism": {
@@ -309,14 +648,22 @@
       "parallel_groups": [
         {
           "phases": [
+<<<<<<< Updated upstream
             "phase-1-zai-package-setup",
+=======
+            "phase-1-xai-package-setup",
+>>>>>>> Stashed changes
             "phase-2-openrouter-package-setup"
           ],
           "reason": "No dependencies, different file sets (separate packages)"
         },
         {
           "phases": [
+<<<<<<< Updated upstream
             "phase-3-zai-provider",
+=======
+            "phase-3-xai-provider",
+>>>>>>> Stashed changes
             "phase-4-openrouter-provider"
           ],
           "reason": "Both depend on their respective setup phases, different packages"
@@ -324,7 +671,12 @@
       ],
       "recommended_workers": 2,
       "speedup_estimate": "1.5x faster than sequential"
+<<<<<<< Updated upstream
     }
+=======
+    },
+    "startup_command": "source auto-claude/.venv/bin/activate && python auto-claude/run.py --spec 001 --parallel 2"
+>>>>>>> Stashed changes
   },
   "verification_strategy": {
     "risk_level": "medium",
@@ -345,8 +697,13 @@
     ],
     "verification_steps": [
       {
+<<<<<<< Updated upstream
         "name": "Z.AI Unit Tests",
         "command": "cd packages/ai-zai && yarn test",
+=======
+        "name": "XAI Unit Tests",
+        "command": "cd packages/ai-xai && yarn test",
+>>>>>>> Stashed changes
         "expected_outcome": "All tests pass",
         "type": "test",
         "required": true,
@@ -361,8 +718,13 @@
         "blocking": true
       },
       {
+<<<<<<< Updated upstream
         "name": "Z.AI TypeScript Check",
         "command": "cd packages/ai-zai && yarn typecheck",
+=======
+        "name": "XAI TypeScript Check",
+        "command": "cd packages/ai-xai && yarn typecheck",
+>>>>>>> Stashed changes
         "expected_outcome": "No TypeScript errors",
         "type": "lint",
         "required": true,
@@ -377,8 +739,13 @@
         "blocking": true
       },
       {
+<<<<<<< Updated upstream
         "name": "Z.AI Build",
         "command": "cd packages/ai-zai && yarn build",
+=======
+        "name": "XAI Build",
+        "command": "cd packages/ai-xai && yarn build",
+>>>>>>> Stashed changes
         "expected_outcome": "Build completes, dist/ contains index.js, index.esm.js, index.d.ts",
         "type": "build",
         "required": true,
@@ -399,7 +766,11 @@
     "unit_tests": {
       "required": true,
       "commands": [
+<<<<<<< Updated upstream
         "cd packages/ai-zai && yarn test",
+=======
+        "cd packages/ai-xai && yarn test",
+>>>>>>> Stashed changes
         "cd packages/ai-openrouter && yarn test"
       ],
       "minimum_coverage": null
@@ -407,11 +778,19 @@
     "integration_tests": {
       "required": true,
       "commands": [
+<<<<<<< Updated upstream
         "cd packages/ai-zai && yarn build",
         "cd packages/ai-openrouter && yarn build"
       ],
       "services_to_test": [
         "ai-zai",
+=======
+        "cd packages/ai-xai && yarn build",
+        "cd packages/ai-openrouter && yarn build"
+      ],
+      "services_to_test": [
+        "ai-xai",
+>>>>>>> Stashed changes
         "ai-openrouter"
       ]
     },
@@ -430,6 +809,7 @@
     }
   },
   "qa_signoff": {
+<<<<<<< Updated upstream
     "status": "fixes_applied",
     "timestamp": "2025-12-28T11:48:00.000000+00:00",
     "fix_session": 1,
@@ -471,3 +851,24 @@
     }
   }
 }
+=======
+    "status": "approved",
+    "timestamp": "2025-12-28T12:27:00.000000+00:00",
+    "qa_session": 1,
+    "report_file": "qa_report.md",
+    "tests_passed": {
+      "unit": "66/66",
+      "integration": "builds pass",
+      "regression": "40/40"
+    },
+    "verified_by": "qa_agent"
+  },
+  "last_updated": "2025-12-28T12:27:00.000000+00:00",
+  "status": "backlog",
+  "planStatus": "pending",
+  "updated_at": "2025-12-28T11:34:03.765Z",
+  "recoveryNote": "Task recovered from stuck state at 2025-12-28T11:32:49.038Z",
+  "stagedAt": "2025-12-28T11:32:16.417Z",
+  "stagedInMainProject": true
+}
+>>>>>>> Stashed changes

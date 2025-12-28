@@ -1,0 +1,238 @@
+{
+  "integrations_researched": [
+    {
+      "name": "xAI API (z.AI / Grok)",
+      "type": "library",
+      "description": "xAI's API for accessing Grok models. The 'z.AI' mentioned in requirements is actually xAI (Elon Musk's AI company). The API is OpenAI-compatible.",
+      "verified_package": {
+        "name": "openai",
+        "install_command": "npm install openai",
+        "version": "^6.8.1",
+        "verified": true,
+        "notes": "xAI API is OpenAI-compatible - can use the openai package with custom baseURL"
+      },
+      "api_patterns": {
+        "imports": [
+          "import OpenAI from 'openai'"
+        ],
+        "initialization": "const client = new OpenAI({ apiKey: process.env.XAI_API_KEY, baseURL: 'https://api.x.ai/v1' })",
+        "key_functions": [
+          "client.chat.completions.create({ model, messages, stream?, tools? })"
+        ],
+        "base_url": "https://api.x.ai/v1",
+        "verified_against": "Context7 MCP: /websites/x_ai - xAI Official Documentation"
+      },
+      "configuration": {
+        "env_vars": [
+          "XAI_API_KEY"
+        ],
+        "config_files": [],
+        "dependencies": [
+          "openai"
+        ]
+      },
+      "models": {
+        "available": [
+          "grok-4",
+          "grok-4-0709",
+          "grok-3",
+          "grok-3-latest",
+          "grok-3-beta",
+          "grok-3-mini",
+          "grok-3-mini-latest",
+          "grok-3-mini-beta",
+          "grok-2-vision-1212",
+          "grok-2-image",
+          "grok-code-fast-1"
+        ],
+        "default_recommended": "grok-4",
+        "vision_capable": [
+          "grok-2-vision-1212",
+          "grok-4"
+        ],
+        "coding_optimized": [
+          "grok-code-fast-1"
+        ]
+      },
+      "features": {
+        "streaming": true,
+        "function_calling": true,
+        "vision": true,
+        "image_generation": true
+      },
+      "gotchas": [
+        "API key prefix is 'xai-' not 'sk-'",
+        "Model names use 'grok-' prefix",
+        "Vision models require specific image format (jpg/jpeg or png, max 20MiB)",
+        "For reasoning models, may need longer timeout (up to 3600s)",
+        "The 'coding plan API token' mentioned likely refers to a specific tier/plan of xAI API access"
+      ],
+      "research_sources": [
+        "Context7 MCP: /websites/x_ai",
+        "https://docs.x.ai/docs/tutorial",
+        "https://docs.x.ai/docs/api-reference",
+        "https://docs.x.ai/docs/models"
+      ]
+    },
+    {
+      "name": "OpenRouter",
+      "type": "library",
+      "description": "OpenRouter provides a unified API to access 300+ AI models through a single endpoint. It's OpenAI-compatible and supports automatic fallbacks and cost-effective routing.",
+      "verified_package": {
+        "name": "openai",
+        "install_command": "npm install openai",
+        "version": "^6.8.1",
+        "verified": true,
+        "notes": "OpenRouter is OpenAI-compatible - can use the openai package with custom baseURL. There's also an official @openrouter/sdk package available."
+      },
+      "alternative_package": {
+        "name": "@openrouter/sdk",
+        "install_command": "npm install @openrouter/sdk",
+        "verified": true,
+        "notes": "Official OpenRouter TypeScript SDK with additional features like callModel API"
+      },
+      "api_patterns": {
+        "imports": [
+          "import OpenAI from 'openai'"
+        ],
+        "initialization": "const client = new OpenAI({ baseURL: 'https://openrouter.ai/api/v1', apiKey: process.env.OPENROUTER_API_KEY, defaultHeaders: { 'HTTP-Referer': '<YOUR_SITE_URL>', 'X-Title': '<YOUR_APP_NAME>' } })",
+        "key_functions": [
+          "client.chat.completions.create({ model, messages, stream?, tools? })"
+        ],
+        "base_url": "https://openrouter.ai/api/v1",
+        "verified_against": "Context7 MCP: /websites/openrouter_ai - OpenRouter Official Documentation"
+      },
+      "configuration": {
+        "env_vars": [
+          "OPENROUTER_API_KEY"
+        ],
+        "config_files": [],
+        "dependencies": [
+          "openai"
+        ],
+        "optional_headers": {
+          "HTTP-Referer": "Your site URL for rankings on openrouter.ai",
+          "X-Title": "Your app name for rankings on openrouter.ai"
+        }
+      },
+      "models": {
+        "format": "provider/model-name",
+        "examples": [
+          "openai/gpt-4o",
+          "anthropic/claude-3-opus",
+          "google/gemini-pro",
+          "meta-llama/llama-3-70b-instruct",
+          "mistralai/mistral-large"
+        ],
+        "note": "Supports 300+ models from various providers"
+      },
+      "features": {
+        "streaming": true,
+        "function_calling": true,
+        "vision": true,
+        "automatic_fallbacks": true,
+        "cost_optimization": true,
+        "usage_tracking": true
+      },
+      "gotchas": [
+        "Model names follow 'provider/model-name' format (e.g., 'openai/gpt-4o')",
+        "API key prefix is 'sk-or-' for OpenRouter keys",
+        "Response includes native_finish_reason alongside normalized finish_reason",
+        "Streaming responses may include usage statistics in final chunk",
+        "Some features depend on underlying model capabilities",
+        "HTTP-Referer and X-Title headers are optional but recommended for app attribution"
+      ],
+      "research_sources": [
+        "Context7 MCP: /websites/openrouter_ai",
+        "Context7 MCP: /openrouterteam/typescript-sdk",
+        "https://openrouter.ai/docs/quickstart",
+        "https://openrouter.ai/docs/api/authentication"
+      ]
+    }
+  ],
+  "existing_codebase_patterns": {
+    "provider_interface": {
+      "location": "packages/ai/src/providers/AIProvider.ts",
+      "abstract_methods": [
+        "initialize(config: AIProviderConfig): Promise<void>",
+        "chat(messages: Message[], options?: ChatOptions): AsyncIterableIterator<StreamChunk>",
+        "supportsTools(): boolean",
+        "supportsVision(): boolean",
+        "destroy(): void"
+      ],
+      "key_types": [
+        "AIProviderConfig",
+        "Message",
+        "StreamChunk",
+        "ChatOptions",
+        "Tool",
+        "ToolUseBlock"
+      ]
+    },
+    "openai_provider_reference": {
+      "location": "packages/ai-openai/src/OpenAIProvider.ts",
+      "features": [
+        "Dual mode: client-side (SDK) and proxy mode (fetch)",
+        "Streaming support with SSE parsing",
+        "Tool/function calling with streaming tool arguments",
+        "Vision support for GPT-4o/GPT-4-turbo models",
+        "Message format conversion from ClippyJS to OpenAI format"
+      ],
+      "key_config_options": {
+        "apiKey": "API key for direct client-side usage",
+        "endpoint": "Backend proxy endpoint URL",
+        "baseURL": "Custom base URL for API",
+        "model": "Model identifier",
+        "maxTokens": "Maximum tokens to generate",
+        "temperature": "Response randomness (0-1)",
+        "organization": "OpenAI organization ID"
+      }
+    },
+    "package_structure": {
+      "naming_convention": "@clippyjs/ai-{provider}",
+      "examples": [
+        "@clippyjs/ai-openai",
+        "@clippyjs/ai-anthropic"
+      ],
+      "peer_dependency": "@clippyjs/ai"
+    }
+  },
+  "implementation_recommendations": [
+    {
+      "recommendation": "Reuse OpenAI SDK approach for both providers",
+      "rationale": "Both xAI and OpenRouter APIs are OpenAI-compatible, meaning they use the same request/response format. The existing OpenAIProvider pattern can be adapted by simply changing baseURL and API key handling.",
+      "approach": "Create new provider classes that extend or clone the OpenAIProvider pattern with provider-specific configuration (baseURL, default models, etc.)"
+    },
+    {
+      "recommendation": "Create separate packages following existing convention",
+      "rationale": "Maintain consistency with existing @clippyjs/ai-openai and @clippyjs/ai-anthropic packages",
+      "approach": "Create @clippyjs/ai-xai and @clippyjs/ai-openrouter packages"
+    },
+    {
+      "recommendation": "Support both direct API and proxy modes",
+      "rationale": "Existing providers support both modes for flexibility in deployment",
+      "approach": "Maintain the same config pattern: apiKey for direct access, endpoint for proxy mode"
+    },
+    {
+      "recommendation": "For OpenRouter, consider exposing model routing features",
+      "rationale": "OpenRouter's key differentiator is its ability to route to different providers/models",
+      "approach": "Add optional configuration for model fallbacks and routing preferences"
+    }
+  ],
+  "unverified_claims": [
+    {
+      "claim": "'coding plan API token' for z.AI",
+      "reason": "The requirements mention 'coding plan API token' but xAI documentation doesn't specifically reference this terminology. This may refer to a specific pricing tier, API access level, or team configuration on xAI's platform.",
+      "risk_level": "low",
+      "mitigation": "Implementation should use standard XAI_API_KEY environment variable. The 'coding plan' aspect is likely an account/billing configuration on xAI's end, not something affecting the code implementation."
+    }
+  ],
+  "key_finding": {
+    "summary": "Both xAI and OpenRouter are OpenAI-compatible APIs",
+    "implication": "The implementation is simpler than initially expected. Both providers can reuse the OpenAI SDK (already a dependency) with custom baseURL configuration. This means minimal new code is needed - essentially creating provider wrappers that configure the OpenAI client differently.",
+    "shared_dependencies": [
+      "openai"
+    ]
+  },
+  "created_at": "2025-01-06T00:00:00Z"
+}

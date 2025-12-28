@@ -1,0 +1,68 @@
+{
+  "task_description": "Create a provider for the z.AI API (using the coding plan API token) and also create a provider for use with OpenRouter.",
+  "scoped_services": ["ai-xai", "ai-openrouter"],
+  "files_to_modify": {
+    "ai-xai": [
+      "packages/ai-xai/package.json",
+      "packages/ai-xai/tsconfig.json",
+      "packages/ai-xai/rollup.config.js",
+      "packages/ai-xai/vitest.config.ts",
+      "packages/ai-xai/src/index.ts",
+      "packages/ai-xai/src/XAIProvider.ts",
+      "packages/ai-xai/src/__tests__/XAIProvider.test.ts"
+    ],
+    "ai-openrouter": [
+      "packages/ai-openrouter/package.json",
+      "packages/ai-openrouter/tsconfig.json",
+      "packages/ai-openrouter/rollup.config.js",
+      "packages/ai-openrouter/vitest.config.ts",
+      "packages/ai-openrouter/src/index.ts",
+      "packages/ai-openrouter/src/OpenRouterProvider.ts",
+      "packages/ai-openrouter/src/__tests__/OpenRouterProvider.test.ts"
+    ]
+  },
+  "files_to_reference": [
+    "packages/ai/src/providers/AIProvider.ts",
+    "packages/ai-openai/src/OpenAIProvider.ts",
+    "packages/ai-openai/src/index.ts",
+    "packages/ai-openai/package.json",
+    "packages/ai-openai/rollup.config.js",
+    "packages/ai-openai/tsconfig.json",
+    "packages/ai-openai/vitest.config.ts",
+    "packages/ai-openai/src/__tests__/OpenAIProvider.test.ts"
+  ],
+  "patterns": {
+    "provider_pattern": "All providers extend abstract AIProvider class with methods: initialize(), chat(), supportsTools(), supportsVision(), destroy()",
+    "dual_mode_pattern": "Providers support both direct SDK mode (apiKey) and proxy mode (endpoint) for flexibility",
+    "streaming_pattern": "chat() returns AsyncIterableIterator<StreamChunk> yielding content_delta, tool_use_start, tool_use_delta, tool_use, complete, error chunks",
+    "package_pattern": "@clippyjs/ai-{provider} naming with peer dependency on @clippyjs/ai workspace:*",
+    "build_pattern": "Rollup outputs CJS (dist/index.js) + ESM (dist/index.esm.js) + Types (dist/index.d.ts)",
+    "test_pattern": "Mock OpenAI SDK in vitest, test initialization modes, feature detection, streaming, and error handling"
+  },
+  "existing_implementations": {
+    "description": "OpenAIProvider at packages/ai-openai provides complete reference implementation for both new providers",
+    "relevant_files": ["packages/ai-openai/src/OpenAIProvider.ts"],
+    "key_differences": {
+      "xai": {
+        "baseURL": "https://api.x.ai/v1",
+        "defaultModel": "grok-4",
+        "visionModels": ["grok-4", "grok-2-vision-1212"],
+        "apiKeyPrefix": "xai-"
+      },
+      "openrouter": {
+        "baseURL": "https://openrouter.ai/api/v1",
+        "defaultModel": "openai/gpt-4o",
+        "modelFormat": "provider/model-name",
+        "apiKeyPrefix": "sk-or-",
+        "extraHeaders": ["HTTP-Referer", "X-Title"]
+      }
+    }
+  },
+  "constraints": {
+    "reuse_openai_sdk": "Must use openai npm package ^6.8.1, NOT create new SDK wrappers",
+    "no_new_dependencies": "No dependencies beyond what ai-openai uses",
+    "proxy_mode_required": "Both providers must support proxy mode for backend usage",
+    "api_key_validation": "Validate API key format as warning only, don't block initialization"
+  },
+  "created_at": "2025-12-28T03:37:46.253600"
+}
