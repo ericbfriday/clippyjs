@@ -1575,6 +1575,52 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@clippyjs/ai-openrouter@workspace:packages/ai-openrouter":
+  version: 0.0.0-use.local
+  resolution: "@clippyjs/ai-openrouter@workspace:packages/ai-openrouter"
+  dependencies:
+    "@clippyjs/ai": "workspace:*"
+    "@clippyjs/types": "workspace:*"
+    "@rollup/plugin-commonjs": "npm:^28.0.1"
+    "@rollup/plugin-node-resolve": "npm:^15.3.0"
+    "@rollup/plugin-replace": "npm:^6.0.2"
+    "@rollup/plugin-terser": "npm:^0.4.4"
+    "@rollup/plugin-typescript": "npm:^12.1.1"
+    "@types/node": "npm:^22.10.2"
+    "@vitest/coverage-v8": "npm:^3.0.5"
+    openai: "npm:^6.8.1"
+    rollup: "npm:^4.31.0"
+    tslib: "npm:^2.8.1"
+    typescript: "npm:^5.7.3"
+    vitest: "npm:^3.0.5"
+  peerDependencies:
+    "@clippyjs/ai": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@clippyjs/ai-xai@workspace:packages/ai-xai":
+  version: 0.0.0-use.local
+  resolution: "@clippyjs/ai-xai@workspace:packages/ai-xai"
+  dependencies:
+    "@clippyjs/ai": "workspace:*"
+    "@clippyjs/types": "workspace:*"
+    "@rollup/plugin-commonjs": "npm:^28.0.1"
+    "@rollup/plugin-node-resolve": "npm:^15.3.0"
+    "@rollup/plugin-replace": "npm:^6.0.2"
+    "@rollup/plugin-terser": "npm:^0.4.4"
+    "@rollup/plugin-typescript": "npm:^12.1.1"
+    "@types/node": "npm:^22.10.2"
+    "@vitest/coverage-v8": "npm:^3.0.5"
+    openai: "npm:^6.8.1"
+    rollup: "npm:^4.31.0"
+    tslib: "npm:^2.8.1"
+    typescript: "npm:^5.7.3"
+    vitest: "npm:^3.0.5"
+  peerDependencies:
+    "@clippyjs/ai": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@clippyjs/ai@workspace:*, @clippyjs/ai@workspace:^, @clippyjs/ai@workspace:packages/ai":
   version: 0.0.0-use.local
   resolution: "@clippyjs/ai@workspace:packages/ai"
