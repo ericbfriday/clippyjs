@@ -35,3 +35,6 @@ node_modules
 !.opencode/agent/
 !.opencode/command/
 *.tsbuildinfo
+
+# Auto Claude data directory
+.auto-claude/

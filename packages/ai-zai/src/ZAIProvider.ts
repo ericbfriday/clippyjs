@@ -17,38 +17,52 @@ import {
 } from '@clippyjs/ai';
 
 /**
- * xAI Provider
+ * Z.AI Provider Configuration
  *
- * Implements the AIProvider interface for xAI's Chat Completion API.
- * Supports Grok models with streaming, tools, and vision.
- *
- * xAI uses an OpenAI-compatible API, so this provider leverages the OpenAI SDK
- * with a custom baseURL pointing to xAI's API endpoint.
+ * Extends the base config with Z.AI-specific options
  */
-export class XAIProvider extends AIProvider {
+export interface ZAIProviderConfig extends AIProviderConfig {
+  /** Enable deep thinking mode for more detailed reasoning */
+  thinkingEnabled?: boolean;
+}
+
+/**
+ * Z.AI Provider
+ *
+ * Implements the AIProvider interface for Z.AI's Chat Completion API.
+ * Supports GLM-4 models with streaming, tools, vision, and deep thinking.
+ *
+ * Z.AI uses an OpenAI-compatible API, so this provider leverages the OpenAI SDK
+ * with a custom baseURL pointing to Z.AI's API endpoint.
+ *
+ * API Docs: https://docs.z.ai/guides/develop/http/introduction
+ */
+export class ZAIProvider extends AIProvider {
   private client: OpenAI | null = null;
-  private config: AIProviderConfig | null = null;
+  private config: ZAIProviderConfig | null = null;
   private isProxyMode = false;
-  private currentModel = 'grok-4';
+  private currentModel = 'glm-4.6';
+  private thinkingEnabled = false;
 
-  /** xAI API base URL */
-  private static readonly XAI_BASE_URL = 'https://api.x.ai/v1';
+  /** Z.AI API base URL */
+  private static readonly ZAI_BASE_URL = 'https://api.z.ai/api/paas/v4';
 
-  async initialize(config: AIProviderConfig): Promise<void> {
+  async initialize(config: ZAIProviderConfig): Promise<void> {
     this.config = config;
-    this.currentModel = config.model || 'grok-4';
+    this.currentModel = config.model || 'glm-4.6';
+    this.thinkingEnabled = config.thinkingEnabled ?? false;
 
     // Support both client-side and proxy mode
     if (config.endpoint) {
       // Proxy mode - use fetch for streaming
       this.isProxyMode = true;
     } else if (config.apiKey) {
-      // Client-side mode - use SDK with xAI base URL
+      // Client-side mode - use SDK with Z.AI base URL
       this.isProxyMode = false;
       this.client = new OpenAI({
         apiKey: config.apiKey,
         dangerouslyAllowBrowser: true,
-        baseURL: config.baseURL || XAIProvider.XAI_BASE_URL,
+        baseURL: config.baseURL || ZAIProvider.ZAI_BASE_URL,
       });
     } else {
       throw new Error('Either endpoint or apiKey must be provided');
@@ -67,14 +81,14 @@ export class XAIProvider extends AIProvider {
   }
 
   /**
-   * Direct xAI API streaming using SDK
+   * Direct Z.AI API streaming using SDK
    */
   private async *chatDirect(
     messages: Message[],
     options?: ChatOptions
   ): AsyncIterableIterator<StreamChunk> {
     if (!this.client) {
-      throw new Error('xAI client not initialized');
+      throw new Error('Z.AI client not initialized');
     }
 
     try {
@@ -84,24 +98,40 @@ export class XAIProvider extends AIProvider {
       // Convert tools to OpenAI format
       const tools = options?.tools ? this.convertTools(options.tools) : undefined;
 
-      // Create streaming completion
-      const stream = await this.client.chat.completions.create({
+      // Build request body with Z.AI-specific options
+      const requestBody: any = {
         model: this.currentModel,
         messages: openaiMessages,
         tools,
         max_tokens: options?.maxTokens || this.config?.maxTokens,
         temperature: options?.temperature ?? this.config?.temperature ?? 1,
         stream: true,
-      });
+      };
+
+      // Add thinking mode if enabled
+      if (this.thinkingEnabled) {
+        requestBody.thinking = { type: 'enabled' };
+      }
+
+      // Create streaming completion
+      const stream = await this.client.chat.completions.create(requestBody);
 
       // Track tool use state
       let currentToolUse: Partial<ToolUseBlock> | null = null;
 
       // Process stream
       for await (const chunk of stream) {
-        const delta = chunk.choices[0]?.delta;
+        const delta = chunk.choices[0]?.delta as any;
 
         if (!delta) continue;
+
+        // Handle reasoning content (Z.AI deep thinking)
+        if (delta.reasoning_content) {
+          yield {
+            type: 'content_delta',
+            delta: delta.reasoning_content,
+          };
+        }
 
         // Handle content deltas
         if (delta.content) {
@@ -201,20 +231,28 @@ export class XAIProvider extends AIProvider {
       // Convert tools
       const tools = options?.tools ? this.convertTools(options.tools) : undefined;
 
+      // Build request body with Z.AI-specific options
+      const requestBody: any = {
+        model: this.currentModel,
+        messages: openaiMessages,
+        tools,
+        max_tokens: options?.maxTokens || this.config?.maxTokens,
+        temperature: options?.temperature ?? this.config?.temperature ?? 1,
+        stream: true,
+      };
+
+      // Add thinking mode if enabled
+      if (this.thinkingEnabled) {
+        requestBody.thinking = { type: 'enabled' };
+      }
+
       // Make proxy request
       const response = await fetch(this.config.endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          model: this.currentModel,
-          messages: openaiMessages,
-          tools,
-          max_tokens: options?.maxTokens || this.config?.maxTokens,
-          temperature: options?.temperature ?? this.config?.temperature ?? 1,
-          stream: true,
-        }),
+        body: JSON.stringify(requestBody),
       });
 
       if (!response.ok) {
@@ -270,9 +308,17 @@ export class XAIProvider extends AIProvider {
 
             try {
               const chunk: ChatCompletionChunk = JSON.parse(data);
-              const delta = chunk.choices[0]?.delta;
+              const delta = chunk.choices[0]?.delta as any;
 
               if (!delta) continue;
+
+              // Handle reasoning content (Z.AI deep thinking)
+              if (delta.reasoning_content) {
+                yield {
+                  type: 'content_delta',
+                  delta: delta.reasoning_content,
+                };
+              }
 
               // Handle content
               if (delta.content) {
@@ -431,7 +477,7 @@ export class XAIProvider extends AIProvider {
    * Check if provider supports tool/function calling
    */
   supportsTools(): boolean {
-    // Grok models support function calling
+    // GLM-4 models support function calling
     return true;
   }
 
@@ -439,10 +485,10 @@ export class XAIProvider extends AIProvider {
    * Check if provider supports vision (image input)
    */
   supportsVision(): boolean {
-    // Grok-4 and vision-capable models support image input
-    return this.currentModel.includes('grok-4') ||
-           this.currentModel.includes('grok-vision') ||
-           this.currentModel.includes('grok-2-vision');
+    // GLM-4.5v and vision-capable models support image input
+    return this.currentModel.includes('glm-4.5v') ||
+           this.currentModel.includes('glm-4v') ||
+           this.currentModel.includes('vision');
   }
 
   /**
@@ -465,5 +511,19 @@ export class XAIProvider extends AIProvider {
    */
   setModel(model: string): void {
     this.currentModel = model;
+  }
+
+  /**
+   * Enable or disable thinking mode
+   */
+  setThinkingMode(enabled: boolean): void {
+    this.thinkingEnabled = enabled;
+  }
+
+  /**
+   * Check if thinking mode is enabled
+   */
+  isThinkingMode(): boolean {
+    return this.thinkingEnabled;
   }
 }

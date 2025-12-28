@@ -1,0 +1,46 @@
+{
+  "name": "@clippyjs/ai-zai",
+  "version": "0.1.0",
+  "description": "Z.AI provider for ClippyJS - GLM-4 models",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "clippyjs",
+    "ai",
+    "zai",
+    "z.ai",
+    "glm",
+    "glm-4",
+    "chatbot",
+    "provider"
+  ],
+  "author": "ClippyJS Team",
+  "license": "MIT",
+  "peerDependencies": {
+    "@clippyjs/ai": "workspace:*"
+  },
+  "dependencies": {
+    "openai": "^6.8.1"
+  },
+  "devDependencies": {
+    "@clippyjs/ai": "workspace:*",
+    "@clippyjs/types": "workspace:*",
+    "@rollup/plugin-commonjs": "^28.0.0",
+    "@rollup/plugin-node-resolve": "^16.0.0",
+    "@rollup/plugin-replace": "^6.0.0",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^12.1.0",
+    "rollup": "^4.22.0",
+    "typescript": "^5.6.2",
+    "vitest": "^3.0.0"
+  }
+}

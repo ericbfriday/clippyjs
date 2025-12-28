@@ -19,24 +19,18 @@ export default {
       sourcemap: true,
     },
   ],
-  external: [
-    '@clippyjs/ai',
-    'openai',
-  ],
+  external: ['@clippyjs/ai', 'openai'],
   plugins: [
-    replace({
-      'process.env.NODE_ENV': JSON.stringify('production'),
-      preventAssignment: true,
-    }),
-    resolve({
-      extensions: ['.ts', '.js'],
-    }),
+    resolve(),
     commonjs(),
     typescript({
       tsconfig: './tsconfig.json',
       declaration: true,
       declarationDir: './dist',
-      rootDir: './src',
+    }),
+    replace({
+      preventAssignment: true,
+      'process.env.NODE_ENV': JSON.stringify('production'),
     }),
     terser(),
   ],
