@@ -448,6 +448,29 @@ git push origin feature/my-feature
 
 ---
 
+## 🚀 Product Requirements & Technical Specs
+
+### Browser-Based AI Assistant (Future)
+
+Comprehensive PRD and technical documentation for the next evolution of ClippyJS:
+
+| Document | Description |
+|----------|-------------|
+| **[PRD Overview](./prd/PRD_BROWSER_AI_ASSISTANT.md)** | Product Requirements Document for universal browser assistant |
+| **[Technical Architecture](./prd/TECHNICAL_ARCHITECTURE.md)** | Detailed technical design and component architecture |
+| **[API Specification](./prd/API_SPECIFICATION.md)** | JavaScript SDK and REST API specifications |
+| **[UX Design](./prd/UX_DESIGN.md)** | User experience and visual design specifications |
+| **[PRD Index](./prd/README.md)** | Overview of all PRD documents |
+
+Key features planned:
+- Universal embedding (any webpage via CDN)
+- Enhanced page parsing and semantic understanding
+- Shadow DOM isolation for style safety
+- Page interaction capabilities
+- Browser extension support
+
+---
+
 ## 🗂️ Archived Documentation
 
 Historical documentation preserved in `docs/archive/`:

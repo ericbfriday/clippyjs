@@ -241,6 +241,54 @@ The library supports AI-powered agents through provider packages:
 - Provider switching with conversation preservation
 - Model selection and configuration persistence
 
+## Ralph Loop Development
+
+### Self-Referential Development Infrastructure
+
+The project includes Ralph loop infrastructure for iterative AI-driven development of the Browser-Based AI Assistant feature.
+
+#### Quick Start
+```bash
+# Start the Ralph loop
+./ralph start
+
+# With options
+./ralph start -m 50              # Max 50 iterations
+./ralph start -v                 # Verbose mode
+
+# Spawn specialized agents
+./ralph spawn architect -t "Design module"
+./ralph spawn implementer -t "Create class"
+./ralph spawn tester -t "Write tests"
+
+# Check status
+./ralph status
+./ralph validate
+```
+
+#### Available Commands
+| Command | Description |
+|---------|-------------|
+| `./ralph start` | Start loop with Claude CLI |
+| `./ralph start-opencode` | Start loop with OpenCode CLI |
+| `./ralph validate` | Validate infrastructure |
+| `./ralph status` | Show current progress |
+| `./ralph cancel` | Cancel active loop |
+| `./ralph spawn <agent>` | Spawn sub-agent |
+
+#### Sub-Agents
+- **architect**: Design system architecture
+- **implementer**: Write implementation code
+- **tester**: Write and run tests
+- **reviewer**: Review code quality
+- **documenter**: Generate documentation
+- **researcher**: Research best practices
+- **integrator**: Integrate components
+
+#### Documentation
+- **[.ralph/README.md](./.ralph/README.md)** - Ralph loop documentation
+- **[docs/prd/](./docs/prd/)** - PRD and technical specifications
+
 ## Nx Migration Benefits
 
 ### What Changed (2025-11-11)

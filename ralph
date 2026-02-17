@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+RALPH_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.ralph" && pwd)"
+
+show_help() {
+    cat << 'EOF'
+ClippyJS Ralph Loop - Browser AI Assistant Development
+
+Usage: ./ralph <command> [options]
+
+Commands:
+  start          Start the Ralph loop (Claude CLI)
+  start-opencode Start the Ralph loop (OpenCode CLI)
+  validate       Validate Ralph loop infrastructure
+  status         Show current progress and state
+  cancel         Cancel an active loop
+  spawn          Spawn a sub-agent
+
+Agent Types (for spawn command):
+  architect      Design system architecture
+  implementer    Write implementation code
+  tester         Write and run tests
+  reviewer       Review code quality
+  documenter     Generate documentation
+  researcher     Research best practices
+  integrator     Integrate components
+
+Options:
+  -h, --help     Show this help message
+
+Examples:
+  ./ralph start                           # Start loop with Claude
+  ./ralph start -m 50                     # Max 50 iterations
+  ./ralph spawn implementer -t "Create parser"
+  ./ralph status
+  ./ralph validate
+EOF
+    exit 0
+}
+
+case "${1:-}" in
+    start)
+        shift
+        "$RALPH_DIR/scripts/ralph-loop.sh" "$@"
+        ;;
+    start-opencode)
+        shift
+        "$RALPH_DIR/scripts/ralph-loop-opencode.sh" "$@"
+        ;;
+    validate)
+        shift
+        "$RALPH_DIR/scripts/validate.sh" "$@"
+        ;;
+    status)
+        echo "Ralph Loop Status"
+        echo "================="
+        echo ""
+        if [[ -f "$RALPH_DIR/state/.loop-state" ]]; then
+            echo "State: Active (resumable)"
+            cat "$RALPH_DIR/state/.loop-state"
+        else
+            echo "State: Not started"
+        fi
+        echo ""
+        echo "Progress:"
+        cat "$RALPH_DIR/state/progress.md"
+        ;;
+    cancel)
+        if [[ -f "$RALPH_DIR/state/.loop-state" ]]; then
+            rm "$RALPH_DIR/state/.loop-state"
+            echo "Cancelled active Ralph loop"
+        else
+            echo "No active loop to cancel"
+        fi
+        ;;
+    spawn)
+        shift
+        "$RALPH_DIR/scripts/spawn-agent.sh" "$@"
+        ;;
+    -h|--help|help)
+        show_help
+        ;;
+    *)
+        echo "Unknown command: ${1:-}"
+        echo "Run './ralph --help' for usage"
+        exit 1
+        ;;
+esac
