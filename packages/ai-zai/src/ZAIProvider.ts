@@ -1,20 +1,20 @@
-import OpenAI from 'openai';
-import type {
-  ChatCompletionChunk,
-  ChatCompletionMessageParam,
-  ChatCompletionContentPart,
-  ChatCompletionTool,
-} from 'openai/resources/chat/completions';
+/** biome-ignore-all lint/suspicious/noExplicitAny: <explanation> */
 import {
   AIProvider,
   type AIProviderConfig,
-  type Message,
-  type ContentBlock,
-  type StreamChunk,
   type ChatOptions,
-  type ToolUseBlock,
+  type Message,
+  type StreamChunk,
   type Tool,
+  type ToolUseBlock,
 } from '@clippyjs/ai';
+import OpenAI from 'openai';
+import type {
+  ChatCompletionChunk,
+  ChatCompletionContentPart,
+  ChatCompletionMessageParam,
+  ChatCompletionTool,
+} from 'openai/resources/chat/completions';
 
 /**
  * Z.AI Provider Configuration

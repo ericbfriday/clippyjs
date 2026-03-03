@@ -1,3 +1,0 @@
-feat(ai-providers): add xAI and OpenRouter AI providers
-
-Create @clippyjs/ai-xai package for xAI's Grok models and @clippyjs/ai-openrouter package for OpenRouter's multi-model gateway. Both providers implement OpenAI-compatible interfaces with full implementations, test suites, and build configuration.

@@ -1,4 +1,0 @@
-{
-  "task_description": "Create a provider for the z.AI API (using the coding plan API token) and also create a provider for use with OpenRouter.",
-  "workflow_type": "feature"
-}
