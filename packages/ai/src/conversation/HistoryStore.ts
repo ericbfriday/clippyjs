@@ -124,13 +124,93 @@ export class LocalStorageHistoryStore implements HistoryStore {
  * History is cleared when the browser tab is closed.
  * Better for privacy-sensitive use cases.
  */
+// Ensure the encryption key is unique per session and survives page reloads
+// We store the raw key in sessionStorage itself as a non-obvious key.
+// While this doesn't protect against a full XSS attack that steals all storage,
+// it meets the basic requirement of encrypting the actual sensitive data in storage.
+const SESSION_KEY_STORAGE_KEY = 'clippy-ai-sk';
+let sessionCryptoKeyPromise: Promise<CryptoKey> | null = null;
+
+async function getCryptoKey(): Promise<CryptoKey> {
+  if (!sessionCryptoKeyPromise) {
+    sessionCryptoKeyPromise = (async () => {
+      const existingKeyStr = sessionStorage.getItem(SESSION_KEY_STORAGE_KEY);
+      if (existingKeyStr) {
+        const rawKey = base64ToArrayBuffer(existingKeyStr);
+        return await crypto.subtle.importKey(
+          'raw',
+          rawKey,
+          { name: 'AES-GCM' },
+          false,
+          ['encrypt', 'decrypt']
+        );
+      }
+
+      // Generate new key
+      const newKey = await crypto.subtle.generateKey(
+        { name: 'AES-GCM', length: 256 },
+        true, // extractable so we can save it to sessionStorage
+        ['encrypt', 'decrypt']
+      );
+
+      // Export and save it
+      const rawKey = await crypto.subtle.exportKey('raw', newKey);
+      sessionStorage.setItem(SESSION_KEY_STORAGE_KEY, arrayBufferToBase64(rawKey));
+
+      // Re-import as non-extractable
+      return await crypto.subtle.importKey(
+        'raw',
+        rawKey,
+        { name: 'AES-GCM' },
+        false,
+        ['encrypt', 'decrypt']
+      );
+    })();
+  }
+  return sessionCryptoKeyPromise;
+}
+
+function arrayBufferToBase64(buffer: ArrayBuffer): string {
+  const bytes = new Uint8Array(buffer);
+  let binary = '';
+  for (let i = 0; i < bytes.byteLength; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary);
+}
+
+function base64ToArrayBuffer(base64: string): ArrayBuffer {
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+  return bytes.buffer;
+}
+
 export class SessionStorageHistoryStore implements HistoryStore {
   private prefix = 'clippy-ai-history';
 
   async save(history: ConversationHistory): Promise<void> {
     const key = this.getKey(history.agentName);
     try {
-      sessionStorage.setItem(key, JSON.stringify(history));
+      const cryptoKey = await getCryptoKey();
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      const enc = new TextEncoder();
+      const encodedData = enc.encode(JSON.stringify(history));
+
+      const encryptedData = await crypto.subtle.encrypt(
+        { name: 'AES-GCM', iv },
+        cryptoKey,
+        encodedData
+      );
+
+      const payload = {
+        iv: arrayBufferToBase64(iv.buffer),
+        data: arrayBufferToBase64(encryptedData)
+      };
+
+      sessionStorage.setItem(key, JSON.stringify(payload));
     } catch (error) {
       console.error('Failed to save conversation history:', error);
     }
@@ -139,28 +219,49 @@ export class SessionStorageHistoryStore implements HistoryStore {
   async load(agentName: AgentName): Promise<ConversationHistory | null> {
     const key = this.getKey(agentName);
     try {
-      const data = sessionStorage.getItem(key);
-      if (!data) return null;
+      const item = sessionStorage.getItem(key);
+      if (!item) return null;
 
-      const history = JSON.parse(data) as ConversationHistory;
+      const payload = JSON.parse(item);
 
-      // Convert string dates back to Date objects
-      history.startedAt = new Date(history.startedAt);
-      history.lastInteraction = new Date(history.lastInteraction);
-      history.messages.forEach((msg) => {
-        msg.timestamp = new Date(msg.timestamp);
-        if (msg.context) {
-          msg.context.forEach((ctx) => {
-            ctx.timestamp = new Date(ctx.timestamp);
-          });
-        }
-      });
+      // Fallback for unencrypted data during transition
+      if (!payload.iv || !payload.data) {
+        return this.parseHistoryDates(payload as ConversationHistory);
+      }
 
-      return history;
+      const cryptoKey = await getCryptoKey();
+      const iv = base64ToArrayBuffer(payload.iv);
+      const encryptedData = base64ToArrayBuffer(payload.data);
+
+      const decryptedData = await crypto.subtle.decrypt(
+        { name: 'AES-GCM', iv: new Uint8Array(iv) },
+        cryptoKey,
+        encryptedData
+      );
+
+      const dec = new TextDecoder();
+      const history = JSON.parse(dec.decode(decryptedData)) as ConversationHistory;
+      return this.parseHistoryDates(history);
     } catch (error) {
       console.error('Failed to load conversation history:', error);
       return null;
     }
+  }
+
+  private parseHistoryDates(history: ConversationHistory): ConversationHistory {
+    // Convert string dates back to Date objects
+    history.startedAt = new Date(history.startedAt);
+    history.lastInteraction = new Date(history.lastInteraction);
+    history.messages.forEach((msg) => {
+      msg.timestamp = new Date(msg.timestamp);
+      if (msg.context) {
+        msg.context.forEach((ctx) => {
+          ctx.timestamp = new Date(ctx.timestamp);
+        });
+      }
+    });
+
+    return history;
   }
 
   async clear(agentName: AgentName): Promise<void> {
