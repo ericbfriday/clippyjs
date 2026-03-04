@@ -1,0 +1,51 @@
+{
+  "name": "@clippyjs/context-providers",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/context-providers/src",
+  "projectType": "library",
+  "tags": [
+    "type:lib",
+    "scope:context-providers",
+    "platform:browser"
+  ],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "outputs": [
+        "{projectRoot}/dist"
+      ],
+      "options": {
+        "command": "yarn workspace @clippyjs/context-providers build"
+      }
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": [
+        "{workspaceRoot}/coverage/packages/context-providers"
+      ],
+      "options": {
+        "config": "packages/context-providers/vitest.config.ts",
+        "passWithNoTests": false,
+        "reportsDirectory": "../../coverage/packages/context-providers"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit -p packages/context-providers/tsconfig.json"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "eslint packages/context-providers/src --ext .ts"
+      }
+    },
+    "clean": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "rm -rf packages/context-providers/dist"
+      }
+    }
+  }
+}

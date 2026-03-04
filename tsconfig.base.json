@@ -19,7 +19,10 @@
       "@clippyjs/react": ["packages/react/src/index.ts"],
       "@clippyjs/ai": ["packages/ai/src/index.ts"],
       "@clippyjs/ai-anthropic": ["packages/ai-anthropic/src/index.ts"],
-      "@clippyjs/ai-openai": ["packages/ai-openai/src/index.ts"]
+      "@clippyjs/ai-openai": ["packages/ai-openai/src/index.ts"],
+      "@clippyjs/browser-parser": ["packages/browser-parser/src/index.ts"],
+      "@clippyjs/context-providers": ["packages/context-providers/src/index.ts"],
+      "@clippyjs/browser-assistant": ["packages/browser-assistant/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

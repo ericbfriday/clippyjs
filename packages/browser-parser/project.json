@@ -1,0 +1,51 @@
+{
+  "name": "@clippyjs/browser-parser",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/browser-parser/src",
+  "projectType": "library",
+  "tags": [
+    "type:lib",
+    "scope:browser-parser",
+    "platform:browser"
+  ],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "outputs": [
+        "{projectRoot}/dist"
+      ],
+      "options": {
+        "command": "yarn workspace @clippyjs/browser-parser build"
+      }
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": [
+        "{workspaceRoot}/coverage/packages/browser-parser"
+      ],
+      "options": {
+        "config": "packages/browser-parser/vitest.config.ts",
+        "passWithNoTests": false,
+        "reportsDirectory": "../../coverage/packages/browser-parser"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit -p packages/browser-parser/tsconfig.json"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "eslint packages/browser-parser/src --ext .ts"
+      }
+    },
+    "clean": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "rm -rf packages/browser-parser/dist"
+      }
+    }
+  }
+}
