@@ -1,12 +1,10 @@
 import { defineConfig, devices } from '@playwright/test';
 
-/**
- * Playwright configuration for ClippyJS React testing
- *
- * Test types:
- * - Integration tests: tests/integration/**/*.spec.ts
- * - Visual tests: tests/visual/**/*.spec.ts
- */
+// Playwright configuration for ClippyJS React testing
+//
+// Test types:
+// - Integration tests: tests/integration/**/*.spec.ts
+// - Visual tests: tests/visual/**/*.spec.ts
 export default defineConfig({
   testDir: './tests',
 
