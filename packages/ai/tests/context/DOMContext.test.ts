@@ -111,4 +111,60 @@ describe('DOMContextProvider', () => {
     expect(data.visibleText).not.toContain('Hidden text');
     expect(data.visibleText).not.toContain('Invisible text');
   });
+
+  it('should invalidate form cache when a new form is added', async () => {
+    // Initial gather caches the forms
+    let context = await provider.gather();
+    let data = context.data;
+
+    expect(data.forms).toHaveLength(1);
+    expect(data.forms[0].id).toBe('test-form');
+
+    // Add a new form dynamically
+    const newForm = document.createElement('form');
+    newForm.id = 'new-form';
+    const input = document.createElement('input');
+    input.name = 'new-input';
+    newForm.appendChild(input);
+    document.body.appendChild(newForm);
+
+    // Gather again synchronously (without waiting for microtasks) to ensure takeRecords() catches it
+    context = await provider.gather();
+    data = context.data;
+
+    expect(data.forms).toHaveLength(2);
+    expect(data.forms[1].id).toBe('new-form');
+    expect(data.forms[1].fields).toContain('new-input');
+  });
+
+  it('should invalidate form cache when input name changes', async () => {
+    // Initial gather caches the forms
+    let context = await provider.gather();
+    let data = context.data;
+
+    expect(data.forms[0].fields).toContain('username');
+
+    // Modify the input
+    const usernameInput = document.querySelector('input[name="username"]') as HTMLInputElement;
+    usernameInput.name = 'email';
+
+    // Gather again synchronously
+    context = await provider.gather();
+    data = context.data;
+
+    expect(data.forms[0].fields).not.toContain('username');
+    expect(data.forms[0].fields).toContain('email');
+  });
+
+  it('should clean up the mutation observer when disposed', async () => {
+    // Force observer creation
+    await provider.gather();
+
+    // Verify observer is attached internally
+    expect((provider as any).formsMutationObserver).not.toBeNull();
+
+    // Dispose
+    provider.dispose();
+    expect((provider as any).formsMutationObserver).toBeNull();
+  });
 });
