@@ -3,6 +3,7 @@ import typescript from '@typescript-eslint/eslint-plugin';
 import typescriptParser from '@typescript-eslint/parser';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
+import globals from 'globals';
 
 const eslintConfig = [
   js.configs.recommended,
@@ -18,6 +19,9 @@ const eslintConfig = [
         },
         project: './tsconfig.json',
         tsconfigRootDir: import.meta.dirname,
+      },
+      globals: {
+        ...globals.browser,
       },
     },
     plugins: {
