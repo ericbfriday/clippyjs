@@ -9,7 +9,7 @@ import { ClippyProvider } from '../../src/ClippyProvider';
  */
 
 // Mock the core load function
-vi.mock('../src', () => ({
+vi.mock('../../src', () => ({
   load: vi.fn(() => Promise.resolve({
     show: vi.fn(() => Promise.resolve()),
     hide: vi.fn(() => Promise.resolve()),

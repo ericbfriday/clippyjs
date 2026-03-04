@@ -9,7 +9,7 @@ import type { ReactNode } from 'react';
  */
 
 // Mock the Agent class and loader
-vi.mock('../src/Agent', () => ({
+vi.mock('../../src/Agent', () => ({
   Agent: vi.fn().mockImplementation(() => ({
     name: 'Clippy',
     show: vi.fn(() => Promise.resolve()),
@@ -19,7 +19,7 @@ vi.mock('../src/Agent', () => ({
   })),
 }));
 
-vi.mock('../src/loader', () => ({
+vi.mock('../../src/loader', () => ({
   load: vi.fn((name: string) =>
     Promise.resolve({
       name,

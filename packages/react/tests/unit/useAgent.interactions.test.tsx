@@ -31,7 +31,7 @@ const createMockAgent = () => ({
 });
 
 // Mock the core load function
-vi.mock('../src', () => ({
+vi.mock('../../src/loader', () => ({
   load: vi.fn(() => Promise.resolve(createMockAgent())),
 }));
 
