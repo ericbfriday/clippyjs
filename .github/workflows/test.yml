@@ -24,7 +24,7 @@ jobs:
           cache: 'yarn'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install --immutable
 
       - name: Run unit tests
         run: yarn workspace @clippyjs/react test --run
@@ -56,7 +56,7 @@ jobs:
           cache: 'yarn'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install --immutable
 
       - name: Install Playwright browsers
         run: yarn playwright install chromium --with-deps
@@ -91,7 +91,7 @@ jobs:
           cache: 'yarn'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install --immutable
 
       - name: Install Playwright browsers
         run: yarn playwright install --with-deps
@@ -134,16 +134,16 @@ jobs:
           cache: 'yarn'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install --immutable
 
       - name: Build packages
         run: |
-          yarn install --frozen-lockfile
+          yarn install --immutable
           yarn build
           yarn typecheck
           npx tsc --build --verbose
 
       - name: Full Workspace Type Check
         run: |
-          yarn install --frozen-lockfile
+          yarn install --immutable
           npx tsc --build --force
