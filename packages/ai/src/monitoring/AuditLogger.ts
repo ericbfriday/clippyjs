@@ -676,7 +676,7 @@ export class AuditLogger {
    */
   private sanitize(data: AuditEventData): AuditEventData {
     // Deep clone to avoid mutating original
-    const sanitized = JSON.parse(JSON.stringify(data));
+    const sanitized = structuredClone(data);
 
     // Remove sensitive fields based on event type
     if (sanitized.type === 'request') {
@@ -688,8 +688,8 @@ export class AuditLogger {
 
     if (sanitized.type === 'auth-attempt') {
       // Never log credentials
-      if (sanitized.credentials) {
-        delete sanitized.credentials;
+      if ('credentials' in sanitized) {
+        delete (sanitized as Record<string, unknown>).credentials;
       }
     }
 
