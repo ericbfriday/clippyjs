@@ -30,11 +30,11 @@
       }
     },
     "typecheck": {
-      "executor": "@nx/js:tsc",
+      "executor": "nx:run-commands",
       "outputs": [],
       "options": {
-        "tsConfig": "packages/ai-openai/tsconfig.json",
-        "noEmit": true
+        "command": "yarn workspace @clippyjs/ai-openai typecheck"
+
       }
     },
     "clean": {
