@@ -276,7 +276,7 @@ describe('ZAIProvider', () => {
             { type: 'text', text: 'What is in this image?' },
             {
               type: 'image',
-              source: { type: 'url', url: 'https://example.com/image.jpg' },
+              source: { type: 'url', url: 'https://example.com/image.jpg', mediaType: 'image/jpeg' },
             },
           ],
         },

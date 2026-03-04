@@ -114,7 +114,7 @@ export class ZAIProvider extends AIProvider {
       }
 
       // Create streaming completion
-      const stream = await this.client.chat.completions.create(requestBody);
+      const stream = (await this.client.chat.completions.create(requestBody)) as unknown as AsyncIterable<any>;
 
       // Track tool use state
       let currentToolUse: Partial<ToolUseBlock> | null = null;
