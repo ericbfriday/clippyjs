@@ -1,4 +1,4 @@
-"use client";
+
 
 /**
  * @clippyjs/react - React components for Clippy
