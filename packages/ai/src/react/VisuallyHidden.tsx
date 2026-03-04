@@ -32,7 +32,7 @@ export function VisuallyHidden({
   children,
   as: Component = 'span',
   className = '',
-}: VisuallyHiddenProps): JSX.Element {
+}: VisuallyHiddenProps): React.ReactElement {
   return (
     <Component className={`visually-hidden ${className}`} style={visuallyHiddenStyles}>
       {children}
@@ -83,7 +83,7 @@ export function ScreenReaderAnnouncement({
   message,
   politeness = 'polite',
   atomic = true,
-}: ScreenReaderAnnouncementProps): JSX.Element | null {
+}: ScreenReaderAnnouncementProps): React.ReactElement | null {
   // Don't render if no message
   if (!message) return null;
 

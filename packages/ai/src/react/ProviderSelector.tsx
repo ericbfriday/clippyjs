@@ -66,7 +66,7 @@ export function ProviderSelector({
   layout = 'vertical',
   className = '',
   disabled = false,
-}: ProviderSelectorProps): JSX.Element {
+}: ProviderSelectorProps): React.ReactElement {
   const [isChanging, setIsChanging] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [announcement, setAnnouncement] = useState<string>('');
