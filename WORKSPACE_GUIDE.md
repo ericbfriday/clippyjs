@@ -16,8 +16,7 @@ clippyjs/
 │   ├── react/                   @clippyjs/react (React components)
 │   ├── storybook/               @clippyjs/storybook (Component docs)
 │   ├── clippyjs-lib/            clippyjs (Legacy library)
-│   ├── clippyjs-demo-react/     React demo app
-│   ├── clippyjs-demo-vanilla/   Vanilla JS demo
+│   ├── clippyjs-demo-react/     React demo app (primary demo)
 │   └── templates/
 │       ├── nextjs-starter/      Next.js 15 + ClippyJS starter
 │       └── vite-starter/        Vite + ClippyJS starter
@@ -49,8 +48,9 @@ clippyjs/
 - Development environment
 
 **Demos** - Example implementations
-- `clippyjs-demo-react`: React demo app
-- `clippyjs-demo-vanilla`: Vanilla JS demo
+- `clippyjs-demo-react`: React demo app (primary demo for development)
+
+> **Note**: The vanilla JS demo has been archived to `archive/clippyjs-demo-vanilla/`.
 
 **Templates** - Starter projects
 - `clippyjs-nextjs-starter`: Next.js 15 template
@@ -119,10 +119,7 @@ yarn storybook
 # Build Storybook for deployment
 yarn storybook:build
 
-# Run React demo
-yarn demo:react
-
-# Serve static demo files
+# Run React demo (primary demo)
 yarn demo
 ```
 
