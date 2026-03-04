@@ -19,7 +19,7 @@ export class ConversationManager {
 
   constructor(
     private provider: AIProvider,
-    private agentName: AgentName,
+    public agentName: AgentName,
     private personalityMode: PersonalityMode,
     private contextProviders: ContextProvider[] = [],
     private historyStore?: HistoryStore,
@@ -197,5 +197,8 @@ export class ConversationManager {
    */
   private generateId(): string {
     return `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  }
+  public getAgentName(): AgentName {
+    return this.agentName;
   }
 }

@@ -54,7 +54,10 @@ export interface AIClippyConfig {
 /**
  * AI Clippy context value
  */
+
 export interface AIClippyContextValue {
+  /** The core configuration */
+  config: AIClippyConfig;
   /** Conversation manager instance */
   conversationManager: ConversationManager;
   /** Proactive behavior engine */
@@ -350,6 +353,7 @@ export function AIClippyProvider({ config, children }: AIClippyProviderProps) {
 
   // No loading screen needed - managers are initialized synchronously
   const contextValue: AIClippyContextValue = {
+    config,
     conversationManager: managers.conversationManager,
     proactiveBehavior: managers.engine,
     agentName: config.agentName,
