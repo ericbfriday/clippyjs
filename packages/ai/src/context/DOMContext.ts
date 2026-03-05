@@ -22,6 +22,16 @@ export class DOMContextProvider implements ContextProvider {
   name = 'dom';
   enabled = true;
 
+  private cachedForms: Array<{ id?: string; fields: string[] }> | null = null;
+  private formsMutationObserver: MutationObserver | null = null;
+
+  dispose(): void {
+    if (this.formsMutationObserver) {
+      this.formsMutationObserver.disconnect();
+      this.formsMutationObserver = null;
+    }
+  }
+
   async gather(): Promise<ContextData> {
     return {
       provider: 'dom',
@@ -55,7 +65,18 @@ export class DOMContextProvider implements ContextProvider {
    * Detect forms and their fields
    */
   private detectForms(): Array<{ id?: string; fields: string[] }> {
-    return Array.from(document.querySelectorAll('form')).map((form) => ({
+    if (this.formsMutationObserver) {
+      const pendingMutations = this.formsMutationObserver.takeRecords();
+      if (pendingMutations.length > 0) {
+        this.cachedForms = null;
+      }
+    }
+
+    if (this.cachedForms) {
+      return this.cachedForms;
+    }
+
+    const forms = Array.from(document.querySelectorAll('form')).map((form) => ({
       id: form.id || undefined,
       fields: Array.from(form.querySelectorAll('input, select, textarea'))
         .map((field) => {
@@ -64,6 +85,22 @@ export class DOMContextProvider implements ContextProvider {
         })
         .filter(Boolean),
     }));
+
+    this.cachedForms = forms;
+
+    if (!this.formsMutationObserver && typeof MutationObserver !== 'undefined') {
+      this.formsMutationObserver = new MutationObserver(() => {
+        this.cachedForms = null;
+      });
+      this.formsMutationObserver.observe(document.body, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['id', 'name', 'placeholder']
+      });
+    }
+
+    return forms;
   }
 
   /**
