@@ -156,6 +156,8 @@ export interface AuthAuditData {
   success: boolean;
   /** Failure reason (if failed) */
   reason?: string;
+  /** Credentials (always redacted before logging) */
+  credentials?: unknown;
 }
 
 /**
@@ -675,8 +677,15 @@ export class AuditLogger {
    * Sanitize sensitive data
    */
   private sanitize(data: AuditEventData): AuditEventData {
-    // Deep clone to avoid mutating original
-    const sanitized = structuredClone(data);
+    // Deep clone to avoid mutating original.
+    // structuredClone is preferred but may be unavailable or throw on non-cloneable
+    // values (e.g. functions, Symbols) in older runtimes — fall back to JSON in that case.
+    let sanitized: AuditEventData;
+    try {
+      sanitized = structuredClone(data);
+    } catch {
+      sanitized = JSON.parse(JSON.stringify(data)) as AuditEventData;
+    }
 
     // Remove sensitive fields based on event type
     if (sanitized.type === 'request') {
@@ -688,9 +697,7 @@ export class AuditLogger {
 
     if (sanitized.type === 'auth-attempt') {
       // Never log credentials
-      if ('credentials' in sanitized) {
-        delete (sanitized as Record<string, unknown>).credentials;
-      }
+      delete sanitized.credentials;
     }
 
     if (sanitized.type === 'config-change') {
