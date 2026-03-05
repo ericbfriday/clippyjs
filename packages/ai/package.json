@@ -23,7 +23,7 @@
     "test:e2e:ui": "playwright test --ui",
     "test:all": "vitest run && playwright test",
     "typecheck": "tsc --noEmit",
-    "playwright:install": "npx playwright install chromium --with-deps",
+    "playwright:install": "playwright install chromium --with-deps",
     "prepublishOnly": "yarn build"
   },
   "keywords": [
@@ -57,6 +57,7 @@
     "@types/react": "^19.0.6",
     "@types/react-dom": "^19.0.3",
     "@vitest/coverage-v8": "^3.0.5",
+    "fake-indexeddb": "^6.2.5",
     "jsdom": "^25.0.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

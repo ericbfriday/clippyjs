@@ -6,20 +6,33 @@
 
 // Import testing-library matchers
 import '@testing-library/jest-dom/vitest';
+import 'fake-indexeddb/auto';
 
-// Polyfill for crypto.randomUUID if needed
-if (typeof crypto === 'undefined' || !crypto.randomUUID) {
-  Object.defineProperty(globalThis, 'crypto', {
-    value: {
-      randomUUID: () => {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-          const r = Math.random() * 16 | 0;
-          const v = c === 'x' ? r : (r & 0x3 | 0x8);
-          return v.toString(16);
-        });
-      },
-    },
-  });
+// Ensure crypto API is available for tests
+if (typeof globalThis.crypto === 'undefined' || !globalThis.crypto.subtle) {
+  // Try to use node crypto if we are in node environment
+  try {
+    const nodeCrypto = require('node:crypto');
+    Object.defineProperty(globalThis, 'crypto', {
+      value: nodeCrypto.webcrypto,
+      configurable: true
+    });
+  } catch (e) {
+    // If node:crypto is not available, we can't fully polyfill SubtleCrypto
+    // so we'll just log a warning. The code has fallbacks for this case.
+    console.warn('Could not polyfill crypto.subtle for tests');
+  }
+}
+
+// Polyfill for crypto.randomUUID if needed (in case the above didn't provide it)
+if (typeof globalThis.crypto !== 'undefined' && !globalThis.crypto.randomUUID) {
+  globalThis.crypto.randomUUID = () => {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+      const r = Math.random() * 16 | 0;
+      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  };
 }
 
 // Mock localStorage and sessionStorage with separate storage objects
