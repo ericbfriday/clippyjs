@@ -7434,14 +7434,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"clippyjs-demo-vanilla@workspace:packages/clippyjs-demo-vanilla":
-  version: 0.0.0-use.local
-  resolution: "clippyjs-demo-vanilla@workspace:packages/clippyjs-demo-vanilla"
-  dependencies:
-    clippyjs: "workspace:*"
-  languageName: unknown
-  linkType: soft
-
 "clippyjs-nextjs-starter@workspace:packages/templates/nextjs-starter":
   version: 0.0.0-use.local
   resolution: "clippyjs-nextjs-starter@workspace:packages/templates/nextjs-starter"
@@ -7498,7 +7490,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"clippyjs@workspace:*, clippyjs@workspace:packages/clippyjs-lib":
+"clippyjs@workspace:packages/clippyjs-lib":
   version: 0.0.0-use.local
   resolution: "clippyjs@workspace:packages/clippyjs-lib"
   dependencies:
