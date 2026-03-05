@@ -1,4 +1,3 @@
-import OpenAI from 'openai';
 import type {
   ChatCompletionChunk,
   ChatCompletionMessageParam,
@@ -25,163 +24,30 @@ import {
  * Phase 6.1: Full implementation with streaming, tool use, and vision support
  */
 export class OpenAIProvider extends AIProvider {
-  private client: OpenAI | null = null;
   private config: AIProviderConfig | null = null;
-  private isProxyMode = false;
   private currentModel = 'gpt-4o';
 
   async initialize(config: AIProviderConfig): Promise<void> {
     this.config = config;
     this.currentModel = config.model || 'gpt-4o';
 
-    // Support both client-side and proxy mode
-    if (config.endpoint) {
-      // Proxy mode - use fetch for streaming
-      this.isProxyMode = true;
-      console.log('OpenAIProvider: Proxy mode configured');
-    } else if (config.apiKey) {
-      // Client-side mode - use SDK
-      this.isProxyMode = false;
-      this.client = new OpenAI({
-        apiKey: config.apiKey,
-        dangerouslyAllowBrowser: true,
-        baseURL: config.baseURL,
-        organization: config.organization,
-      });
-      console.log('OpenAIProvider: Client-side mode configured');
-    } else {
-      throw new Error('Either endpoint or apiKey must be provided');
+    if (!config.endpoint) {
+      if (config.apiKey) {
+        throw new Error(
+          'Security Error: Direct client-side API key usage is disabled. Please use a secure backend proxy endpoint.'
+        );
+      }
+      throw new Error('Proxy endpoint must be provided');
     }
+
+    console.log('OpenAIProvider: Proxy mode configured');
   }
 
   async *chat(
     messages: Message[],
     options?: ChatOptions
   ): AsyncIterableIterator<StreamChunk> {
-    if (this.isProxyMode) {
-      yield* this.chatProxy(messages, options);
-    } else {
-      yield* this.chatDirect(messages, options);
-    }
-  }
-
-  /**
-   * Direct OpenAI API streaming using SDK
-   */
-  private async *chatDirect(
-    messages: Message[],
-    options?: ChatOptions
-  ): AsyncIterableIterator<StreamChunk> {
-    if (!this.client) {
-      throw new Error('OpenAI client not initialized');
-    }
-
-    try {
-      // Convert messages to OpenAI format
-      const openaiMessages = this.convertMessages(messages, options?.systemPrompt);
-
-      // Convert tools to OpenAI format
-      const tools = options?.tools ? this.convertTools(options.tools) : undefined;
-
-      // Create streaming completion
-      const stream = await this.client.chat.completions.create({
-        model: this.currentModel,
-        messages: openaiMessages,
-        tools,
-        max_tokens: options?.maxTokens || this.config?.maxTokens,
-        temperature: options?.temperature ?? this.config?.temperature ?? 1,
-        stream: true,
-      });
-
-      // Track tool use state
-      let currentToolUse: Partial<ToolUseBlock> | null = null;
-
-      // Process stream
-      for await (const chunk of stream) {
-        const delta = chunk.choices[0]?.delta;
-
-        if (!delta) continue;
-
-        // Handle content deltas
-        if (delta.content) {
-          yield {
-            type: 'content_delta',
-            delta: delta.content,
-          };
-        }
-
-        // Handle tool calls
-        if (delta.tool_calls) {
-          for (const toolCall of delta.tool_calls) {
-            // Tool call start
-            if (toolCall.function?.name && !currentToolUse) {
-              currentToolUse = {
-                id: toolCall.id || `tool_${Date.now()}`,
-                name: toolCall.function.name,
-                input: {},
-              };
-
-              yield {
-                type: 'tool_use_start',
-                toolUse: currentToolUse as ToolUseBlock,
-              };
-            }
-
-            // Tool call arguments (streamed)
-            if (toolCall.function?.arguments && currentToolUse) {
-              // Accumulate arguments as string temporarily
-              const existingArgs = (currentToolUse.input as any)?._raw || '';
-              (currentToolUse.input as any) = {
-                _raw: existingArgs + toolCall.function.arguments,
-              };
-
-              yield {
-                type: 'tool_use_delta',
-                delta: toolCall.function.arguments,
-              };
-            }
-          }
-        }
-
-        // Handle finish reasons
-        if (chunk.choices[0]?.finish_reason) {
-          // Complete any pending tool use
-          if (currentToolUse && currentToolUse.id && currentToolUse.name) {
-            // Parse accumulated arguments
-            try {
-              const rawArgs = (currentToolUse.input as any)?._raw || '{}';
-              const parsedInput = JSON.parse(rawArgs);
-
-              yield {
-                type: 'tool_use',
-                toolUse: {
-                  id: currentToolUse.id,
-                  name: currentToolUse.name,
-                  input: parsedInput,
-                },
-              };
-            } catch (error) {
-              console.error('Failed to parse tool arguments:', error);
-              yield {
-                type: 'error',
-                error: 'Failed to parse tool arguments',
-              };
-            }
-            currentToolUse = null;
-          }
-
-          yield {
-            type: 'complete',
-          };
-        }
-      }
-    } catch (error: any) {
-      console.error('OpenAI streaming error:', error);
-      yield {
-        type: 'error',
-        error: error.message || 'Unknown error',
-      };
-    }
+    yield* this.chatProxy(messages, options);
   }
 
   /**
@@ -451,7 +317,6 @@ export class OpenAIProvider extends AIProvider {
    * Clean up provider resources
    */
   destroy(): void {
-    this.client = null;
     this.config = null;
   }
 
