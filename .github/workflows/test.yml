@@ -59,7 +59,7 @@ jobs:
         run: yarn install --immutable
 
       - name: Install Playwright browsers
-        run: yarn playwright install chromium --with-deps
+        run: npx playwright install chromium --with-deps
 
       - name: Run integration tests
         run: yarn workspace @clippyjs/react test:integration
@@ -94,7 +94,7 @@ jobs:
         run: yarn install --immutable
 
       - name: Install Playwright browsers
-        run: yarn playwright install --with-deps
+        run: npx playwright install --with-deps
 
       - name: Run visual tests
         run: yarn workspace @clippyjs/react test:visual

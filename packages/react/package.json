@@ -19,7 +19,7 @@
     "build:bundle": "rollup -c",
     "clean": "rm -rf dist",
     "prepublishOnly": "yarn build",
-    "playwright:install": "playwright install chromium --with-deps",
+    "playwright:install": "npx playwright install chromium --with-deps",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
