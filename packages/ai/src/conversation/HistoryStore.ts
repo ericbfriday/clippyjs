@@ -3,6 +3,200 @@ import type { ContextData } from '../context/ContextProvider';
 import type { AgentName } from '../personality/PersonalityProfiles';
 
 /**
+ * Secure client-side encryption utilities to protect conversation history in localStorage/sessionStorage.
+ * Generates a non-exportable key on first use and stores it securely in IndexedDB.
+ */
+const KEY_DB_NAME = 'clippy-ai-crypto-keys';
+const KEY_STORE_NAME = 'keys';
+const MASTER_KEY_ID = 'history-encryption-key';
+
+let cachedKey: CryptoKey | null = null;
+
+// IndexedDB helpers for the key store
+function openKeyDB(): Promise<IDBDatabase> {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(KEY_DB_NAME, 1);
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve(request.result);
+    request.onupgradeneeded = (event) => {
+      const db = (event.target as IDBOpenDBRequest).result;
+      if (!db.objectStoreNames.contains(KEY_STORE_NAME)) {
+        db.createObjectStore(KEY_STORE_NAME);
+      }
+    };
+  });
+}
+
+async function loadKeyFromDB(): Promise<CryptoKey | null> {
+  try {
+    const db = await openKeyDB();
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction([KEY_STORE_NAME], 'readonly');
+      const store = transaction.objectStore(KEY_STORE_NAME);
+      const request = store.get(MASTER_KEY_ID);
+      request.onsuccess = () => resolve(request.result || null);
+      request.onerror = () => reject(request.error);
+      transaction.oncomplete = () => db.close();
+    });
+  } catch (err) {
+    console.warn('Failed to load key from IndexedDB', err);
+    return null;
+  }
+}
+
+async function saveKeyToDB(key: CryptoKey): Promise<void> {
+  try {
+    const db = await openKeyDB();
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction([KEY_STORE_NAME], 'readwrite');
+      const store = transaction.objectStore(KEY_STORE_NAME);
+      const request = store.put(key, MASTER_KEY_ID);
+      request.onsuccess = () => resolve();
+      request.onerror = () => reject(request.error);
+      transaction.oncomplete = () => db.close();
+    });
+  } catch (err) {
+    console.warn('Failed to save key to IndexedDB', err);
+  }
+}
+
+async function getEncryptionKey(): Promise<CryptoKey> {
+  if (cachedKey) return cachedKey;
+
+  // Try to load an existing key from IndexedDB
+  let key = await loadKeyFromDB();
+
+  // If no key exists, generate a new one
+  if (!key) {
+    key = await crypto.subtle.generateKey(
+      {
+        name: 'AES-GCM',
+        length: 256,
+      },
+      false, // non-exportable
+      ['encrypt', 'decrypt']
+    );
+    // Save the new key for future use
+    await saveKeyToDB(key);
+  }
+
+  cachedKey = key;
+  return cachedKey;
+}
+
+// Convert ArrayBuffer to Base64 string
+function bufferToBase64(buffer: ArrayBuffer): string {
+  const bytes = new Uint8Array(buffer);
+  let binary = '';
+  for (let i = 0; i < bytes.byteLength; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary);
+}
+
+// Convert Base64 string to ArrayBuffer
+function base64ToBuffer(base64: string): ArrayBuffer {
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+  return bytes.buffer;
+}
+
+export async function encryptData(data: string): Promise<string> {
+  if (typeof crypto === 'undefined' || !crypto.subtle) {
+    // Security vulnerability prevention: fail instead of falling back to insecure Base64
+    throw new Error('Web Crypto API is not available. Cannot securely store history.');
+  }
+
+  try {
+    const key = await getEncryptionKey();
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const encoder = new TextEncoder();
+    const encryptedContent = await crypto.subtle.encrypt(
+      { name: 'AES-GCM', iv },
+      key,
+      encoder.encode(data)
+    );
+
+    const encryptedBytes = new Uint8Array(encryptedContent);
+    const result = new Uint8Array(iv.length + encryptedBytes.length);
+    result.set(iv, 0);
+    result.set(encryptedBytes, iv.length);
+
+    return bufferToBase64(result.buffer);
+  } catch (err) {
+    console.error('Encryption failed', err);
+    throw new Error('Encryption failed. Cannot securely store history.');
+  }
+}
+
+export async function decryptData(encryptedBase64: string): Promise<string> {
+  if (typeof crypto === 'undefined' || !crypto.subtle) {
+    throw new Error('Web Crypto API is not available. Cannot decrypt history.');
+  }
+
+  // First, check if the string is just plain JSON from a legacy save
+  try {
+    if (encryptedBase64.startsWith('{') || encryptedBase64.startsWith('[')) {
+      JSON.parse(encryptedBase64);
+      return encryptedBase64; // It's legacy plaintext
+    }
+  } catch {
+    // Not valid JSON, proceed to decryption or other decoding
+  }
+
+  let dataBuffer: ArrayBuffer;
+  try {
+    dataBuffer = base64ToBuffer(encryptedBase64);
+  } catch (err) {
+    // If it's not valid base64, check again if we should treat it as legacy text
+    return encryptedBase64;
+  }
+
+  try {
+    // Check if it looks like our AES-GCM format (iv 12 bytes + some data)
+    if (dataBuffer.byteLength < 12) {
+      // It might be old insecure fallback data
+      try {
+        const decoded = decodeURIComponent(atob(encryptedBase64));
+        // Simple sanity check if it's JSON
+        JSON.parse(decoded);
+        return decoded;
+      } catch {
+        // If it's pure plaintext (very old version) or unreadable
+        return encryptedBase64;
+      }
+    }
+
+    const iv = new Uint8Array(dataBuffer.slice(0, 12));
+    const encryptedContent = dataBuffer.slice(12);
+
+    const key = await getEncryptionKey();
+    const decryptedContent = await crypto.subtle.decrypt(
+      { name: 'AES-GCM', iv },
+      key,
+      encryptedContent
+    );
+
+    const decoder = new TextDecoder();
+    return decoder.decode(decryptedContent);
+  } catch (err) {
+    // If decryption fails (e.g. wrong key because IndexedDB was cleared but localStorage wasn't)
+    // we cannot recover the data. Let's return the string assuming it was an unencrypted legacy string
+    // rather than fully breaking the app load if it happened to be invalid valid base64 string.
+    try {
+        JSON.parse(encryptedBase64);
+        return encryptedBase64;
+    } catch {
+        console.error('Decryption failed', err);
+        throw new Error('Failed to decrypt conversation history.');
+    }
+  }
+}
+
+/**
  * Conversation message with metadata
  */
 export interface ConversationMessage extends Message {
@@ -62,7 +256,9 @@ export class LocalStorageHistoryStore implements HistoryStore {
   async save(history: ConversationHistory): Promise<void> {
     const key = this.getKey(history.agentName);
     try {
-      localStorage.setItem(key, JSON.stringify(history));
+      const serialized = JSON.stringify(history);
+      const encrypted = await encryptData(serialized);
+      localStorage.setItem(key, encrypted);
     } catch (error) {
       console.error('Failed to save conversation history:', error);
       // Silently fail if storage is full
@@ -72,9 +268,10 @@ export class LocalStorageHistoryStore implements HistoryStore {
   async load(agentName: AgentName): Promise<ConversationHistory | null> {
     const key = this.getKey(agentName);
     try {
-      const data = localStorage.getItem(key);
-      if (!data) return null;
+      const encryptedData = localStorage.getItem(key);
+      if (!encryptedData) return null;
 
+      const data = await decryptData(encryptedData);
       const history = JSON.parse(data) as ConversationHistory;
 
       // Convert string dates back to Date objects
@@ -130,7 +327,9 @@ export class SessionStorageHistoryStore implements HistoryStore {
   async save(history: ConversationHistory): Promise<void> {
     const key = this.getKey(history.agentName);
     try {
-      sessionStorage.setItem(key, JSON.stringify(history));
+      const serialized = JSON.stringify(history);
+      const encrypted = await encryptData(serialized);
+      sessionStorage.setItem(key, encrypted);
     } catch (error) {
       console.error('Failed to save conversation history:', error);
     }
@@ -139,9 +338,10 @@ export class SessionStorageHistoryStore implements HistoryStore {
   async load(agentName: AgentName): Promise<ConversationHistory | null> {
     const key = this.getKey(agentName);
     try {
-      const data = sessionStorage.getItem(key);
-      if (!data) return null;
+      const encryptedData = sessionStorage.getItem(key);
+      if (!encryptedData) return null;
 
+      const data = await decryptData(encryptedData);
       const history = JSON.parse(data) as ConversationHistory;
 
       // Convert string dates back to Date objects
