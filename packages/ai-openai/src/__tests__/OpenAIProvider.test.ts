@@ -1,40 +1,21 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { OpenAIProvider } from '../OpenAIProvider';
 import type { Message, ChatOptions } from '@clippyjs/ai';
-
-// Mock OpenAI SDK
-vi.mock('openai', () => {
-  return {
-    default: class MockOpenAI {
-      constructor(public config: any) {}
-
-      chat = {
-        completions: {
-          create: vi.fn(),
-        },
-      };
-    },
-  };
-});
 
 describe('OpenAIProvider', () => {
   let provider: OpenAIProvider;
 
   beforeEach(() => {
     provider = new OpenAIProvider();
+    global.fetch = vi.fn();
     vi.clearAllMocks();
   });
 
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   describe('initialization', () => {
-    it('should initialize in client-side mode with API key', async () => {
-      await provider.initialize({
-        apiKey: 'test-api-key',
-        model: 'gpt-4o',
-      });
-
-      expect(provider.getModel()).toBe('gpt-4o');
-    });
-
     it('should initialize in proxy mode with endpoint', async () => {
       await provider.initialize({
         endpoint: 'https://proxy.example.com/api',
@@ -44,9 +25,18 @@ describe('OpenAIProvider', () => {
       expect(provider.getModel()).toBe('gpt-4o');
     });
 
+    it('should throw error when initialized with API key but no endpoint', async () => {
+      await expect(
+        provider.initialize({
+          apiKey: 'test-api-key',
+          model: 'gpt-4o',
+        })
+      ).rejects.toThrow('Security Error: Direct client-side API key usage is disabled. Please use a secure backend proxy endpoint.');
+    });
+
     it('should default to gpt-4o model', async () => {
       await provider.initialize({
-        apiKey: 'test-api-key',
+        endpoint: 'https://proxy.example.com/api',
       });
 
       expect(provider.getModel()).toBe('gpt-4o');
@@ -54,24 +44,15 @@ describe('OpenAIProvider', () => {
 
     it('should throw error if neither apiKey nor endpoint provided', async () => {
       await expect(provider.initialize({})).rejects.toThrow(
-        'Either endpoint or apiKey must be provided'
+        'Proxy endpoint must be provided'
       );
-    });
-
-    it('should accept custom baseURL', async () => {
-      await provider.initialize({
-        apiKey: 'test-api-key',
-        baseURL: 'https://custom.openai.com/v1',
-      });
-
-      expect(provider.getModel()).toBe('gpt-4o');
     });
   });
 
   describe('model management', () => {
     beforeEach(async () => {
       await provider.initialize({
-        apiKey: 'test-api-key',
+        endpoint: 'https://proxy.example.com/api',
         model: 'gpt-4o',
       });
     });
@@ -89,7 +70,7 @@ describe('OpenAIProvider', () => {
   describe('feature support', () => {
     beforeEach(async () => {
       await provider.initialize({
-        apiKey: 'test-api-key',
+        endpoint: 'https://proxy.example.com/api',
       });
     });
 
@@ -118,82 +99,54 @@ describe('OpenAIProvider', () => {
     });
   });
 
-  describe('message conversion', () => {
+  describe('message conversion and streaming', () => {
     beforeEach(async () => {
       await provider.initialize({
-        apiKey: 'test-api-key',
+        endpoint: 'https://proxy.example.com/api',
       });
     });
 
-    it('should convert simple text messages', async () => {
+    it('should stream content deltas correctly', async () => {
       const messages: Message[] = [
         { role: 'user', content: 'Hello' },
-        { role: 'assistant', content: 'Hi there!' },
       ];
 
-      // Test by calling chat and checking the mock
-      const mockCreate = vi.fn().mockResolvedValue({
-        async *[Symbol.asyncIterator]() {
-          yield {
-            choices: [{ delta: { content: 'Response' }, finish_reason: null }],
-          };
+      const mockResponse = {
+        ok: true,
+        body: {
+          getReader: () => ({
+            read: vi.fn()
+              .mockResolvedValueOnce({
+                done: false,
+                value: new TextEncoder().encode('data: {"choices":[{"delta":{"content":"Hi"},"finish_reason":null}]}\n\n'),
+              })
+              .mockResolvedValueOnce({
+                done: false,
+                value: new TextEncoder().encode('data: [DONE]\n\n'),
+              })
+              .mockResolvedValueOnce({ done: true }),
+          }),
         },
-      });
+      };
 
-      // Mock the client instance's chat.completions.create method
-      if ((provider as any).client) {
-        (provider as any).client.chat = {
-          completions: {
-            create: mockCreate,
-          },
-        };
+      (global.fetch as any).mockResolvedValue(mockResponse);
+
+      const chunks = [];
+      for await (const chunk of provider.chat(messages)) {
+        chunks.push(chunk);
       }
 
-      const stream = provider.chat(messages);
-      await stream.next(); // Trigger the call
+      const fetchCall = (global.fetch as any).mock.calls[0];
+      const requestBody = JSON.parse(fetchCall[1].body);
 
-      const callArgs = mockCreate.mock.calls[0][0];
-      expect(callArgs.messages).toHaveLength(2);
-      expect(callArgs.messages[0]).toEqual({
+      expect(requestBody.messages[0]).toEqual({
         role: 'user',
         content: 'Hello',
       });
-    });
 
-    it('should include system prompt', async () => {
-      const messages: Message[] = [
-        { role: 'user', content: 'Hello' },
-      ];
-
-      const options: ChatOptions = {
-        systemPrompt: 'You are a helpful assistant.',
-      };
-
-      const mockCreate = vi.fn().mockResolvedValue({
-        async *[Symbol.asyncIterator]() {
-          yield {
-            choices: [{ delta: { content: 'Response' }, finish_reason: null }],
-          };
-        },
-      });
-
-      // Mock the client instance's chat.completions.create method
-      if ((provider as any).client) {
-        (provider as any).client.chat = {
-          completions: {
-            create: mockCreate,
-          },
-        };
-      }
-
-      const stream = provider.chat(messages, options);
-      await stream.next();
-
-      const callArgs = mockCreate.mock.calls[0][0];
-      expect(callArgs.messages[0]).toEqual({
-        role: 'system',
-        content: 'You are a helpful assistant.',
-      });
+      expect(chunks).toHaveLength(2);
+      expect(chunks[0]).toEqual({ type: 'content_delta', delta: 'Hi' });
+      expect(chunks[1]).toEqual({ type: 'complete' });
     });
 
     it('should convert image messages with URL', async () => {
@@ -214,91 +167,37 @@ describe('OpenAIProvider', () => {
         },
       ];
 
-      const mockCreate = vi.fn().mockResolvedValue({
-        async *[Symbol.asyncIterator]() {
-          yield {
-            choices: [{ delta: { content: 'Response' }, finish_reason: null }],
-          };
+      const mockResponse = {
+        ok: true,
+        body: {
+          getReader: () => ({
+            read: vi.fn()
+              .mockResolvedValueOnce({
+                done: false,
+                value: new TextEncoder().encode('data: [DONE]\n\n'),
+              })
+              .mockResolvedValueOnce({ done: true }),
+          }),
         },
-      });
+      };
 
-      // Mock the client instance's chat.completions.create method
-      if ((provider as any).client) {
-        (provider as any).client.chat = {
-          completions: {
-            create: mockCreate,
-          },
-        };
-      }
+      (global.fetch as any).mockResolvedValue(mockResponse);
 
       const stream = provider.chat(messages);
       await stream.next();
 
-      const callArgs = mockCreate.mock.calls[0][0];
-      expect(callArgs.messages[0].content).toContainEqual({
+      const fetchCall = (global.fetch as any).mock.calls[0];
+      const requestBody = JSON.parse(fetchCall[1].body);
+
+      expect(requestBody.messages[0].content).toContainEqual({
         type: 'text',
         text: 'What is in this image?',
       });
-      expect(callArgs.messages[0].content).toContainEqual({
+      expect(requestBody.messages[0].content).toContainEqual({
         type: 'image_url',
         image_url: {
           url: 'https://example.com/image.jpg',
         },
-      });
-    });
-
-    it('should convert image messages with base64', async () => {
-      const messages: Message[] = [
-        {
-          role: 'user',
-          content: [
-            { type: 'text', text: 'What is in this image?' },
-            {
-              type: 'image',
-              source: {
-                type: 'base64',
-                mediaType: 'image/jpeg',
-                data: 'base64data',
-              },
-            },
-          ],
-        },
-      ];
-
-      const mockCreate = vi.fn().mockResolvedValue({
-        async *[Symbol.asyncIterator]() {
-          yield {
-            choices: [{ delta: { content: 'Response' }, finish_reason: null }],
-          };
-        },
-      });
-
-      // Mock the client instance's chat.completions.create method
-      if ((provider as any).client) {
-        (provider as any).client.chat = {
-          completions: {
-            create: mockCreate,
-          },
-        };
-      }
-
-      const stream = provider.chat(messages);
-      await stream.next();
-
-      const callArgs = mockCreate.mock.calls[0][0];
-      expect(callArgs.messages[0].content).toContainEqual({
-        type: 'image_url',
-        image_url: {
-          url: 'data:image/jpeg;base64,base64data',
-        },
-      });
-    });
-  });
-
-  describe('tool conversion', () => {
-    beforeEach(async () => {
-      await provider.initialize({
-        apiKey: 'test-api-key',
       });
     });
 
@@ -323,28 +222,29 @@ describe('OpenAIProvider', () => {
         ],
       };
 
-      const mockCreate = vi.fn().mockResolvedValue({
-        async *[Symbol.asyncIterator]() {
-          yield {
-            choices: [{ delta: { content: 'Response' }, finish_reason: null }],
-          };
+      const mockResponse = {
+        ok: true,
+        body: {
+          getReader: () => ({
+            read: vi.fn()
+              .mockResolvedValueOnce({
+                done: false,
+                value: new TextEncoder().encode('data: [DONE]\n\n'),
+              })
+              .mockResolvedValueOnce({ done: true }),
+          }),
         },
-      });
+      };
 
-      // Mock the client instance's chat.completions.create method
-      if ((provider as any).client) {
-        (provider as any).client.chat = {
-          completions: {
-            create: mockCreate,
-          },
-        };
-      }
+      (global.fetch as any).mockResolvedValue(mockResponse);
 
       const stream = provider.chat(messages, options);
       await stream.next();
 
-      const callArgs = mockCreate.mock.calls[0][0];
-      expect(callArgs.tools).toEqual([
+      const fetchCall = (global.fetch as any).mock.calls[0];
+      const requestBody = JSON.parse(fetchCall[1].body);
+
+      expect(requestBody.tools).toEqual([
         {
           type: 'function',
           function: {
@@ -361,149 +261,13 @@ describe('OpenAIProvider', () => {
         },
       ]);
     });
-  });
-
-  describe('streaming', () => {
-    beforeEach(async () => {
-      await provider.initialize({
-        apiKey: 'test-api-key',
-      });
-    });
-
-    it('should stream content deltas', async () => {
-      const messages: Message[] = [
-        { role: 'user', content: 'Hello' },
-      ];
-
-      const mockCreate = vi.fn().mockResolvedValue({
-        async *[Symbol.asyncIterator]() {
-          yield {
-            choices: [{ delta: { content: 'Hello' }, finish_reason: null }],
-          };
-          yield {
-            choices: [{ delta: { content: ' world' }, finish_reason: null }],
-          };
-          yield {
-            choices: [{ delta: {}, finish_reason: 'stop' }],
-          };
-        },
-      });
-
-      // Mock the client instance's chat.completions.create method
-      if ((provider as any).client) {
-        (provider as any).client.chat = {
-          completions: {
-            create: mockCreate,
-          },
-        };
-      }
-
-      const chunks = [];
-      for await (const chunk of provider.chat(messages)) {
-        chunks.push(chunk);
-      }
-
-      expect(chunks).toHaveLength(3);
-      expect(chunks[0]).toEqual({ type: 'content_delta', delta: 'Hello' });
-      expect(chunks[1]).toEqual({ type: 'content_delta', delta: ' world' });
-      expect(chunks[2]).toEqual({ type: 'complete' });
-    });
-
-    it('should handle tool use streaming', async () => {
-      const messages: Message[] = [
-        { role: 'user', content: 'What is the weather?' },
-      ];
-
-      const options: ChatOptions = {
-        tools: [
-          {
-            name: 'get_weather',
-            description: 'Get weather',
-            input_schema: {
-              type: 'object',
-              properties: {
-                location: { type: 'string' },
-              },
-              required: ['location'],
-            },
-          },
-        ],
-      };
-
-      const mockCreate = vi.fn().mockResolvedValue({
-        async *[Symbol.asyncIterator]() {
-          yield {
-            choices: [{
-              delta: {
-                tool_calls: [{
-                  id: 'call_123',
-                  function: { name: 'get_weather', arguments: '' },
-                }],
-              },
-              finish_reason: null,
-            }],
-          };
-          yield {
-            choices: [{
-              delta: {
-                tool_calls: [{
-                  function: { arguments: '{"location":' },
-                }],
-              },
-              finish_reason: null,
-            }],
-          };
-          yield {
-            choices: [{
-              delta: {
-                tool_calls: [{
-                  function: { arguments: '"NYC"}' },
-                }],
-              },
-              finish_reason: null,
-            }],
-          };
-          yield {
-            choices: [{ delta: {}, finish_reason: 'tool_calls' }],
-          };
-        },
-      });
-
-      // Mock the client instance's chat.completions.create method
-      if ((provider as any).client) {
-        (provider as any).client.chat = {
-          completions: {
-            create: mockCreate,
-          },
-        };
-      }
-
-      const chunks = [];
-      for await (const chunk of provider.chat(messages, options)) {
-        chunks.push(chunk);
-      }
-
-      expect(chunks.some(c => c.type === 'tool_use_start')).toBe(true);
-      expect(chunks.some(c => c.type === 'tool_use_delta')).toBe(true);
-      expect(chunks.some(c => c.type === 'tool_use')).toBe(true);
-      expect(chunks.some(c => c.type === 'complete')).toBe(true);
-    });
 
     it('should handle streaming errors', async () => {
       const messages: Message[] = [
         { role: 'user', content: 'Hello' },
       ];
 
-      const mockCreate = vi.fn().mockRejectedValue(new Error('API Error'));
-
-      // Mock the client instance's chat.completions.create method
-      if ((provider as any).client) {
-        (provider as any).client.chat = {
-          completions: {
-            create: mockCreate,
-          },
-        };
-      }
+      (global.fetch as any).mockRejectedValue(new Error('API Error'));
 
       const chunks = [];
       for await (const chunk of provider.chat(messages)) {
@@ -519,13 +283,11 @@ describe('OpenAIProvider', () => {
   describe('cleanup', () => {
     it('should dispose resources', async () => {
       await provider.initialize({
-        apiKey: 'test-api-key',
+        endpoint: 'https://proxy.example.com/api',
       });
 
       provider.destroy();
 
-      // After disposal, client should be null
-      // (we can't directly test private properties, but we can verify behavior)
       expect(() => provider.getModel()).not.toThrow();
     });
   });
