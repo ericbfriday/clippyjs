@@ -122,7 +122,7 @@ export interface AIClippyProviderProps {
  * </AIClippyProvider>
  * ```
  */
-export function AIClippyProvider({ config, children }: AIClippyProviderProps) {
+export function useAIClippyProvider(config: AIClippyConfig): AIClippyContextValue {
   const [isResponding, setIsResponding] = useState(false);
   const [latestSuggestion, setLatestSuggestion] = useState<ProactiveSuggestion | null>(null);
 
@@ -344,7 +344,7 @@ export function AIClippyProvider({ config, children }: AIClippyProviderProps) {
   }, [getActiveProvider, currentProviderId]);
 
   // No loading screen needed - managers are initialized synchronously
-  const contextValue: AIClippyContextValue = {
+  return {
     config,
     conversationManager: managers.conversationManager,
     proactiveBehavior: managers.engine,
@@ -364,6 +364,10 @@ export function AIClippyProvider({ config, children }: AIClippyProviderProps) {
     currentModel,
     changeModel: config.providers ? changeModel : undefined,
   };
+}
+
+export function AIClippyProvider({ config, children }: AIClippyProviderProps) {
+  const contextValue = useAIClippyProvider(config);
 
   return (
     <AIClippyContext.Provider value={contextValue}>
