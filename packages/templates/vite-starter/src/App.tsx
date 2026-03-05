@@ -1,5 +1,9 @@
 import { useState } from 'react';
 import { useAgent, type AgentName } from '@clippyjs/react';
+import { AgentSelector } from './components/AgentSelector';
+import { AgentControls } from './components/AgentControls';
+import { GettingStarted } from './components/GettingStarted';
+import { LearnMore } from './components/LearnMore';
 
 function App() {
   const [selectedAgent, setSelectedAgent] = useState<AgentName>('Clippy');
@@ -34,72 +38,24 @@ function App() {
           Get started with ClippyJS in your Vite + React application!
         </p>
 
-        <div className="card">
-          <h2>Select an Agent</h2>
-          <div className="agent-selector">
-            {agents.map((name) => (
-              <button
-                key={name}
-                onClick={() => setSelectedAgent(name)}
-                className={selectedAgent === name ? 'active' : ''}
-                disabled={loading}
-              >
-                {name}
-              </button>
-            ))}
-          </div>
-        </div>
+        <AgentSelector
+          agents={agents}
+          selectedAgent={selectedAgent}
+          setSelectedAgent={setSelectedAgent}
+          loading={loading}
+        />
 
-        <div className="card">
-          <h2>Agent Controls</h2>
-          <div className="controls">
-            <button onClick={handleGreeting} disabled={loading}>
-              {loading ? 'Loading...' : 'Say Hello'}
-            </button>
-            <button onClick={handleRandomAnimation} disabled={!agent}>
-              Random Animation
-            </button>
-            <button onClick={handleMove} disabled={!agent}>
-              Move Around
-            </button>
-          </div>
-        </div>
+        <AgentControls
+          handleGreeting={handleGreeting}
+          handleRandomAnimation={handleRandomAnimation}
+          handleMove={handleMove}
+          agent={agent}
+          loading={loading}
+        />
 
-        <div className="card">
-          <h2>Getting Started</h2>
-          <ol>
-            <li>
-              The <code>ClippyProvider</code> is set up in <code>src/main.tsx</code>
-            </li>
-            <li>
-              Import <code>useAgent</code> hook in any component
-            </li>
-            <li>
-              Load an agent and start interacting!
-            </li>
-          </ol>
-        </div>
+        <GettingStarted />
 
-        <div className="card">
-          <h2>Learn More</h2>
-          <ul>
-            <li>
-              <a href="https://github.com/ericbfriday/clippyjs" target="_blank" rel="noopener noreferrer">
-                ClippyJS Documentation
-              </a>
-            </li>
-            <li>
-              <a href="https://vitejs.dev" target="_blank" rel="noopener noreferrer">
-                Vite Documentation
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev" target="_blank" rel="noopener noreferrer">
-                React Documentation
-              </a>
-            </li>
-          </ul>
-        </div>
+        <LearnMore />
       </main>
     </div>
   );
