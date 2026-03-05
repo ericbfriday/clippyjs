@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import {
   LocalStorageHistoryStore,
   SessionStorageHistoryStore,
@@ -52,6 +52,30 @@ describe('LocalStorageHistoryStore', () => {
     expect(loaded!.agentName).toBe('Clippy');
     expect(loaded!.messages).toHaveLength(2);
     expect(loaded!.messages[0].content).toBe('Hello');
+  });
+
+  it('should silently fail when saving to localStorage throws an error', async () => {
+    const originalSetItem = localStorage.setItem;
+
+    localStorage.setItem = vi.fn().mockImplementation(() => {
+      throw new Error('QuotaExceededError');
+    });
+
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    try {
+      await store.save(mockHistory);
+    } catch (e) {
+      expect.fail('store.save should not throw');
+    }
+
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      'Failed to save conversation history:',
+      expect.any(Error)
+    );
+
+    localStorage.setItem = originalSetItem;
+    consoleErrorSpy.mockRestore();
   });
 
   it('should return null for non-existent history', async () => {
