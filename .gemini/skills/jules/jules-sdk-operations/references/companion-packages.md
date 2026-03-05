@@ -36,4 +36,3 @@ Documented capabilities include:
 ## Integration Boundary Rule
 
 Use companion packages only when the user explicitly needs those workflows. For normal session orchestration, keep the implementation on `@google/jules-sdk`.
-

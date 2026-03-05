@@ -33,4 +33,3 @@ The Render integration enables Jules to monitor failed Render deployments for pu
 ## Explicit Limitation
 
 Jules currently auto-monitors and auto-fixes build failures only for PRs created by Jules.
-

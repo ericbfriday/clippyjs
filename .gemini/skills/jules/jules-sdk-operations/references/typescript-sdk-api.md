@@ -50,4 +50,3 @@ Primary sources:
 
 - Change sets, bash output, and media are represented as typed artifacts.
 - Utility helpers include parsed diff support (`parsed()` / `parseUnidiff`) and artifact serialization helpers.
-

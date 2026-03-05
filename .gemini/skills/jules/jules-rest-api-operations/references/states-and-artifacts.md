@@ -40,4 +40,3 @@ Additional states:
 3. Read activities for progress and artifacts.
 4. If waiting for plan approval, call `:approvePlan`.
 5. Return outputs such as PR URL and title from session outputs.
-

@@ -1,7 +1,7 @@
 # Browser-Based AI Assistant — Phase 1 Implementation
 
-**Goal:** Implement the Browser-Based AI Assistant Phase 1 as defined in `docs/prd/`.  
-**Source:** `.ralph/PROMPT.md`, `docs/prd/PRD_BROWSER_AI_ASSISTANT.md`, `docs/prd/TECHNICAL_ARCHITECTURE.md`, `docs/prd/API_SPECIFICATION.md`  
+**Goal:** Implement the Browser-Based AI Assistant Phase 1 as defined in `docs/prd/`.
+**Source:** `.ralph/PROMPT.md`, `docs/prd/PRD_BROWSER_AI_ASSISTANT.md`, `docs/prd/TECHNICAL_ARCHITECTURE.md`, `docs/prd/API_SPECIFICATION.md`
 **Completion Signal:** `<promise>IMPLEMENTATION COMPLETE</promise>`
 
 ---
