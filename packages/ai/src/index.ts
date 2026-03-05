@@ -101,7 +101,6 @@ export {
 export {
   AIClippyProvider,
   useAIClippy,
-  useAIClippyProvider,
   type AIClippyConfig,
   type AIClippyContextValue,
   type AIClippyProviderProps,

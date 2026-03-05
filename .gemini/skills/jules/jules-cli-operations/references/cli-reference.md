@@ -30,4 +30,3 @@ Source: https://jules.google/docs/cli/reference and https://jules.google/docs/cl
   - `cat TODO.md | while IFS= read -r line; do jules remote new --repo . --session "$line"; done`
 - From GitHub issues:
   - `gh issue list --assignee @me --limit 1 --json title | jq -r '.[0].title' | jules remote new --repo .`
-

@@ -31,4 +31,3 @@ Jules is strongest at defined work items. Split discovery-heavy work into short 
 2. Select one concrete change.
 3. Launch one scoped session.
 4. Repeat with the next concrete change.
-

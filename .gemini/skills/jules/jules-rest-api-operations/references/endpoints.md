@@ -53,4 +53,3 @@ Sources:
 - `404`: missing resource
 - `429`: rate limiting
 - `500`: server-side failure
-

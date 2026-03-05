@@ -7,10 +7,7 @@
     "dev": "wrangler dev",
     "deploy": "wrangler deploy"
   },
-  "keywords": [
-    "web-scraping",
-    "cloudflare-workers"
-  ],
+  "keywords": ["web-scraping", "cloudflare-workers"],
   "author": "goose",
   "license": "MIT",
   "devDependencies": {
@@ -19,7 +16,6 @@
     "wrangler": "^3.94.0"
   },
   "dependencies": {
-    "itty-router": "^5.0.0",
-    "robots-parser": "^3.0.1"
+    "itty-router": "^5.0.0"
   }
 }

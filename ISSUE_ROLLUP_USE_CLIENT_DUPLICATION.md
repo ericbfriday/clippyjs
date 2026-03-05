@@ -6,7 +6,7 @@ The `"use client"` directive is duplicated three times in `packages/react/rollup
 ## Current State
 The directive appears in three locations:
 1. **Line 15**: `banner` property for CommonJS output
-2. **Line 21**: `banner` property for ESM output  
+2. **Line 21**: `banner` property for ESM output
 3. **Line 48**: `preamble` property in terser configuration
 
 ## Problem

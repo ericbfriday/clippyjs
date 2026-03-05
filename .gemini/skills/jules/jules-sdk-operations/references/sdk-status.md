@@ -30,4 +30,3 @@ Before changing SDK behavior in this skill:
 1. Re-check latest `google-labs-code/jules-sdk` README and package metadata.
 2. Reconcile any changes with REST API docs for endpoint-level truth.
 3. Update this status file with new verification date and commit hash.
-

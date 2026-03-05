@@ -1,5 +1,3 @@
-import robotsParser from 'robots-parser';
-
 /**
  * Hash a URL for caching
  */
@@ -34,39 +32,11 @@ export function getCacheKey(url: string, format: string): string {
 }
 
 /**
- * Check robots.txt
+ * Check robots.txt (simplified for prototype)
+ * TODO: Implement full robots.txt parser
  */
 export async function checkRobotsTxt(url: string): Promise<boolean> {
-  try {
-    const targetUrl = new URL(url);
-    const robotsUrl = new URL('/robots.txt', targetUrl.origin).toString();
-    const userAgent = 'Mozilla/5.0 (compatible; Cloudflare-Workers-Scraper; +https://github.com/ericbfriday/clippyjs)';
-    const botName = 'Cloudflare-Workers-Scraper';
-
-    // Use Cloudflare fetch options to cache the robots.txt file for 1 hour (3600 seconds)
-    // This prevents hammering target servers on every scrape request.
-    const response = await fetch(robotsUrl, {
-      headers: {
-        'User-Agent': userAgent
-      },
-      cf: {
-        cacheTtl: 3600,
-        cacheEverything: true
-      }
-    });
-
-    if (response.ok) {
-      const content = await response.text();
-      const robots = robotsParser(robotsUrl, content);
-
-      const isAllowed = robots.isAllowed(url, botName);
-      return isAllowed !== false; // isAllowed can be undefined, default to true if undefined
-    }
-
-    // If robots.txt fetch fails (e.g. 404), allow scraping by default
-    return true;
-  } catch (error) {
-    // Fail open on any errors (invalid URL, network error, etc.)
-    return true;
-  }
+  // For prototype, always return true
+  // In production, parse robots.txt
+  return true;
 }

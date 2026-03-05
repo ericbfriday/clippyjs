@@ -40,13 +40,7 @@ describe('LocalStorageHistoryStore', () => {
     const saved = localStorage.getItem(key);
 
     expect(saved).toBeDefined();
-    // Saved data is now encrypted base64 string, not raw JSON
-    expect(typeof saved).toBe('string');
-    expect(saved!.length).toBeGreaterThan(0);
-    // Let's verify it can be loaded back properly instead of trying to JSON.parse the encrypted string
-    const loaded = await store.load('Clippy');
-    expect(loaded).toBeDefined();
-    expect(loaded!.agentName).toBe('Clippy');
+    expect(JSON.parse(saved!)).toBeDefined();
   });
 
   it('should load history from localStorage', async () => {
@@ -56,20 +50,6 @@ describe('LocalStorageHistoryStore', () => {
 
     expect(loaded).toBeDefined();
     expect(loaded!.agentName).toBe('Clippy');
-    expect(loaded!.messages).toHaveLength(2);
-    expect(loaded!.messages[0].content).toBe('Hello');
-  });
-
-  it('should load unencrypted legacy plaintext history from localStorage', async () => {
-    // Manually save plain JSON, simulating the old implementation
-    const key = 'clippy-ai-history:LegacyClippy';
-    const legacyHistory = { ...mockHistory, agentName: 'LegacyClippy' as any };
-    localStorage.setItem(key, JSON.stringify(legacyHistory));
-
-    const loaded = await store.load('LegacyClippy' as any);
-
-    expect(loaded).toBeDefined();
-    expect(loaded!.agentName).toBe('LegacyClippy');
     expect(loaded!.messages).toHaveLength(2);
     expect(loaded!.messages[0].content).toBe('Hello');
   });

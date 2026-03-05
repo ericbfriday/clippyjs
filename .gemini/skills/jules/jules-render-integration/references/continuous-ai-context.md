@@ -16,4 +16,3 @@ Use scheduled prompts plus Render integration to keep build health stable:
 2. Let Render signal deployment failures on Jules PRs.
 3. Let Jules attempt automatic remediation.
 4. Review and merge or rerun with tighter instructions.
-
