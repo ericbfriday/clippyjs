@@ -1,0 +1,51 @@
+{
+  "name": "@clippyjs/browser-assistant",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/browser-assistant/src",
+  "projectType": "library",
+  "tags": [
+    "type:lib",
+    "scope:browser-assistant",
+    "platform:browser"
+  ],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "outputs": [
+        "{projectRoot}/dist"
+      ],
+      "options": {
+        "command": "yarn workspace @clippyjs/browser-assistant build"
+      }
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": [
+        "{workspaceRoot}/coverage/packages/browser-assistant"
+      ],
+      "options": {
+        "config": "packages/browser-assistant/vitest.config.ts",
+        "passWithNoTests": false,
+        "reportsDirectory": "../../coverage/packages/browser-assistant"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit -p packages/browser-assistant/tsconfig.json"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "eslint packages/browser-assistant/src --ext .ts"
+      }
+    },
+    "clean": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "rm -rf packages/browser-assistant/dist"
+      }
+    }
+  }
+}
