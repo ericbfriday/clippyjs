@@ -16,4 +16,14 @@ export default defineConfig({
       ],
     },
   },
+  server: {
+    deps: {
+      inline: [
+        '@clippyjs/browser-parser',
+        '@clippyjs/context-providers',
+        '@clippyjs/ai',
+        '@clippyjs/types',
+      ],
+    },
+  },
 });
