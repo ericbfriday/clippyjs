@@ -45,7 +45,7 @@
   "tags": ["type:lib", "scope:browser-assistant", "platform:browser"],
   "targets": {
     "build": { "executor": "nx:run-commands", "options": { "command": "yarn workspace @clippyjs/browser-assistant build" } },
-    "test": { "executor": "@nx/vite:test", "options": { "config": "packages/browser-assistant/vitest.config.ts" } },
+    "test": { "executor": "@nx/vitest:test", "options": { "config": "packages/browser-assistant/vitest.config.ts" } },
     "typecheck": { "executor": "@nx/js:tsc", "options": { "tsConfig": "packages/browser-assistant/tsconfig.json", "noEmit": true } }
   }
 }
@@ -236,7 +236,7 @@ export default defineConfig({
 3. **`MouseEvent.target.className`**: When dispatching `new MouseEvent('click')` on `document` directly, `e.target` can be the document itself which has no `className` property. The `UserBehaviorProvider.getElementSelector` crashes with `Cannot read properties of undefined (reading 'toLowerCase')`. This is a jsdom limitation with synthetic events — tests still pass since the error is caught internally.
 4. **`CSSStyleSheet` constructor**: jsdom doesn't support `new CSSStyleSheet()` or `replaceSync()`. Need to mock globally before ShadowRenderer tests: `global.CSSStyleSheet = class { replaceSync() {} }`.
 5. **`adoptedStyleSheets`**: Not available on jsdom ShadowRoot. The ShadowRenderer has a fallback that creates a `<style>` element instead.
-6. **Nx `@nx/vite:test` executor timeout**: The deprecated executor can hang. Running `yarn vitest run` directly in the package directory is more reliable for development.
+6. **Nx `@nx/vitest:test` executor timeout**: The deprecated executor can hang. Running `yarn vitest run` directly in the package directory is more reliable for development.
 
 **Patterns used:**
 - `vi.useFakeTimers()` / `vi.useRealTimers()` for MutationObserver debounce and proactive timer tests

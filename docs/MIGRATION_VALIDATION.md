@@ -109,7 +109,7 @@ yarn nx run @clippyjs/react:test
 ```
 
 **Result:**
-- ⚠️ @nx/vite:test executor requires vitest dependency
+- ⚠️ @nx/vitest:test executor requires vitest dependency
 - ✅ Tests work via existing Yarn workspace scripts
 - ✅ No regression in test functionality
 
@@ -432,7 +432,7 @@ git checkout master -- .yarnrc.yml
 3. 🔍 **Gather feedback** - Developer experience
 
 ### Medium Term (1 month)
-1. 📦 **Add vitest** - Enable @nx/vite:test executor
+1. 📦 **Add vitest** - Enable @nx/vitest:test executor
 2. 🎨 **Add lint target** - Extend caching to linting
 3. 🚀 **CI integration** - Leverage affected commands in CI
 

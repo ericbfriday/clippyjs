@@ -66,7 +66,7 @@ demos, templates, storybook
 **Executors:**
 - `@nx/js:tsc` for pure TypeScript (types package)
 - `nx:run-commands` for existing builds (preserves Rollup configs)
-- `@nx/vite:test` for future test integration
+- `@nx/vitest:test` for future test integration
 - `@nx/playwright:playwright` for integration tests
 
 **Caching Strategy:**
@@ -214,7 +214,7 @@ Comprehensive documentation created for team adoption:
 ## ⚠️ Known Limitations
 
 ### Vitest Dependency
-**Issue:** `@nx/vite:test` executor requires vitest dependency  
+**Issue:** `@nx/vitest:test` executor requires vitest dependency  
 **Impact:** Tests run via existing Yarn workspace scripts  
 **Workaround:** `yarn workspace @clippyjs/react test` works correctly  
 **Future Fix:** Add vitest to root devDependencies

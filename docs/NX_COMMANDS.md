@@ -61,7 +61,7 @@ yarn nx:test:affected
 yarn nx affected --target=test
 ```
 
-**Note**: The @nx/vite:test executor requires vitest as a dependency. Tests currently run via existing Yarn workspace scripts.
+**Note**: The @nx/vitest:test executor requires vitest as a dependency. Tests currently run via existing Yarn workspace scripts.
 
 ## Typecheck Commands
 

@@ -70,7 +70,7 @@
 ### Key patterns (copy from @clippyjs/ai)
 - package.json: type=module, main=dist/index.js, module=dist/index.esm.js, types=dist/index.d.ts
 - tsconfig.json: extends ../../tsconfig.react.json, composite:true
-- project.json: executor=nx:run-commands for build, @nx/vite:test for test
+- project.json: executor=nx:run-commands for build, @nx/vitest:test for test
 - rollup.config.ts: @rollup/plugin-typescript, @rollup/plugin-node-resolve, @rollup/plugin-commonjs
 - vitest.config.ts: environment=jsdom (browser DOM needed)
 

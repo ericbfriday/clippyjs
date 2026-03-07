@@ -362,7 +362,7 @@ cat > packages/react/project.json << 'EOF'
       }
     },
     "test": {
-      "executor": "@nx/vite:test",
+      "executor": "@nx/vitest:test",
       "outputs": ["{workspaceRoot}/coverage/packages/react"],
       "options": {
         "config": "packages/react/vite.config.ts",
