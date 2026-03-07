@@ -1,5 +1,5 @@
 {
-  "name": "clippyjs-workspace",
+  "name": "@clippyjs/source",
   "version": "1.0.0",
   "description": "Add Clippy or his friends to any website for instant nostalgia - modern TypeScript and React implementation.",
   "type": "module",
