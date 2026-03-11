@@ -1780,6 +1780,26 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@clippyjs/source@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@clippyjs/source@workspace:."
+  dependencies:
+    "@nx/eslint": "npm:^22.0.3"
+    "@nx/js": "npm:^22.0.3"
+    "@nx/playwright": "npm:^22.0.3"
+    "@nx/react": "npm:^22.0.3"
+    "@nx/rollup": "npm:^22.0.3"
+    "@nx/vite": "npm:^22.0.3"
+    "@nx/vitest": "npm:^22.5.4"
+    "@playwright/test": "npm:^1.58.2"
+    eslint: "npm:^9.39.1"
+    nx: "npm:22.0.3"
+    typescript: "npm:^5.7.3"
+    vite: "npm:^7.2.2"
+    vitest: "npm:^4.0.8"
+  languageName: unknown
+  linkType: soft
+
 "@clippyjs/storybook@workspace:packages/storybook":
   version: 0.0.0-use.local
   resolution: "@clippyjs/storybook@workspace:packages/storybook"
@@ -7828,26 +7848,6 @@ __metadata:
     react-dom: "npm:^19.0.0"
     typescript: "npm:~5.7.3"
     vite: "npm:^6.0.11"
-  languageName: unknown
-  linkType: soft
-
-"clippyjs-workspace@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "clippyjs-workspace@workspace:."
-  dependencies:
-    "@nx/eslint": "npm:^22.0.3"
-    "@nx/js": "npm:^22.0.3"
-    "@nx/playwright": "npm:^22.0.3"
-    "@nx/react": "npm:^22.0.3"
-    "@nx/rollup": "npm:^22.0.3"
-    "@nx/vite": "npm:^22.0.3"
-    "@nx/vitest": "npm:^22.5.4"
-    "@playwright/test": "npm:^1.58.2"
-    eslint: "npm:^9.39.1"
-    nx: "npm:22.0.3"
-    typescript: "npm:^5.7.3"
-    vite: "npm:^7.2.2"
-    vitest: "npm:^4.0.8"
   languageName: unknown
   linkType: soft
 
