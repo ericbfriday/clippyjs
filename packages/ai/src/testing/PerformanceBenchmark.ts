@@ -329,9 +329,11 @@ function percentile(sortedValues: number[], p: number): number {
  */
 function standardDeviation(values: number[], mean: number): number {
   if (values.length === 0) return 0;
-  const squareDiffs = values.map((value) => Math.pow(value - mean, 2));
-  const avgSquareDiff = squareDiffs.reduce((a, b) => a + b, 0) / values.length;
-  return Math.sqrt(avgSquareDiff);
+  let squareDiffsSum = 0;
+  for (let i = 0; i < values.length; i++) {
+    squareDiffsSum += Math.pow(values[i] - mean, 2);
+  }
+  return Math.sqrt(squareDiffsSum / values.length);
 }
 
 /**
@@ -401,18 +403,38 @@ function aggregateMetrics(
   requests: RequestMetrics[],
   totalTimeMs: number
 ): ScenarioMetrics {
-  const successful = requests.filter((r) => r.success);
-  const failed = requests.filter((r) => !r.success);
-  const latencies = successful.map((r) => r.latencyMs).sort((a, b) => a - b);
+  let successfulCount = 0;
+  let failedCount = 0;
+  let totalLatency = 0;
+  let totalResponseSize = 0;
+  let peakMemoryMB = 0;
+  const latencies: number[] = [];
 
-  const meanLatency = latencies.length > 0 ? latencies.reduce((a, b) => a + b, 0) / latencies.length : 0;
+  for (let i = 0; i < requests.length; i++) {
+    const r = requests[i];
+    if (r.success) {
+      successfulCount++;
+      totalLatency += r.latencyMs;
+      totalResponseSize += r.responseSize || 0;
+      latencies.push(r.latencyMs);
+    } else {
+      failedCount++;
+    }
+
+    if (r.memoryMB && r.memoryMB > peakMemoryMB) {
+      peakMemoryMB = r.memoryMB;
+    }
+  }
+
+  latencies.sort((a, b) => a - b);
+  const meanLatency = successfulCount > 0 ? totalLatency / successfulCount : 0;
 
   return {
     scenario: scenarioName,
     iterations: requests.length,
-    successful: successful.length,
-    failed: failed.length,
-    errorRate: requests.length > 0 ? failed.length / requests.length : 0,
+    successful: successfulCount,
+    failed: failedCount,
+    errorRate: requests.length > 0 ? failedCount / requests.length : 0,
     minLatency: latencies.length > 0 ? latencies[0] : 0,
     maxLatency: latencies.length > 0 ? latencies[latencies.length - 1] : 0,
     meanLatency,
@@ -420,13 +442,10 @@ function aggregateMetrics(
     p95Latency: percentile(latencies, 95),
     p99Latency: percentile(latencies, 99),
     stdDeviation: standardDeviation(latencies, meanLatency),
-    throughput: totalTimeMs > 0 ? (successful.length / totalTimeMs) * 1000 : 0,
+    throughput: totalTimeMs > 0 ? (successfulCount / totalTimeMs) * 1000 : 0,
     totalTimeMs,
-    peakMemoryMB: Math.max(...requests.map((r) => r.memoryMB || 0).filter((m) => m > 0)),
-    avgResponseSize:
-      successful.length > 0
-        ? successful.reduce((sum, r) => sum + (r.responseSize || 0), 0) / successful.length
-        : 0,
+    peakMemoryMB: peakMemoryMB > 0 ? peakMemoryMB : 0,
+    avgResponseSize: successfulCount > 0 ? totalResponseSize / successfulCount : 0,
     requests,
   };
 }
