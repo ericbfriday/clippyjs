@@ -32,6 +32,14 @@ const openaiProvider = new MockProvider({
 
 const mockProviders: ProviderInfo[] = [
   {
+    id: "opencode",
+    name: "OpenCode",
+    models: ["gpt-4o", "gpt-4", "gpt-3.5-turbo"],
+    supportsVision: true,
+    supportsTools: true,
+    instance: new MockProvider({ name: "OpenCode (Mock)", supportsVision: true, supportsTools: true, latency: { min: 80, max: 250 } }),
+  },
+  {
     id: 'anthropic',
     name: 'Anthropic Claude',
     models: ['claude-3-5-sonnet-20241022', 'claude-3-opus-20240229', 'claude-3-haiku-20240307'],

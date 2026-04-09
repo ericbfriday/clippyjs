@@ -41,7 +41,8 @@
     "react-dom": "^18.0.0 || ^19.0.0"
   },
   "dependencies": {
-    "@clippyjs/types": "workspace:*"
+    "@clippyjs/types": "workspace:*",
+    "@opencode-ai/sdk": "^1.4.2"
   },
   "devDependencies": {
     "@playwright/test": "^1.49.1",

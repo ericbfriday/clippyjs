@@ -871,6 +871,7 @@ MIT
 
 - [@clippyjs/ai-anthropic](../ai-anthropic) - Anthropic Claude provider
 - [@clippyjs/ai-openai](../ai-openai) - OpenAI GPT provider
+- [@clippyjs/ai-opencode](../ai-opencode) - OpenCode provider
 - [@clippyjs/react](../react) - React UI components
 
 ## Further Reading
