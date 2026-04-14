@@ -34,7 +34,6 @@
       "outputs": [],
       "options": {
         "command": "yarn workspace @clippyjs/ai-zai typecheck"
-
       }
     },
     "clean": {

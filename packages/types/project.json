@@ -23,7 +23,6 @@
       "outputs": [],
       "options": {
         "command": "yarn workspace @clippyjs/types typecheck"
-
       }
     },
     "clean": {

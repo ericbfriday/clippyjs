@@ -43,7 +43,6 @@
       "outputs": [],
       "options": {
         "command": "yarn workspace @clippyjs/react typecheck"
-
       }
     },
     "clean": {

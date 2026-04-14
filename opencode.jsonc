@@ -24,14 +24,11 @@
     },
     "playwright": {
       "type": "local",
-      "command": ["npx", "-y", "@executeautomation/playwright-mcp-server"],
-    },
-    "tavily": {
-      "type": "local",
-      "command": ["npx", "-y", "@modelcontextprotocol/server-tavily"],
-      "environment": {
-        "TAVILY_API_KEY": "{env:TAVILY_API_KEY}",
-      },
-    },
+      "command": [
+        "npx",
+        "-y",
+        "@executeautomation/playwright-mcp-server"
+      ],
+    }
   },
 }
