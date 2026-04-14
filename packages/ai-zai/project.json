@@ -26,7 +26,7 @@
       "options": {
         "config": "packages/ai-zai/vitest.config.ts",
         "passWithNoTests": false,
-        "reportsDirectory": "../../coverage/packages/ai-zai"
+        "reportsDirectory": "{projectRoot}/../../coverage/packages/ai-zai"
       }
     },
     "typecheck": {

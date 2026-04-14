@@ -26,7 +26,7 @@
       "options": {
         "config": "packages/react/vitest.config.ts",
         "passWithNoTests": false,
-        "reportsDirectory": "../../coverage/packages/react"
+        "reportsDirectory": "{projectRoot}/../../coverage/packages/react"
       }
     },
     "test:integration": {

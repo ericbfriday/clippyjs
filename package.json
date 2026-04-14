@@ -55,19 +55,19 @@
   "private": true,
   "packageManager": "yarn@4.12.0",
   "devDependencies": {
-    "@nx/eslint": "^22.0.3",
-    "@nx/js": "^22.0.3",
-    "@nx/playwright": "^22.0.3",
-    "@nx/react": "^22.0.3",
-    "@nx/rollup": "^22.0.3",
-    "@nx/vite": "^22.0.3",
-    "@nx/vitest": "^22.5.4",
+    "@nx/eslint": "22.6.5",
+    "@nx/js": "22.6.5",
+    "@nx/playwright": "22.6.5",
+    "@nx/react": "22.6.5",
+    "@nx/rollup": "22.6.5",
+    "@nx/vite": "22.6.5",
+    "@nx/vitest": "22.6.5",
     "@playwright/test": "^1.58.2",
     "eslint": "^9.39.1",
-    "nx": "22.0.3",
+    "nx": "22.6.5",
     "typescript": "^5.7.3",
     "vite": "^7.2.2",
-    "vitest": "^4.0.8"
+    "vitest": "4.1.4"
   },
   "workspaces": [
     "packages/*",

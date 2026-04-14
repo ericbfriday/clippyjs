@@ -26,7 +26,7 @@
       "options": {
         "config": "packages/context-providers/vitest.config.ts",
         "passWithNoTests": false,
-        "reportsDirectory": "../../coverage/packages/context-providers"
+        "reportsDirectory": "{projectRoot}/../../coverage/packages/context-providers"
       }
     },
     "typecheck": {

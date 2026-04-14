@@ -26,7 +26,7 @@
       "options": {
         "config": "packages/browser-assistant/vitest.config.ts",
         "passWithNoTests": false,
-        "reportsDirectory": "../../coverage/packages/browser-assistant"
+        "reportsDirectory": "{projectRoot}/../../coverage/packages/browser-assistant"
       }
     },
     "typecheck": {

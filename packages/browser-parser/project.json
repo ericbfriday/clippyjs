@@ -26,7 +26,7 @@
       "options": {
         "config": "packages/browser-parser/vitest.config.ts",
         "passWithNoTests": false,
-        "reportsDirectory": "../../coverage/packages/browser-parser"
+        "reportsDirectory": "{projectRoot}/../../coverage/packages/browser-parser"
       }
     },
     "typecheck": {
