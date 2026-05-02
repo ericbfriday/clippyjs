@@ -156,7 +156,7 @@ describe('FormAnalyzer', () => {
       document.body.innerHTML = '<form><input type="text" name="x" /></form>';
       const form = document.querySelector<HTMLFormElement>('form')!;
       const analysis = analyzer.analyzeForm(form);
-      expect(analysis.id).toMatch(/^form-/);
+      expect(analysis.id).toMatch(/^form-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i);
     });
 
     it('should extract help text from aria-describedby', () => {
