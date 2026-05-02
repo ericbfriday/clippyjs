@@ -16,6 +16,46 @@ const dataCallbacks: Map<string, (data: AgentData) => void> = new Map();
 const soundCallbacks: Map<string, (sounds: SoundMap) => void> = new Map();
 
 /**
+ * Validates that a path is safe to load resources from.
+ * A path is considered safe if:
+ * 1. It is relative (starts with / or ./)
+ * 2. It is on the same origin as the current page
+ * 3. It is from a trusted origin defined in window.CLIPPY_TRUSTED_ORIGINS
+ */
+function validatePath(path: string): string {
+  if (typeof window === 'undefined') return path;
+
+  // Relative paths are safe (but exclude protocol-relative //)
+  if ((path.startsWith('/') && !path.startsWith('//')) || path.startsWith('./') || path.startsWith('../')) {
+    return path;
+  }
+
+  try {
+    const url = new URL(path, window.location.origin);
+    const origin = url.origin;
+
+    // Same origin is safe
+    if (origin === window.location.origin) {
+      return path;
+    }
+
+    // Check trusted origins
+    const trustedOrigins = (window as any).CLIPPY_TRUSTED_ORIGINS;
+    if (Array.isArray(trustedOrigins) && trustedOrigins.includes(origin)) {
+      return path;
+    }
+
+    throw new Error(`Security Error: Untrusted origin for Clippy assets: ${origin}. Add to window.CLIPPY_TRUSTED_ORIGINS if this is intended.`);
+  } catch (e) {
+    if ((e as Error).message.startsWith('Security Error')) {
+      throw e;
+    }
+    // If not a valid URL and not relative, it's safer to reject
+    throw new Error(`Security Error: Invalid or untrusted path for Clippy assets: ${path}`);
+  }
+}
+
+/**
  * Load Clippy CSS styles (once per session)
  */
 function loadCSS(basePath: string): void {
@@ -32,7 +72,7 @@ function loadCSS(basePath: string): void {
   const link = document.createElement('link');
   link.rel = 'stylesheet';
   link.type = 'text/css';
-  link.href = `${cssBasePath}clippy.css`;
+  link.href = validatePath(`${cssBasePath}clippy.css`);
   document.head.appendChild(link);
 
   cssLoaded = true;
@@ -42,14 +82,17 @@ function loadCSS(basePath: string): void {
  * Load a Clippy agent
  */
 export async function load(name: string, options?: LoadOptions): Promise<Agent> {
-  const basePath = options?.basePath ||
+  const rawBasePath = options?.basePath ||
     (window as any).CLIPPY_CDN ||
     '/agents/';
+
+  const basePath = validatePath(rawBasePath);
 
   // Load CSS styles (once per session)
   loadCSS(basePath);
 
-  const path = `${basePath}${name}`;
+  // Ensure path is also validated, especially to prevent bypasses via agent name
+  const path = validatePath(`${basePath}${name}`);
 
   // Load all resources in parallel
   const [, agentData, sounds] = await Promise.all([
@@ -73,7 +116,7 @@ async function loadMap(path: string): Promise<void> {
     const img = new Image();
     img.onload = () => resolve();
     img.onerror = () => reject(new Error(`Failed to load map: ${path}/map.png`));
-    img.src = `${path}/map.png`;
+    img.src = validatePath(`${path}/map.png`);
   });
 
   loadedMaps.set(path, promise);
@@ -94,7 +137,7 @@ async function loadAgentData(name: string, path: string): Promise<AgentData> {
 
     // Create and load script
     const script = document.createElement('script');
-    script.src = `${path}/agent.js`;
+    script.src = validatePath(`${path}/agent.js`);
     script.async = true;
     script.onerror = () => {
       dataCallbacks.delete(name);
@@ -133,7 +176,7 @@ async function loadSounds(name: string, path: string): Promise<SoundMap> {
     // Load appropriate sound format
     const soundFile = canPlayMp3 ? 'sounds-mp3.js' : 'sounds-ogg.js';
     const script = document.createElement('script');
-    script.src = `${path}/${soundFile}`;
+    script.src = validatePath(`${path}/${soundFile}`);
     script.async = true;
     script.onerror = () => {
       soundCallbacks.delete(name);
