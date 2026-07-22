@@ -11,7 +11,7 @@
 
 ## ✨ Features
 
-- 🤖 **AI-Powered Agents**: Integrate Claude (Anthropic) or GPT (OpenAI) with simple React hooks
+- 🤖 **AI-Powered Agents**: Integrate Claude, GPT, or an OpenCode runtime with simple React hooks
 - ⚛️ **React 19 Ready**: Modern React components with full TypeScript support
 - 🎭 **Personality Modes**: Pre-configured assistant personalities (Helpful, Concise, Technical, Creative)
 - 🎨 **Customizable UI**: Themeable components that match your design system
@@ -33,6 +33,8 @@ npm install @clippyjs/react
 npm install @clippyjs/ai-anthropic  # For Claude
 # OR
 npm install @clippyjs/ai-openai     # For GPT
+# OR
+npm install @clippyjs/ai-opencode @opencode-ai/sdk  # For OpenCode
 ```
 
 ### Basic Usage
@@ -76,6 +78,7 @@ function YourComponent() {
 | [@clippyjs/ai](packages/ai) | 0.4.0 | Core AI integration layer |
 | [@clippyjs/ai-anthropic](packages/ai-anthropic) | 1.0.0 | Anthropic Claude provider |
 | [@clippyjs/ai-openai](packages/ai-openai) | 0.1.0 | OpenAI GPT provider |
+| [@clippyjs/ai-opencode](packages/ai-opencode) | 0.1.0 | OpenCode runtime provider |
 
 ---
 
@@ -172,6 +175,7 @@ clippyjs/
 │   ├── ai/                 # Core AI integration layer
 │   ├── ai-anthropic/       # Anthropic Claude provider
 │   ├── ai-openai/          # OpenAI GPT provider
+│   ├── ai-opencode/        # OpenCode runtime provider
 │   ├── storybook/          # Component documentation
 │   ├── clippyjs-demo-react/  # React demo app
 │   └── templates/          # Starter templates
