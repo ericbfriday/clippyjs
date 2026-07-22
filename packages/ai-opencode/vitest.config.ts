@@ -5,7 +5,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@opencode-ai/sdk': fileURLToPath(
-        new URL('./src/testing/opencode-sdk-stub.ts', import.meta.url)
+        new URL('./tests/opencode-sdk-stub.ts', import.meta.url)
       ),
     },
   },
@@ -18,7 +18,6 @@ export default defineConfig({
       exclude: [
         'node_modules/',
         'dist/',
-        'src/testing/',
         '**/*.config.*',
       ],
     },
