@@ -4,7 +4,7 @@
   "description": "Add Clippy or his friends to any website for instant nostalgia - modern TypeScript and React implementation.",
   "type": "module",
   "scripts": {
-    "build": "nx run-many --target=build --projects=@clippyjs/types,@clippyjs/ai,@clippyjs/ai-anthropic,@clippyjs/ai-openai,@clippyjs/react",
+    "build": "nx run-many --target=build --projects=@clippyjs/types,@clippyjs/ai,@clippyjs/ai-anthropic,@clippyjs/ai-openai,@clippyjs/ai-opencode,@clippyjs/react",
     "build:ai": "nx run @clippyjs/ai:build",
     "build:ai-anthropic": "nx run @clippyjs/ai-anthropic:build",
     "build:ai-openai": "nx run @clippyjs/ai-openai:build",
@@ -19,7 +19,7 @@
     "nx:test:affected": "nx affected --target=test",
     "nx:typecheck": "nx run-many --target=typecheck --all",
     "nx:typecheck:affected": "nx affected --target=typecheck",
-    "clean": "nx run-many --target=clean --projects=@clippyjs/types,@clippyjs/ai,@clippyjs/ai-anthropic,@clippyjs/ai-openai,@clippyjs/react",
+    "clean": "nx run-many --target=clean --projects=@clippyjs/types,@clippyjs/ai,@clippyjs/ai-anthropic,@clippyjs/ai-openai,@clippyjs/ai-opencode,@clippyjs/react",
     "clean:all": "yarn clean && rm -rf node_modules packages/*/node_modules packages/templates/*/node_modules",
     "demo": "yarn workspace clippyjs-demo-react start",
     "storybook": "yarn workspace @clippyjs/storybook storybook",
@@ -38,10 +38,13 @@
     "publish:ai": "yarn workspace @clippyjs/ai npm publish",
     "publish:ai-anthropic": "yarn workspace @clippyjs/ai-anthropic npm publish",
     "publish:ai-openai": "yarn workspace @clippyjs/ai-openai npm publish",
-    "publish:all": "yarn build && yarn publish:types && yarn publish:react && yarn publish:ai && yarn publish:ai-anthropic && yarn publish:ai-openai",
+    "publish:all": "yarn build && yarn publish:types && yarn publish:react && yarn publish:ai && yarn publish:ai-anthropic && yarn publish:ai-openai && yarn publish:ai-opencode",
     "version:patch": "yarn workspaces foreach --no-private version patch",
     "version:minor": "yarn workspaces foreach --no-private version minor",
-    "version:major": "yarn workspaces foreach --no-private version major"
+    "version:major": "yarn workspaces foreach --no-private version major",
+    "build:ai-opencode": "nx run @clippyjs/ai-opencode:build",
+    "test:ai-opencode": "nx run @clippyjs/ai-opencode:test",
+    "publish:ai-opencode": "yarn workspace @clippyjs/ai-opencode npm publish"
   },
   "repository": {
     "type": "git",

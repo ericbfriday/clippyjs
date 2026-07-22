@@ -1697,6 +1697,26 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@clippyjs/ai-opencode@workspace:packages/ai-opencode":
+  version: 0.0.0-use.local
+  resolution: "@clippyjs/ai-opencode@workspace:packages/ai-opencode"
+  dependencies:
+    "@clippyjs/ai": "workspace:*"
+    "@rollup/plugin-commonjs": "npm:^28.0.1"
+    "@rollup/plugin-node-resolve": "npm:^15.3.0"
+    "@rollup/plugin-terser": "npm:^0.4.4"
+    "@rollup/plugin-typescript": "npm:^12.1.1"
+    "@vitest/coverage-v8": "npm:^3.0.5"
+    rollup: "npm:^4.60.0"
+    tslib: "npm:^2.8.1"
+    typescript: "npm:^5.7.3"
+    vitest: "npm:^3.2.6"
+  peerDependencies:
+    "@clippyjs/ai": "workspace:*"
+    "@opencode-ai/sdk": ^1.17.2
+  languageName: unknown
+  linkType: soft
+
 "@clippyjs/ai-openrouter@workspace:packages/ai-openrouter":
   version: 0.0.0-use.local
   resolution: "@clippyjs/ai-openrouter@workspace:packages/ai-openrouter"

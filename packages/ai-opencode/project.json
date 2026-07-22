@@ -1,0 +1,46 @@
+{
+  "name": "@clippyjs/ai-opencode",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/ai-opencode/src",
+  "projectType": "library",
+  "tags": [
+    "type:lib",
+    "scope:ai",
+    "platform:node"
+  ],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "outputs": [
+        "{projectRoot}/dist"
+      ],
+      "options": {
+        "command": "yarn workspace @clippyjs/ai-opencode build"
+      }
+    },
+    "test": {
+      "executor": "@nx/vitest:test",
+      "outputs": [
+        "{workspaceRoot}/coverage/packages/ai-opencode"
+      ],
+      "options": {
+        "config": "packages/ai-opencode/vitest.config.ts",
+        "passWithNoTests": false,
+        "reportsDirectory": "{projectRoot}/../../coverage/packages/ai-opencode"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "outputs": [],
+      "options": {
+        "command": "yarn workspace @clippyjs/ai-opencode typecheck"
+      }
+    },
+    "clean": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "rm -rf packages/ai-opencode/dist"
+      }
+    }
+  }
+}
