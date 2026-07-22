@@ -330,6 +330,7 @@ export class ProactiveBehaviorEngine {
   destroy(): void {
     this.stop();
     this.listeners = [];
+    this.contextProviders.forEach((p) => p.dispose?.());
     this.contextProviders = [];
   }
 }

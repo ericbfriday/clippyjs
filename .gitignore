@@ -38,3 +38,6 @@ node_modules
 
 # Auto Claude data directory
 .auto-claude/
+
+.claude/worktrees
+.claude/settings.local.json

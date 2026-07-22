@@ -41,4 +41,9 @@ export interface ContextProvider {
    * @returns True if context should be included
    */
   shouldInclude?(trigger: ContextTrigger): boolean;
+
+  /**
+   * Lifecycle method to dispose of any resources (e.g. event listeners)
+   */
+  dispose?(): void;
 }

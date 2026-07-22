@@ -60,7 +60,7 @@ export const defaultTriggerStrategy: TriggerStrategy = {
   name: 'default',
   description: 'Standard time-based proactive suggestions',
   shouldTrigger: () => true, // Let ProactiveBehaviorEngine handle timing
-  reason: 'idle',
+  reason: 'idle_timeout',
   priority: 1,
 };
 

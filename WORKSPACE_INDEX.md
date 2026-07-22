@@ -90,15 +90,14 @@ ClippyJS is a monorepo containing multiple packages for integrating AI-powered C
 - **Usage**: `yarn storybook`
 
 **[clippyjs-demo-react](./packages/clippyjs-demo-react)**
-- **Purpose**: React demo application
+- **Purpose**: React demo application (primary demo for development)
 - **Framework**: Vite + React 19
-- **Usage**: `yarn demo:react`
-
-**[clippyjs-demo-vanilla](./packages/clippyjs-demo-vanilla)**
-- **Purpose**: Vanilla JS demo
+- **Usage**: `yarn demo`
 
 **[clippyjs-demo-deno](./packages/clippyjs-demo-deno)**
 - **Purpose**: Deno runtime demo
+
+> **Note**: The vanilla JS demo has been archived to `archive/clippyjs-demo-vanilla/`.
 
 ### Templates
 
@@ -178,8 +177,7 @@ yarn test:all                # Test ALL packages (parallel)
 
 #### Development Commands
 ```bash
-yarn demo                    # Start vanilla demo (http-server)
-yarn demo:react              # Start React demo (Vite dev server)
+yarn demo                    # Start React demo (Vite dev server)
 yarn storybook               # Start Storybook dev server
 yarn storybook:build         # Build Storybook static site
 ```

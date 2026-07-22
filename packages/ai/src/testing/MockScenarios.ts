@@ -287,9 +287,12 @@ export function createRealisticMockProvider(
   };
 
   return {
-    name,
+    async initialize() {},
+    supportsTools(): boolean { return true; },
+    supportsVision(): boolean { return false; },
+    destroy() {},
 
-    async chat(messages: Message[], options?: ChatOptions): Promise<Message> {
+    async *chat(messages: Message[], options?: ChatOptions): AsyncIterableIterator<StreamChunk> {
       // Simulate latency
       const delay = Math.floor(generateLatency(latency));
       await new Promise(resolve => setTimeout(resolve, delay));
@@ -335,93 +338,10 @@ export function createRealisticMockProvider(
 
       if (useTools) {
         const tool = options!.tools![0];
-        return {
-          role: 'assistant',
-          content: [
-            { type: 'text', text: responseText },
-            {
-              type: 'tool_use',
-              id: `tool-${Date.now()}`,
-              name: tool.name,
-              input: { query: 'test' },
-            },
-          ],
-        };
-      }
-
-      return {
-        role: 'assistant',
-        content: responseText,
-      };
-    },
-
-    async *stream(messages: Message[], options?: ChatOptions): AsyncGenerator<StreamChunk> {
-      // Simulate initial latency
-      const initialDelay = Math.floor(generateLatency(latency) * 0.3);
-      await new Promise(resolve => setTimeout(resolve, initialDelay));
-
-      // Check for failure
-      if (Math.random() < failureRate) {
-        yield {
-          type: 'error',
-          error: `Mock streaming failure in ${name} scenario`,
-        };
-        return;
-      }
-
-      // Update state
-      if (stateful) {
-        state.messages.push(...messages);
-        state.turnCount++;
-      }
-
-      // Track tokens
-      if (trackTokens) {
-        const inputTokens = getTotalTokens(messages);
-        state.tokenUsage.inputTokens += inputTokens;
-      }
-
-      // Generate response
-      const responseText = generateContextualResponse(messages, state, config);
-
-      // Stream response with realistic chunking
-      const words = responseText.split(' ');
-      const chunkSize = complexity === 'simple' ? 5 : complexity === 'moderate' ? 3 : 1;
-      const chunkDelayBase = complexity === 'extreme' ? 200 : 50;
-
-      for (let i = 0; i < words.length; i += chunkSize) {
-        const chunk = words.slice(i, i + chunkSize).join(' ');
-        const chunkText = i + chunkSize < words.length ? chunk + ' ' : chunk;
-
         yield {
           type: 'content_delta',
-          delta: chunkText,
-        };
-
-        // Variable chunk delay based on complexity
-        const chunkDelay = chunkDelayBase + Math.random() * chunkDelayBase;
-        await new Promise(resolve => setTimeout(resolve, chunkDelay));
-
-        // Random mid-stream failure
-        if (Math.random() < failureRate * 0.5) {
-          yield {
-            type: 'error',
-            error: 'Mid-stream failure',
-          };
-          return;
-        }
-      }
-
-      // Track output tokens
-      if (trackTokens) {
-        const outputTokens = estimateTokens(responseText);
-        state.tokenUsage.outputTokens += outputTokens;
-        state.tokenUsage.totalTokens = state.tokenUsage.inputTokens + state.tokenUsage.outputTokens;
-      }
-
-      // Tool use in streaming
-      if (options?.tools && options.tools.length > 0 && Math.random() < toolUseProbability) {
-        const tool = options.tools[0];
+          delta: responseText,
+        } as StreamChunk;
         yield {
           type: 'tool_use_start',
           toolUse: {
@@ -429,16 +349,14 @@ export function createRealisticMockProvider(
             name: tool.name,
             input: { query: 'test' },
           },
-        };
+        } as StreamChunk;
+        return;
       }
 
       yield {
-        type: 'complete',
-      };
-    },
-
-    supportsStreaming(): boolean {
-      return true;
+        type: 'content_delta',
+        delta: responseText,
+      } as StreamChunk;
     },
   };
 }

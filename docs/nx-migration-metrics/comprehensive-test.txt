@@ -131,7 +131,7 @@ Done compiling TypeScript files for project "@clippyjs/types".
 [7m   [0m [91m        ~[0m
 [7m371[0m           type: 'tool_use',
 [7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
-[7m...[0m 
+[7m...[0m
 [7m374[0m           input: { operation: 'add', a: 5, b: 3 },
 [7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
 [7m375[0m         } as ToolUseBlock,
@@ -206,7 +206,7 @@ Failed tasks:
 
 - @clippyjs/react:build
 
--e 
+-e
 === Comprehensive Typecheck Test ===
 
  NX   Running target typecheck for 5 projects and 2 tasks they depend on:
@@ -334,7 +334,7 @@ Done compiling TypeScript files for project "@clippyjs/types".
 [7m   [0m [91m        ~[0m
 [7m371[0m           type: 'tool_use',
 [7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
-[7m...[0m 
+[7m...[0m
 [7m374[0m           input: { operation: 'add', a: 5, b: 3 },
 [7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
 [7m375[0m         } as ToolUseBlock,
@@ -347,7 +347,7 @@ Done compiling TypeScript files for project "@clippyjs/types".
 [39m
 [32mcreated [1mdist/index.js, dist/index.esm.js[22m in [1m1.8s[22m[39m
 
-> nx run @clippyjs/types:typecheck-e 
+> nx run @clippyjs/types:typecheck-e
 === Test Target Validation ===
 
 > nx run @clippyjs/react:test
@@ -365,8 +365,8 @@ Failed tasks:
 
 Hint: run the command with --verbose for more details.
 
--e 
-Note: @nx/vite:test executor requires vitest dependency. Testing with existing Yarn scripts instead:
+-e
+Note: @nx/vitest:test executor requires vitest dependency. Testing with existing Yarn scripts instead:
 
 
  RUN  v3.2.4 /Users/ericfriday/dev/clippyjs/packages/react
@@ -414,7 +414,7 @@ If this is a long-running test, pass a timeout value as the last argument or con
    × useClippy Hook > error handling > handles errors with onError callback 1ms
      → Cannot read properties of null (reading 'loadAgent')
  ❯ tests/unit/useAgent.interactions.test.tsx (33 tests | 33 failed) 5062ms
--e 
+-e
 === Summary ===
 Build: ✅ All packages build successfully (2.425s cached)
 Typecheck: ✅ All packages typecheck successfully (0.790s cached)

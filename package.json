@@ -1,5 +1,5 @@
 {
-  "name": "clippyjs-workspace",
+  "name": "@clippyjs/source",
   "version": "1.0.0",
   "description": "Add Clippy or his friends to any website for instant nostalgia - modern TypeScript and React implementation.",
   "type": "module",
@@ -21,8 +21,7 @@
     "nx:typecheck:affected": "nx affected --target=typecheck",
     "clean": "nx run-many --target=clean --projects=@clippyjs/types,@clippyjs/ai,@clippyjs/ai-anthropic,@clippyjs/ai-openai,@clippyjs/react",
     "clean:all": "yarn clean && rm -rf node_modules packages/*/node_modules packages/templates/*/node_modules",
-    "demo": "yarn dlx http-server ./ --cors",
-    "demo:react": "yarn workspace clippyjs-demo-react start",
+    "demo": "yarn workspace clippyjs-demo-react start",
     "storybook": "yarn workspace @clippyjs/storybook storybook",
     "storybook:build": "yarn workspace @clippyjs/storybook build-storybook",
     "test": "nx run @clippyjs/react:test",
@@ -31,8 +30,8 @@
     "test:ai-openai": "nx run @clippyjs/ai-openai:test",
     "test:all": "nx run-many --target=test --all",
     "lint": "nx run-many --target=lint --all",
-    "typecheck": "nx run-many --target=typecheck --all",
-    "typecheck:watch": "nx run-many --target=typecheck --all --watch",
+    "typecheck": "yarn workspaces foreach -A --no-private run typecheck",
+    "typecheck:watch": "yarn workspaces foreach -A --no-private --parallel run typecheck --watch",
     "clean:types": "nx run @clippyjs/types:clean",
     "publish:types": "yarn workspace @clippyjs/types npm publish",
     "publish:react": "yarn workspace @clippyjs/react npm publish",
@@ -56,20 +55,30 @@
   "private": true,
   "packageManager": "yarn@4.12.0",
   "devDependencies": {
-    "@nx/eslint": "^22.0.3",
-    "@nx/js": "^22.0.3",
-    "@nx/playwright": "^22.0.3",
-    "@nx/react": "^22.0.3",
-    "@nx/rollup": "^22.0.3",
-    "@nx/vite": "^22.0.3",
+    "@nx/eslint": "22.6.5",
+    "@nx/js": "22.6.5",
+    "@nx/playwright": "22.6.5",
+    "@nx/react": "22.6.5",
+    "@nx/rollup": "22.6.5",
+    "@nx/vite": "22.6.5",
+    "@nx/vitest": "22.6.5",
+    "@playwright/test": "^1.58.2",
     "eslint": "^9.39.1",
-    "nx": "22.0.3",
+    "nx": "22.6.5",
     "typescript": "^5.7.3",
     "vite": "^7.2.2",
-    "vitest": "^4.0.8"
+    "vitest": "4.1.4"
   },
   "workspaces": [
     "packages/*",
     "packages/templates/*"
-  ]
+  ],
+  "resolutions": {
+    "tar": "^7.5.10",
+    "svgo": "^3.3.3",
+    "serialize-javascript": "^6.0.2",
+    "koa": "^3.1.2",
+    "minimatch": "^10.2.3",
+    "@isaacs/brace-expansion": "^5.0.1"
+  }
 }

@@ -322,7 +322,7 @@ Create `packages/react/project.json`:
       }
     },
     "test": {
-      "executor": "@nx/vite:test",
+      "executor": "@nx/vitest:test",
       "outputs": ["{workspaceRoot}/coverage/packages/react"],
       "options": {
         "config": "packages/react/vite.config.ts",
@@ -398,7 +398,7 @@ Create `packages/ai-anthropic/project.json`:
       }
     },
     "test": {
-      "executor": "@nx/vite:test",
+      "executor": "@nx/vitest:test",
       "outputs": ["{workspaceRoot}/coverage/packages/ai-anthropic"],
       "options": {
         "config": "packages/ai-anthropic/vite.config.ts",

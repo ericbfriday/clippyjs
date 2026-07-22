@@ -300,7 +300,7 @@ yarn workspace @clippyjs/react test
 **Future:** Nx executor (requires vitest dependency)
 ```json
 {
-  "executor": "@nx/vite:test",
+  "executor": "@nx/vitest:test",
   "options": {
     "config": "packages/react/vite.config.ts"
   }
@@ -309,7 +309,7 @@ yarn workspace @clippyjs/react test
 
 **Migration Path:**
 1. Add vitest to root devDependencies
-2. Test @nx/vite:test executor
+2. Test @nx/vitest:test executor
 3. Gradually migrate packages
 4. Maintain Yarn scripts as fallback
 
@@ -465,7 +465,7 @@ Example: Change only `@clippyjs/react`
 ## Future Enhancements
 
 ### Short Term (1-3 months)
-- [ ] Add vitest dependency for @nx/vite:test
+- [ ] Add vitest dependency for @nx/vitest:test
 - [ ] Enable lint target with caching
 - [ ] Add module boundary rules
 - [ ] Set up CI caching strategy

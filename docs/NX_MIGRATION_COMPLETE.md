@@ -72,7 +72,7 @@ The Nx monorepo migration has been **successfully completed** with all 6 phases 
 - ✅ Appropriate executors selected per package type
 - ✅ @nx/js:tsc for types (pure TypeScript)
 - ✅ nx:run-commands for existing builds
-- ✅ @nx/vite:test for React tests
+- ✅ @nx/vitest:test for React tests
 - ✅ @nx/playwright:playwright for integration tests
 - ✅ All targets tested and validated
 
@@ -118,7 +118,7 @@ The Nx monorepo migration has been **successfully completed** with all 6 phases 
 **Step 13: Comprehensive Testing ✅**
 - ✅ Build: All packages build in 2.425s (cached)
 - ✅ Typecheck: All packages typecheck in 0.790s (cached)
-- ✅ Tests: Work via Yarn scripts (vitest dependency needed for @nx/vite:test)
+- ✅ Tests: Work via Yarn scripts (vitest dependency needed for @nx/vitest:test)
 - ✅ Graph: Interactive visualization working
 
 **Commits:**
@@ -259,7 +259,7 @@ The Nx monorepo migration has been **successfully completed** with all 6 phases 
    - Documentation clarity
 
 ### For Future (1-3 Months)
-1. **Add vitest dependency** - Enable @nx/vite:test executor
+1. **Add vitest dependency** - Enable @nx/vitest:test executor
 2. **CI integration** - Use affected commands in CI/CD
 3. **Add lint target** - Extend caching to linting
 4. **Monitor metrics** - Track cache hit rates and build times

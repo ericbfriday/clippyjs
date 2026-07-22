@@ -140,10 +140,12 @@ Nx provides significant performance improvements through intelligent caching:
 ### Running Demos
 
 ```bash
-yarn demo                    # Vanilla JS demo (http-server)
-yarn demo:react              # React demo (Vite dev server)
+yarn demo                    # React demo (Vite dev server)
 yarn storybook               # Component documentation
 ```
+
+> **Note**: The vanilla JS demo has been archived to `archive/clippyjs-demo-vanilla/`.
+> The React demo (`packages/clippyjs-demo-react`) is the recommended development path.
 
 ---
 

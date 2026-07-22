@@ -13,7 +13,7 @@ import type { ReactNode } from 'react';
  */
 
 // Mock the core load function
-vi.mock('../src', () => ({
+vi.mock('../../src/loader', () => ({
   load: vi.fn((name: string) =>
     Promise.resolve({
       name,

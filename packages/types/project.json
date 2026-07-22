@@ -19,11 +19,10 @@
       }
     },
     "typecheck": {
-      "executor": "@nx/js:tsc",
+      "executor": "nx:run-commands",
       "outputs": [],
       "options": {
-        "tsConfig": "packages/types/tsconfig.json",
-        "noEmit": true
+        "command": "yarn workspace @clippyjs/types typecheck"
       }
     },
     "clean": {

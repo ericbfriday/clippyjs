@@ -33,7 +33,7 @@ export interface HistoryManagerProps {
 export function HistoryManager({
   className = '',
   showDetails = false,
-}: HistoryManagerProps): JSX.Element {
+}: HistoryManagerProps): React.ReactElement {
   const {
     history,
     isLoading,

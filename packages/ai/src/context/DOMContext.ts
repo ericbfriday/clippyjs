@@ -22,7 +22,51 @@ export class DOMContextProvider implements ContextProvider {
   name = 'dom';
   enabled = true;
 
+  private cachedHeadings: string[] | null = null;
+  private cachedForms: Array<{ id?: string; fields: string[] }> | null = null;
+  private cachedVisibleText: string | null = null;
+  private cachedMeta: Record<string, string> | null = null;
+  private observer: MutationObserver | null = null;
+  private observerSetup = false;
+
+  private setupObserver(): void {
+    if (this.observerSetup) return;
+
+    if (typeof window !== 'undefined' && window.MutationObserver && document.documentElement) {
+      this.observerSetup = true;
+      this.observer = new window.MutationObserver(() => {
+        this.clearCache();
+      });
+      this.observer.observe(document.documentElement, {
+        childList: true,
+        subtree: true,
+        characterData: true,
+        attributes: true
+      });
+    }
+  }
+
+  /**
+   * Cleanup method to disconnect the observer
+   */
+  public disconnect(): void {
+    if (this.observer) {
+      this.observer.disconnect();
+      this.observer = null;
+    }
+    this.observerSetup = false;
+    this.clearCache();
+  }
+
+  private clearCache(): void {
+    this.cachedHeadings = null;
+    this.cachedForms = null;
+    this.cachedVisibleText = null;
+    this.cachedMeta = null;
+  }
+
   async gather(): Promise<ContextData> {
+    this.setupObserver();
     return {
       provider: 'dom',
       timestamp: new Date(),
@@ -46,16 +90,19 @@ export class DOMContextProvider implements ContextProvider {
    * Extract h1, h2, h3 headings from the page
    */
   private extractHeadings(): string[] {
-    return Array.from(document.querySelectorAll('h1, h2, h3'))
+    if (this.cachedHeadings) return this.cachedHeadings;
+    this.cachedHeadings = Array.from(document.querySelectorAll('h1, h2, h3'))
       .map((h) => h.textContent?.trim())
       .filter(Boolean) as string[];
+    return this.cachedHeadings;
   }
 
   /**
    * Detect forms and their fields
    */
   private detectForms(): Array<{ id?: string; fields: string[] }> {
-    return Array.from(document.querySelectorAll('form')).map((form) => ({
+    if (this.cachedForms) return this.cachedForms;
+    this.cachedForms = Array.from(document.querySelectorAll('form')).map((form) => ({
       id: form.id || undefined,
       fields: Array.from(form.querySelectorAll('input, select, textarea'))
         .map((field) => {
@@ -64,12 +111,14 @@ export class DOMContextProvider implements ContextProvider {
         })
         .filter(Boolean),
     }));
+    return this.cachedForms;
   }
 
   /**
    * Get visible text from the page (max 5000 characters)
    */
   private getVisibleText(): string {
+    if (this.cachedVisibleText !== null) return this.cachedVisibleText;
     const walker = document.createTreeWalker(
       document.body,
       NodeFilter.SHOW_TEXT,
@@ -109,13 +158,15 @@ export class DOMContextProvider implements ContextProvider {
     }
 
     // Join and limit to 5000 characters
-    return textNodes.join(' ').slice(0, 5000);
+    this.cachedVisibleText = textNodes.join(' ').slice(0, 5000);
+    return this.cachedVisibleText;
   }
 
   /**
    * Extract meta tags (name and property attributes)
    */
   private extractMetaTags(): Record<string, string> {
+    if (this.cachedMeta) return this.cachedMeta;
     const meta: Record<string, string> = {};
 
     document.querySelectorAll('meta[name], meta[property]').forEach((tag) => {
@@ -126,6 +177,7 @@ export class DOMContextProvider implements ContextProvider {
       }
     });
 
+    this.cachedMeta = meta;
     return meta;
   }
 }

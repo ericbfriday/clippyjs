@@ -19,14 +19,14 @@
       }
     },
     "test": {
-      "executor": "@nx/vite:test",
+      "executor": "@nx/vitest:test",
       "outputs": [
         "{workspaceRoot}/coverage/packages/react"
       ],
       "options": {
         "config": "packages/react/vitest.config.ts",
         "passWithNoTests": false,
-        "reportsDirectory": "../../coverage/packages/react"
+        "reportsDirectory": "{projectRoot}/../../coverage/packages/react"
       }
     },
     "test:integration": {
@@ -39,11 +39,10 @@
       }
     },
     "typecheck": {
-      "executor": "@nx/js:tsc",
+      "executor": "nx:run-commands",
       "outputs": [],
       "options": {
-        "tsConfig": "packages/react/tsconfig.json",
-        "noEmit": true
+        "command": "yarn workspace @clippyjs/react typecheck"
       }
     },
     "clean": {

@@ -100,16 +100,16 @@ yarn build:types
 
 #### Demo Commands
 ```bash
-# Browser demo (vanilla JS)
+# React demo (Vite dev server) — primary demo for development
 yarn demo
-
-# React demo (Vite dev server)
-yarn demo:react
 
 # Component documentation
 yarn storybook
 yarn storybook:build
 ```
+
+> **Note**: The vanilla JS demo has been archived to `archive/clippyjs-demo-vanilla/`.
+> The React demo (`packages/clippyjs-demo-react`) is the recommended path for development and testing.
 
 #### Test Commands
 ```bash

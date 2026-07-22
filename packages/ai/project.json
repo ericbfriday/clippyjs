@@ -19,22 +19,21 @@
       }
     },
     "test": {
-      "executor": "@nx/vite:test",
+      "executor": "@nx/vitest:test",
       "outputs": [
         "{workspaceRoot}/coverage/packages/ai"
       ],
       "options": {
         "config": "packages/ai/vitest.config.ts",
         "passWithNoTests": false,
-        "reportsDirectory": "../../coverage/packages/ai"
+        "reportsDirectory": "{projectRoot}/../../coverage/packages/ai"
       }
     },
     "typecheck": {
-      "executor": "@nx/js:tsc",
+      "executor": "nx:run-commands",
       "outputs": [],
       "options": {
-        "tsConfig": "packages/ai/tsconfig.json",
-        "noEmit": true
+        "command": "yarn workspace @clippyjs/ai typecheck"
       }
     },
     "clean": {

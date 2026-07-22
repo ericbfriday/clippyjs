@@ -268,3 +268,332 @@ export interface ContextData {
   timestamp: Date;
   metadata?: Record<string, any>;
 }
+
+// ============================================================
+// Browser-Based AI Assistant Types
+// ============================================================
+
+/**
+ * Content types that can be detected on a web page
+ */
+export type ContentType =
+  | 'article'
+  | 'product'
+  | 'product-listing'
+  | 'form'
+  | 'navigation'
+  | 'dashboard'
+  | 'documentation'
+  | 'search-results'
+  | 'checkout'
+  | 'cart'
+  | 'profile'
+  | 'settings'
+  | 'login'
+  | 'registration'
+  | 'landing'
+  | 'unknown';
+
+/**
+ * A semantic section of a web page
+ */
+export interface PageSection {
+  id: string;
+  title: string;
+  content: string;
+  type: 'header' | 'main' | 'sidebar' | 'footer' | 'modal' | 'custom';
+  importance: number; // 0-1
+  visible: boolean;
+}
+
+/**
+ * A named entity extracted from page content
+ */
+export interface PageEntity {
+  text: string;
+  type: 'person' | 'organization' | 'location' | 'date' | 'price' | 'product';
+  confidence: number;
+}
+
+/**
+ * Semantic content extracted from a web page
+ */
+export interface SemanticContent {
+  title: string;
+  description: string;
+  mainTopics: string[];
+  contentType: ContentType;
+  sections: PageSection[];
+  entities: PageEntity[];
+}
+
+/**
+ * Interactive element type
+ */
+export type InteractiveType =
+  | 'button'
+  | 'link'
+  | 'input-text'
+  | 'input-email'
+  | 'input-password'
+  | 'input-number'
+  | 'input-checkbox'
+  | 'input-radio'
+  | 'input-file'
+  | 'select'
+  | 'textarea'
+  | 'toggle'
+  | 'menu'
+  | 'menuitem'
+  | 'tab'
+  | 'accordion'
+  | 'slider'
+  | 'unknown';
+
+/**
+ * State of an interactive element
+ */
+export interface ElementState {
+  visible: boolean;
+  enabled: boolean;
+  focused: boolean;
+  hovered: boolean;
+  expanded: boolean;
+  checked?: boolean;
+}
+
+/**
+ * Bounding box for element position
+ */
+export interface BoundingBox {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+/**
+ * An interactive element detected on the page
+ */
+export interface InteractiveElement {
+  id: string;
+  type: InteractiveType;
+  selector: string;
+  label: string;
+  description: string;
+  action: string;
+  state: ElementState;
+  position: BoundingBox;
+}
+
+/**
+ * Validation rules for a form field
+ */
+export interface FieldValidation {
+  required: boolean;
+  minLength?: number;
+  maxLength?: number;
+  pattern?: string;
+  errorMessage?: string;
+}
+
+/**
+ * Form progress tracking
+ */
+export interface FormProgress {
+  total: number;
+  filled: number;
+  valid: number;
+  percentage: number;
+}
+
+/**
+ * A single form field
+ */
+export interface FormField {
+  id: string;
+  name: string;
+  type: string;
+  label: string;
+  placeholder: string;
+  required: boolean;
+  validation: FieldValidation;
+  value: string;
+  isValid: boolean;
+  error?: string;
+  helpText?: string;
+}
+
+/**
+ * Complete form analysis result
+ */
+export interface FormAnalysis {
+  id: string;
+  action: string;
+  method: string;
+  fields: FormField[];
+  validation: Record<string, FieldValidation>;
+  progress: FormProgress;
+  autoComplete: boolean;
+}
+
+/**
+ * Viewport information
+ */
+export interface ViewportInfo {
+  width: number;
+  height: number;
+  scrollX: number;
+  scrollY: number;
+  devicePixelRatio: number;
+}
+
+/**
+ * Heading structure for accessibility
+ */
+export interface HeadingItem {
+  level: 1 | 2 | 3 | 4 | 5 | 6;
+  text: string;
+  id?: string;
+}
+
+/**
+ * ARIA landmark role
+ */
+export interface LandmarkRole {
+  role: string;
+  label?: string;
+  element: string;
+}
+
+/**
+ * Full page context gathered by PageContextProvider
+ */
+export interface PageContext {
+  url: string;
+  title: string;
+  description: string;
+  contentType: ContentType;
+  mainTopics: string[];
+  readingLevel: string;
+  wordCount: number;
+  sections: PageSection[];
+  buttons: InteractiveElement[];
+  links: InteractiveElement[];
+  forms: FormAnalysis[];
+  scrollPosition: number;
+  scrollDepth: number;
+  focusedElement: InteractiveElement | null;
+  viewport: ViewportInfo;
+  headingStructure: HeadingItem[];
+  landmarkRoles: LandmarkRole[];
+}
+
+/**
+ * An idle event recorded when user is inactive
+ */
+export interface IdleEvent {
+  startTime: Date;
+  duration: number;
+  position: { x: number; y: number };
+}
+
+/**
+ * Type of frustration signal detected
+ */
+export type FrustrationSignalType =
+  | 'rage-click'
+  | 'form-abandonment'
+  | 'navigation-confusion'
+  | 'error-repetition';
+
+/**
+ * A frustration signal detected from user behavior
+ */
+export interface FrustrationSignal {
+  type: FrustrationSignalType;
+  severity: 'low' | 'medium' | 'high';
+  suggestion: string;
+  element?: string;
+  form?: FormAnalysis;
+}
+
+/**
+ * User behavior context gathered by UserBehaviorProvider
+ */
+export interface UserBehaviorContext {
+  sessionDuration: number;
+  pagesVisited: number;
+  clickCount: number;
+  scrollCount: number;
+  formInteractions: number;
+  timeOnPage: number;
+  activeTime: number;
+  idleTime: number;
+  idleEvents: IdleEvent[];
+  currentTask: string | null;
+  readingSection: PageSection | null;
+  rageClicks: number;
+  backtracking: number;
+  errorEncounters: number;
+  frustrationSignal: FrustrationSignal | null;
+}
+
+/**
+ * Position for the browser assistant widget
+ */
+export type AssistantPosition =
+  | 'bottom-left'
+  | 'bottom-right'
+  | 'top-left'
+  | 'top-right';
+
+/**
+ * Theme for the browser assistant
+ */
+export type AssistantTheme = 'light' | 'dark' | 'auto';
+
+/**
+ * Interaction actions the assistant can perform
+ */
+export type InteractionAction =
+  | 'highlight'
+  | 'scroll-to'
+  | 'click'
+  | 'fill'
+  | 'focus'
+  | 'select';
+
+/**
+ * Permissions for what the assistant can interact with
+ */
+export interface InteractionPermissions {
+  highlight?: boolean;
+  scrollTo?: boolean;
+  click?: boolean;
+  fill?: boolean;
+  focus?: boolean;
+  select?: boolean;
+  confirmBeforeAction?: boolean;
+}
+
+/**
+ * Configuration for the browser assistant embed
+ */
+export interface BrowserAssistantConfig {
+  apiKey: string;
+  agentName?: AgentName;
+  position?: AssistantPosition;
+  theme?: AssistantTheme;
+  zIndex?: number;
+  proactive?: {
+    enabled: boolean;
+    intrusionLevel: 'low' | 'medium' | 'high';
+    checkInterval: number;
+    maxSuggestions?: number;
+    cooldownAfterIgnore?: number;
+  };
+  interactionPermissions?: InteractionPermissions;
+  onReady?: () => void;
+  onError?: (error: Error) => void;
+}

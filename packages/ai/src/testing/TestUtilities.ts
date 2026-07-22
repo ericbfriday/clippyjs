@@ -108,9 +108,12 @@ export function createTestProvider(config: MockProviderConfig = {}): AIProvider 
   } = config;
 
   return {
-    name: 'mock-test-provider',
+    async initialize() {},
+    supportsTools(): boolean { return true; },
+    supportsVision(): boolean { return false; },
+    destroy() {},
 
-    async chat(messages: Message[], options?: ChatOptions): Promise<Message> {
+    async *chat(messages: Message[], options?: ChatOptions): AsyncIterableIterator<StreamChunk> {
       // Simulate delay
       if (delay > 0) {
         await sleep(delay);
@@ -129,10 +132,12 @@ export function createTestProvider(config: MockProviderConfig = {}): AIProvider 
           throw new Error('Rate limit exceeded. Please try again later.');
 
         case 'invalid-response':
-          return { role: 'invalid' as any, content: '' };
+          yield { type: 'error', error: 'Invalid response' } as StreamChunk;
+          return;
 
         case 'empty-response':
-          return { role: 'assistant', content: '' };
+          yield { type: 'content_delta', delta: '' } as StreamChunk;
+          return;
 
         case 'tool-error':
           if (includeToolUse && options?.tools) {
@@ -157,79 +162,14 @@ export function createTestProvider(config: MockProviderConfig = {}): AIProvider 
             id: 'test-tool-1',
             name: tool.name,
             input: { test: true },
-          } as ToolUseBlock,
+          },
         ];
       }
 
-      return {
-        role: 'assistant',
-        content,
-      };
-    },
-
-    async *stream(messages: Message[], options?: ChatOptions): AsyncGenerator<StreamChunk> {
-      // Simulate delay
-      if (delay > 0) {
-        await sleep(delay);
-      }
-
-      // Handle network error before streaming
-      if (scenario === 'network-error') {
-        throw new Error(errorMessage || 'Network error');
-      }
-
-      const words = responseText.split(' ');
-      const wordsPerChunk = Math.ceil(words.length / chunkCount);
-      let tokenCount = 0;
-
-      for (let i = 0; i < words.length; i += wordsPerChunk) {
-        const chunk = words.slice(i, i + wordsPerChunk).join(' ');
-        const chunkWithSpace = i + wordsPerChunk < words.length ? chunk + ' ' : chunk;
-
-        tokenCount += wordsPerChunk;
-
-        if (scenario === 'network-error-mid-stream' && tokenCount >= errorAfterTokens) {
-          throw new Error(errorMessage || 'Network error during streaming');
-        }
-
-        if (scenario === 'streaming-chunk-error' && tokenCount >= errorAfterTokens) {
-          yield {
-            type: 'error',
-            error: errorMessage || 'Chunk processing error',
-          };
-          break;
-        }
-
-        yield {
-          type: 'content_delta',
-          delta: chunkWithSpace,
-        };
-
-        if (chunkDelay > 0) {
-          await sleep(chunkDelay);
-        }
-      }
-
-      // Include tool use if requested
-      if (includeToolUse && options?.tools && options.tools.length > 0) {
-        const tool = options.tools[0];
-        yield {
-          type: 'tool_use_start',
-          toolUse: {
-            id: 'test-tool-1',
-            name: tool.name,
-            input: { test: true },
-          },
-        };
-      }
-
       yield {
-        type: 'complete',
-      };
-    },
-
-    supportsStreaming(): boolean {
-      return true;
+        type: 'content_delta',
+        delta: typeof content === 'string' ? content : JSON.stringify(content),
+      } as StreamChunk;
     },
   };
 }
@@ -372,7 +312,7 @@ export function generateTestMessages(
           id: 'test-tool-1',
           name: 'calculator',
           input: { operation: 'add', a: 5, b: 3 },
-        } as ToolUseBlock,
+        },
       ],
     });
 

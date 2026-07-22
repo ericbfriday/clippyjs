@@ -1,4 +1,4 @@
-import Anthropic from '@anthropic-ai/sdk';
+import type Anthropic from '@anthropic-ai/sdk';
 import type { MessageStreamEvent } from '@anthropic-ai/sdk/resources/messages.mjs';
 import {
   AIProvider,
@@ -19,29 +19,21 @@ import {
  * Phase 2: Full implementation with streaming support
  */
 export class AnthropicProvider extends AIProvider {
-  private client: Anthropic | null = null;
   private config: AIProviderConfig | null = null;
-  private isProxyMode = false;
 
   async initialize(config: AIProviderConfig): Promise<void> {
     this.config = config;
 
-    // Support both client-side and proxy mode
-    if (config.endpoint) {
-      // Proxy mode - use fetch for streaming
-      this.isProxyMode = true;
-      console.log('AnthropicProvider: Proxy mode configured');
-    } else if (config.apiKey) {
-      // Client-side mode - use SDK
-      this.isProxyMode = false;
-      this.client = new Anthropic({
-        apiKey: config.apiKey,
-        dangerouslyAllowBrowser: true,
-      });
-      console.log('AnthropicProvider: Client-side mode configured');
-    } else {
-      throw new Error('Either endpoint or apiKey must be provided');
+    if (!config.endpoint) {
+      if (config.apiKey) {
+        throw new Error(
+          'Security Error: Direct client-side API key usage is disabled. Please use a secure backend proxy endpoint.'
+        );
+      }
+      throw new Error('Proxy endpoint must be provided');
     }
+
+    console.log('AnthropicProvider: Proxy mode configured');
   }
 
   async *chat(
@@ -79,44 +71,7 @@ export class AnthropicProvider extends AIProvider {
     }
 
     // Route to appropriate streaming implementation
-    if (this.isProxyMode) {
-      yield* this.streamViaProxy(params);
-    } else {
-      yield* this.streamViaSDK(params);
-    }
-  }
-
-  /**
-   * Stream responses using the Anthropic SDK (client-side mode)
-   */
-  private async *streamViaSDK(
-    params: Anthropic.MessageCreateParams
-  ): AsyncIterableIterator<StreamChunk> {
-    if (!this.client) {
-      throw new Error('Anthropic client not initialized');
-    }
-
-    try {
-      const response = await this.client.messages.create(params);
-
-      // Type guard: check if response is a stream
-      if (Symbol.asyncIterator in response) {
-        for await (const event of response) {
-          const chunk = this.convertStreamEvent(event);
-          if (chunk) {
-            yield chunk;
-          }
-        }
-      }
-
-      yield { type: 'complete' };
-    } catch (error) {
-      console.error('AnthropicProvider streaming error:', error);
-      yield {
-        type: 'error',
-        error: error instanceof Error ? error.message : 'Unknown error',
-      };
-    }
+    yield* this.streamViaProxy(params);
   }
 
   /**
@@ -329,7 +284,6 @@ export class AnthropicProvider extends AIProvider {
   }
 
   destroy(): void {
-    this.client = null;
     this.config = null;
   }
 }

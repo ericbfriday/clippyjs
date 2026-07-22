@@ -54,7 +54,10 @@ export interface AIClippyConfig {
 /**
  * AI Clippy context value
  */
+
 export interface AIClippyContextValue {
+  /** The core configuration */
+  config: AIClippyConfig;
   /** Conversation manager instance */
   conversationManager: ConversationManager;
   /** Proactive behavior engine */
@@ -231,7 +234,6 @@ export function AIClippyProvider({ config, children }: AIClippyProviderProps) {
         try {
           const history = await config.historyStore.load(config.agentName);
           if (history) {
-            console.log('[AIClippyContext] Loading conversation history:', history.messages.length, 'messages');
             await managers.conversationManager.loadHistory(history);
           }
         } catch (error) {
@@ -246,23 +248,16 @@ export function AIClippyProvider({ config, children }: AIClippyProviderProps) {
   // Subscribe to proactive suggestions using standard listener pattern
   // This runs synchronously after render, ensuring the listener is attached before any user interaction
   useLayoutEffect(() => {
-    console.log('[AIClippyContext] useLayoutEffect running - subscribing to engine');
-
     // Subscribe using onSuggestion which adds to the listeners array
     const unsubscribe = managers.engine.onSuggestion((suggestion) => {
-      console.log('[AIClippyContext] Listener callback invoked with suggestion:', suggestion);
       setLatestSuggestion(suggestion);
-      console.log('[AIClippyContext] setLatestSuggestion called');
     });
 
-    console.log('[AIClippyContext] Listener subscribed, starting engine');
     // Start the engine after listener is attached
     managers.engine.start();
-    console.log('[AIClippyContext] Engine started');
 
     // Cleanup: unsubscribe and stop engine
     return () => {
-      console.log('[AIClippyContext] Cleanup - unsubscribing and stopping engine');
       unsubscribe();
       managers.engine.stop();
     };
@@ -350,6 +345,7 @@ export function AIClippyProvider({ config, children }: AIClippyProviderProps) {
 
   // No loading screen needed - managers are initialized synchronously
   const contextValue: AIClippyContextValue = {
+    config,
     conversationManager: managers.conversationManager,
     proactiveBehavior: managers.engine,
     agentName: config.agentName,

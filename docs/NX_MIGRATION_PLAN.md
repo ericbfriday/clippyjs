@@ -371,7 +371,7 @@ For each package, create `project.json`. Example for `@clippyjs/react`:
       }
     },
     "test": {
-      "executor": "@nx/vite:test",
+      "executor": "@nx/vitest:test",
       "outputs": ["{workspaceRoot}/coverage/packages/react"],
       "options": {
         "config": "packages/react/vite.config.ts",
@@ -416,10 +416,10 @@ For each package, create `project.json`. Example for `@clippyjs/react`:
 | Package | Build Executor | Test Executor | Special Notes |
 |---------|---------------|---------------|---------------|
 | @clippyjs/types | @nx/js:tsc | N/A | Types only |
-| @clippyjs/react | @nx/rollup:rollup | @nx/vite:test | Also has Playwright |
-| @clippyjs/ai | @nx/rollup:rollup | @nx/vite:test | Also has Playwright |
-| @clippyjs/ai-anthropic | @nx/rollup:rollup | @nx/vite:test | Simple SDK wrapper |
-| @clippyjs/ai-openai | @nx/rollup:rollup | @nx/vite:test | Simple SDK wrapper |
+| @clippyjs/react | @nx/rollup:rollup | @nx/vitest:test | Also has Playwright |
+| @clippyjs/ai | @nx/rollup:rollup | @nx/vitest:test | Also has Playwright |
+| @clippyjs/ai-anthropic | @nx/rollup:rollup | @nx/vitest:test | Simple SDK wrapper |
+| @clippyjs/ai-openai | @nx/rollup:rollup | @nx/vitest:test | Simple SDK wrapper |
 | @clippyjs/storybook | @nx/storybook:build | N/A | Storybook specific |
 | Demos/Templates | @nx/vite:build | N/A | App builds |
 
