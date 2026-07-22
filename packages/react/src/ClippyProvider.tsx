@@ -15,7 +15,16 @@
  * ```
  */
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import type { ReactNode } from 'react';
 import type { Agent } from './Agent';
 import { load } from './loader';
 
@@ -63,14 +72,22 @@ export const ClippyProvider: React.FC<ClippyProviderProps> = ({
   onError
 }) => {
   const [agents, setAgents] = useState<Map<string, Agent>>(new Map());
+  const agentsRef = useRef(agents);
 
-  const loadAgent = async (name: string, options?: LoadAgentOptions): Promise<Agent> => {
+  useEffect(() => {
+    agentsRef.current = agents;
+  }, [agents]);
+
+  const loadAgent = useCallback(async (
+    name: string,
+    options?: LoadAgentOptions
+  ): Promise<Agent> => {
     // Check if already loaded
-    const existing = agents.get(name);
+    const existing = agentsRef.current.get(name);
     if (existing) return existing;
 
     // Check max agents limit
-    if (agents.size >= maxAgents) {
+    if (agentsRef.current.size >= maxAgents) {
       const error = new Error(
         `Maximum ${maxAgents} agents allowed. Unload an agent before loading another.`
       );
@@ -84,8 +101,13 @@ export const ClippyProvider: React.FC<ClippyProviderProps> = ({
         basePath: options?.basePath || defaultBasePath
       });
 
-      // Add to state
-      setAgents(prev => new Map(prev).set(name, agent));
+      // Add to state and update the ref synchronously so callbacks always see
+      // the latest map without changing identity after every agent update.
+      setAgents(prev => {
+        const next = new Map(prev).set(name, agent);
+        agentsRef.current = next;
+        return next;
+      });
 
       // Show if requested
       if (options?.show !== false) {
@@ -99,37 +121,38 @@ export const ClippyProvider: React.FC<ClippyProviderProps> = ({
       console.error(`Failed to load agent ${name}:`, err);
       throw err;
     }
-  };
+  }, [defaultBasePath, maxAgents, onError]);
 
-  const unloadAgent = (name: string): void => {
-    const agent = agents.get(name);
+  const unloadAgent = useCallback((name: string): void => {
+    const agent = agentsRef.current.get(name);
     if (agent) {
       agent.destroy();
       setAgents(prev => {
         const next = new Map(prev);
         next.delete(name);
+        agentsRef.current = next;
         return next;
       });
     }
-  };
+  }, []);
 
-  const getAgent = (name: string): Agent | undefined => {
-    return agents.get(name);
-  };
+  const getAgent = useCallback((name: string): Agent | undefined => {
+    return agentsRef.current.get(name);
+  }, []);
 
   // Clean up on unmount
   useEffect(() => {
     return () => {
-      agents.forEach(agent => agent.destroy());
+      agentsRef.current.forEach(agent => agent.destroy());
     };
   }, []);
 
-  const value: ClippyContextType = {
+  const value = useMemo<ClippyContextType>(() => ({
     agents,
     loadAgent,
     unloadAgent,
     getAgent
-  };
+  }), [agents, getAgent, loadAgent, unloadAgent]);
 
   return (
     <ClippyContext.Provider value={value}>
