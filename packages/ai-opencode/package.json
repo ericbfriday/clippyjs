@@ -34,11 +34,6 @@
     "@clippyjs/ai": "workspace:*",
     "@opencode-ai/sdk": "^1.17.2"
   },
-  "peerDependenciesMeta": {
-    "@opencode-ai/sdk": {
-      "optional": false
-    }
-  },
   "devDependencies": {
     "@clippyjs/ai": "workspace:*",
     "@rollup/plugin-commonjs": "^28.0.1",
