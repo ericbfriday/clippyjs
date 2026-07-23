@@ -19,14 +19,12 @@
       }
     },
     "test": {
-      "executor": "@nx/vitest:test",
+      "executor": "nx:run-commands",
       "outputs": [
         "{workspaceRoot}/coverage/packages/browser-assistant"
       ],
       "options": {
-        "config": "packages/browser-assistant/vitest.config.ts",
-        "passWithNoTests": false,
-        "reportsDirectory": "{projectRoot}/../../coverage/packages/browser-assistant"
+        "command": "yarn workspace @clippyjs/browser-assistant vitest run"
       }
     },
     "typecheck": {
@@ -38,7 +36,8 @@
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "eslint packages/browser-assistant/src --ext .ts"
+        "command": "eslint src",
+        "cwd": "{projectRoot}"
       }
     },
     "clean": {

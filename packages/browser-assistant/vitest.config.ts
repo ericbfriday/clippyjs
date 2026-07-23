@@ -1,6 +1,15 @@
 import { defineConfig } from 'vitest/config';
+import path from 'path';
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      '@clippyjs/browser-parser': path.resolve(__dirname, '../browser-parser/src/index.ts'),
+      '@clippyjs/context-providers': path.resolve(__dirname, '../context-providers/src/index.ts'),
+      '@clippyjs/ai': path.resolve(__dirname, '../ai/src/index.ts'),
+      '@clippyjs/types': path.resolve(__dirname, '../types/src/index.ts'),
+    },
+  },
   test: {
     globals: true,
     environment: 'jsdom',
@@ -13,16 +22,6 @@ export default defineConfig({
         'dist/',
         'tests/',
         '**/*.test.ts',
-      ],
-    },
-  },
-  server: {
-    deps: {
-      inline: [
-        '@clippyjs/browser-parser',
-        '@clippyjs/context-providers',
-        '@clippyjs/ai',
-        '@clippyjs/types',
       ],
     },
   },

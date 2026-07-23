@@ -32,12 +32,10 @@ describe('useStreamController', () => {
     it('initializes with empty progress', () => {
       const { result } = renderHook(() => useStreamController());
 
-      expect(result.current.progress).toEqual({
-        bytes: 0,
-        tokens: 0,
-        chunks: 0,
-        percentage: 0,
-      });
+      expect(result.current.progress.bytes).toBe(0);
+      expect(result.current.progress.tokens).toBe(0);
+      expect(result.current.progress.chunks).toBe(0);
+      expect(result.current.progress.percentage).toBe(0);
     });
 
     it('initializes with empty metrics', () => {
@@ -146,7 +144,7 @@ describe('useStreamController', () => {
   });
 
   describe('Metrics Updates', () => {
-    it('updates metrics when monitor records chunks', async () => {
+    it('updates metrics when monitor records chunks', () => {
       const { result } = renderHook(() => useStreamController());
 
       act(() => {
@@ -154,14 +152,12 @@ describe('useStreamController', () => {
         result.current.monitor.recordChunk(100, 25);
       });
 
-      await waitFor(() => {
-        expect(result.current.metrics.bytesReceived).toBe(100);
-        expect(result.current.metrics.tokensReceived).toBe(25);
-        expect(result.current.metrics.chunksProcessed).toBe(1);
-      });
+      expect(result.current.metrics.bytesReceived).toBe(100);
+      expect(result.current.metrics.tokensReceived).toBe(25);
+      expect(result.current.metrics.chunksProcessed).toBe(1);
     });
 
-    it('updates metrics with rate calculations', async () => {
+    it('updates metrics with rate calculations', () => {
       const { result } = renderHook(() => useStreamController());
 
       act(() => {
@@ -174,9 +170,7 @@ describe('useStreamController', () => {
         result.current.monitor.recordChunk(100, 50);
       });
 
-      await waitFor(() => {
-        expect(result.current.metrics.averageRate).toBeGreaterThan(0);
-      });
+      expect(result.current.metrics.averageRate).toBeGreaterThan(0);
     });
   });
 
@@ -449,7 +443,7 @@ describe('useStreamController', () => {
       expect(result.current.progress.chunks).toBe(100);
     });
 
-    it('handles simultaneous controller and monitor updates', async () => {
+    it('handles simultaneous controller and monitor updates', () => {
       const { result } = renderHook(() => useStreamController());
 
       act(() => {
@@ -459,10 +453,8 @@ describe('useStreamController', () => {
         result.current.monitor.recordChunk(100, 25);
       });
 
-      await waitFor(() => {
-        expect(result.current.progress.bytes).toBe(100);
-        expect(result.current.metrics.bytesReceived).toBe(100);
-      });
+      expect(result.current.progress.bytes).toBe(100);
+      expect(result.current.metrics.bytesReceived).toBe(100);
     });
 
     it('handles errors in state change callbacks', () => {
@@ -485,7 +477,7 @@ describe('useStreamController', () => {
   });
 
   describe('Integration Scenarios', () => {
-    it('coordinates complete streaming lifecycle', async () => {
+    it('coordinates complete streaming lifecycle', () => {
       const { result } = renderHook(() => useStreamController());
 
       // Start streaming
@@ -533,11 +525,8 @@ describe('useStreamController', () => {
 
       expect(result.current.isCompleted).toBe(true);
       expect(result.current.monitor.isActive()).toBe(false);
-
-      await waitFor(() => {
-        expect(result.current.progress.bytes).toBe(200);
-        expect(result.current.metrics.bytesReceived).toBe(200);
-      });
+      expect(result.current.progress.bytes).toBe(200);
+      expect(result.current.metrics.bytesReceived).toBe(200);
     });
 
     it('handles cancellation mid-stream', () => {

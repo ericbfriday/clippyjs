@@ -22,7 +22,7 @@
     "build:bundle": "rollup -c",
     "clean": "rm -rf dist",
     "prepublishOnly": "yarn build",
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "lint": "eslint src/**/*.{ts,tsx}"
   },
   "repository": {

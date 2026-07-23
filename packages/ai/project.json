@@ -19,14 +19,12 @@
       }
     },
     "test": {
-      "executor": "@nx/vitest:test",
+      "executor": "nx:run-commands",
       "outputs": [
         "{workspaceRoot}/coverage/packages/ai"
       ],
       "options": {
-        "config": "packages/ai/vitest.config.ts",
-        "passWithNoTests": false,
-        "reportsDirectory": "{projectRoot}/../../coverage/packages/ai"
+        "command": "yarn workspace @clippyjs/ai vitest run"
       }
     },
     "typecheck": {

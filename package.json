@@ -58,6 +58,7 @@
   "private": true,
   "packageManager": "yarn@4.12.0",
   "devDependencies": {
+    "@eslint/js": "^9.18.0",
     "@nx/eslint": "22.6.5",
     "@nx/js": "22.6.5",
     "@nx/playwright": "22.6.5",
@@ -66,7 +67,10 @@
     "@nx/vite": "22.6.5",
     "@nx/vitest": "22.6.5",
     "@playwright/test": "^1.58.2",
+    "@typescript-eslint/eslint-plugin": "^8.20.0",
+    "@typescript-eslint/parser": "^8.20.0",
     "eslint": "^9.39.1",
+    "globals": "^15.14.0",
     "nx": "22.6.5",
     "typescript": "^5.7.3",
     "vite": "^6.4.2",

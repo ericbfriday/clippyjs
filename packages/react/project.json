@@ -19,14 +19,12 @@
       }
     },
     "test": {
-      "executor": "@nx/vitest:test",
+      "executor": "nx:run-commands",
       "outputs": [
         "{workspaceRoot}/coverage/packages/react"
       ],
       "options": {
-        "config": "packages/react/vitest.config.ts",
-        "passWithNoTests": false,
-        "reportsDirectory": "{projectRoot}/../../coverage/packages/react"
+        "command": "yarn workspace @clippyjs/react vitest run"
       }
     },
     "test:integration": {
