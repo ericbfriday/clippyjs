@@ -1,6 +1,7 @@
 {
-  "mcpServers": {
+  "context_servers": {
     "nx": {
+      "source": "custom",
       "command": "yarn",
       "args": ["nx", "mcp"]
     }
