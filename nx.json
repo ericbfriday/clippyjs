@@ -64,5 +64,6 @@
     ]
   },
   "parallel": 8,
-  "cacheDirectory": "node_modules/.cache/nx"
+  "cacheDirectory": "node_modules/.cache/nx",
+  "analytics": true
 }

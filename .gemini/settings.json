@@ -5,18 +5,12 @@
   "mcpServers": {
     "nx-mcp": {
       "type": "stdio",
-      "command": "volta",
+      "command": "yarn",
       "args": [
-        "run",
-        "--node",
-        "24.14.0",
-        "--npm",
-        "11.9.0",
-        "npx",
-        "-y",
         "nx",
         "mcp"
       ]
     }
-  }
+  },
+  "contextFileName": "AGENTS.md"
 }
