@@ -151,7 +151,7 @@ export class SemanticExtractor {
    * @returns Array of 5-10 topic strings sorted by relevance
    */
   async extractTopics(): Promise<string[]> {
-    const topicCandidates = new Map<string, number>();
+    const topicCandidates = new Map<string, { count: number }>();
 
     // Meta keywords — highest weight
     const metaKeywords = document.querySelector<HTMLMetaElement>(
@@ -163,10 +163,12 @@ export class SemanticExtractor {
         .map((k) => k.trim().toLowerCase());
       for (const keyword of keywords) {
         if (keyword.length >= MIN_WORD_LENGTH) {
-          topicCandidates.set(
-            keyword,
-            (topicCandidates.get(keyword) ?? 0) + 5,
-          );
+          const entry = topicCandidates.get(keyword);
+          if (entry) {
+            entry.count += 5;
+          } else {
+            topicCandidates.set(keyword, { count: 5 });
+          }
         }
       }
     }
@@ -176,7 +178,12 @@ export class SemanticExtractor {
     for (const heading of headings) {
       const words = this.extractSignificantWords(heading.textContent ?? '');
       for (const word of words) {
-        topicCandidates.set(word, (topicCandidates.get(word) ?? 0) + 3);
+        const entry = topicCandidates.get(word);
+        if (entry) {
+          entry.count += 3;
+        } else {
+          topicCandidates.set(word, { count: 3 });
+        }
       }
     }
 
@@ -189,13 +196,18 @@ export class SemanticExtractor {
     if (mainContent?.textContent) {
       const words = this.extractSignificantWords(mainContent.textContent);
       for (const word of words) {
-        topicCandidates.set(word, (topicCandidates.get(word) ?? 0) + 1);
+        const entry = topicCandidates.get(word);
+        if (entry) {
+          entry.count += 1;
+        } else {
+          topicCandidates.set(word, { count: 1 });
+        }
       }
     }
 
     // Sort by frequency descending and return top 5-10
     const sorted = [...topicCandidates.entries()]
-      .sort((a, b) => b[1] - a[1])
+      .sort((a, b) => b[1].count - a[1].count)
       .map(([word]) => word);
 
     return sorted.slice(0, 10);
