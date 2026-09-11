@@ -22,7 +22,7 @@ const soundCallbacks: Map<string, (sounds: SoundMap) => void> = new Map();
  * 2. It is on the same origin as the current page
  * 3. It is from a trusted origin defined in window.CLIPPY_TRUSTED_ORIGINS
  */
-function validatePath(path: string): string {
+export function validatePath(path: string): string {
   if (typeof window === 'undefined') return path;
 
   // Relative paths are safe (but exclude protocol-relative //)

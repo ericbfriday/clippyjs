@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 
 // Mock minimal window for non-DOM environments
 if (typeof window === 'undefined') {
@@ -8,7 +8,7 @@ if (typeof window === 'undefined') {
   (global as any).URL = URL;
 }
 
-import { load } from '../../src/loader';
+import { load, validatePath } from '../../src/loader';
 
 describe('loader security', () => {
   beforeEach(() => {
@@ -34,25 +34,22 @@ describe('loader security', () => {
       .rejects.toThrow(/Security Error/);
   });
 
-  it('fix: allows loading from same origin', async () => {
+  it('fix: allows loading from same origin', () => {
     const sameOriginPath = `${window.location.origin}/agents/`;
-
-    try {
-        await load('Clippy', { basePath: sameOriginPath });
-    } catch (e) {
-        expect((e as Error).message).not.toContain('Security Error');
-    }
+    // Assert synchronously via validatePath: awaiting load() would hang in
+    // jsdom because script/Image assets never fire load or error events.
+    expect(validatePath(sameOriginPath)).toBe(sameOriginPath);
   });
 
-  it('fix: allows loading from trusted origins', async () => {
+  it('fix: allows loading from trusted origins', () => {
     const trustedOrigin = 'https://cdn.clippyjs.com';
     (window as any).CLIPPY_TRUSTED_ORIGINS = [trustedOrigin];
     const trustedPath = `${trustedOrigin}/agents/`;
+    expect(validatePath(trustedPath)).toBe(trustedPath);
+  });
 
-    try {
-        await load('Clippy', { basePath: trustedPath });
-    } catch (e) {
-        expect((e as Error).message).not.toContain('Security Error');
-    }
+  it('fix: rejects untrusted absolute URLs via validatePath', () => {
+    expect(() => validatePath('https://malicious.com/evil'))
+      .toThrow(/Security Error/);
   });
 });
