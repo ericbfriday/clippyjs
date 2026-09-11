@@ -229,6 +229,6 @@ export class FormAnalyzer {
   }
 
   private generateId(): string {
-    return 'form-' + Math.random().toString(36).slice(2, 9);
+    return 'form-' + crypto.randomUUID();
   }
 }
