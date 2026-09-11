@@ -122,28 +122,40 @@ export function ProviderSelector({
     const upKey = isVertical ? 'ArrowUp' : 'ArrowLeft';
     const downKey = isVertical ? 'ArrowDown' : 'ArrowRight';
 
+    // Move DOM focus imperatively: relying only on the focusedIndex effect
+    // breaks when React batches updates back to the same value (bail-out).
+    const moveTo = (index: number) => {
+      setFocusedIndex(index);
+      const radio = radiogroupRef.current?.querySelector(
+        `input[value="${providers[index]?.id}"]`
+      ) as HTMLInputElement | null;
+      radio?.focus();
+    };
+
+    // Resolve the anchor index from real DOM focus first: state can be stale
+    // when focus moved without a committed re-render (e.g. batched updates).
+    const focusedRadio = radiogroupRef.current?.querySelector('input:focus') as HTMLInputElement | null;
+    const anchor = focusedRadio
+      ? providers.findIndex(p => p.id === focusedRadio.value)
+      : -1;
+    const current = anchor >= 0 ? anchor : focusedIndex;
+
     switch (event.key) {
       case upKey:
         event.preventDefault();
-        setFocusedIndex(prev => {
-          const newIndex = prev > 0 ? prev - 1 : providers.length - 1;
-          return newIndex;
-        });
+        moveTo(current > 0 ? current - 1 : providers.length - 1);
         break;
 
       case downKey:
         event.preventDefault();
-        setFocusedIndex(prev => {
-          const newIndex = prev < providers.length - 1 ? prev + 1 : 0;
-          return newIndex;
-        });
+        moveTo(current < providers.length - 1 ? current + 1 : 0);
         break;
 
       case ' ':
       case 'Enter':
         event.preventDefault();
-        if (focusedIndex >= 0 && focusedIndex < providers.length) {
-          const provider = providers[focusedIndex];
+        if (current >= 0 && current < providers.length) {
+          const provider = providers[current];
           if (provider.id !== currentProvider.id) {
             handleProviderChange(provider.id);
           }
@@ -152,12 +164,12 @@ export function ProviderSelector({
 
       case 'Home':
         event.preventDefault();
-        setFocusedIndex(0);
+        moveTo(0);
         break;
 
       case 'End':
         event.preventDefault();
-        setFocusedIndex(providers.length - 1);
+        moveTo(providers.length - 1);
         break;
     }
   }, [providers, currentProvider, focusedIndex, layout, disabled, isChanging, handleProviderChange]);
@@ -224,6 +236,7 @@ export function ProviderSelector({
                   value={provider.id}
                   checked={isActive}
                   onChange={() => handleProviderChange(provider.id)}
+                  onFocus={() => setFocusedIndex(index)}
                   disabled={disabled || isChanging}
                   aria-describedby={descId}
                   aria-checked={isActive}
