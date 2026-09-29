@@ -7,7 +7,6 @@ import {
   type Tool,
   type ToolUseBlock,
 } from '@clippyjs/ai';
-import OpenAI from 'openai';
 import type {
   ChatCompletionChunk,
   ChatCompletionContentPart,
@@ -31,182 +30,36 @@ export interface OpenRouterConfig extends AIProviderConfig {
  * Implements the AIProvider interface for OpenRouter's multi-model gateway.
  * Supports any model available on OpenRouter with streaming, tools, and vision.
  *
+ * This provider uses a secure backend proxy to interact with OpenRouter's API,
+ * avoiding client-side exposure of API keys.
+ *
  * Model format: provider/model-name (e.g., openai/gpt-4o, anthropic/claude-3-opus)
  */
 export class OpenRouterProvider extends AIProvider {
-  private client: OpenAI | null = null;
   private config: OpenRouterConfig | null = null;
-  private isProxyMode = false;
   private currentModel = 'openai/gpt-4o';
-
-  /** OpenRouter API base URL */
-  private static readonly BASE_URL = 'https://openrouter.ai/api/v1';
 
   async initialize(config: OpenRouterConfig): Promise<void> {
     this.config = config;
     this.currentModel = config.model || 'openai/gpt-4o';
 
-    // Support both client-side and proxy mode
-    if (config.endpoint) {
-      // Proxy mode - use fetch for streaming
-      this.isProxyMode = true;
-    } else if (config.apiKey) {
-      // Validate API key format (warning only)
-      if (!config.apiKey.startsWith('sk-or-')) {
-        console.warn('OpenRouterProvider: API key does not start with "sk-or-", this may be invalid');
+    if (!config.endpoint) {
+      if (config.apiKey) {
+        throw new Error(
+          'Security Error: Direct client-side API key usage is disabled. Please use a secure backend proxy endpoint.'
+        );
       }
-
-      // Client-side mode - use SDK
-      this.isProxyMode = false;
-
-      // Build default headers for OpenRouter
-      const defaultHeaders: Record<string, string> = {};
-      if (config.httpReferer) {
-        defaultHeaders['HTTP-Referer'] = config.httpReferer;
-      }
-      if (config.xTitle) {
-        defaultHeaders['X-Title'] = config.xTitle;
-      }
-
-      this.client = new OpenAI({
-        apiKey: config.apiKey,
-        dangerouslyAllowBrowser: true,
-        baseURL: config.baseURL || OpenRouterProvider.BASE_URL,
-        defaultHeaders: Object.keys(defaultHeaders).length > 0 ? defaultHeaders : undefined,
-      });
-    } else {
-      throw new Error('Either endpoint or apiKey must be provided');
+      throw new Error('Proxy endpoint must be provided');
     }
+
+    console.log('OpenRouterProvider: Proxy mode configured');
   }
 
   async *chat(
     messages: Message[],
     options?: ChatOptions
   ): AsyncIterableIterator<StreamChunk> {
-    if (this.isProxyMode) {
-      yield* this.chatProxy(messages, options);
-    } else {
-      yield* this.chatDirect(messages, options);
-    }
-  }
-
-  /**
-   * Direct OpenRouter API streaming using SDK
-   */
-  private async *chatDirect(
-    messages: Message[],
-    options?: ChatOptions
-  ): AsyncIterableIterator<StreamChunk> {
-    if (!this.client) {
-      throw new Error('OpenRouter client not initialized');
-    }
-
-    try {
-      // Convert messages to OpenAI format
-      const openaiMessages = this.convertMessages(messages, options?.systemPrompt);
-
-      // Convert tools to OpenAI format
-      const tools = options?.tools ? this.convertTools(options.tools) : undefined;
-
-      // Create streaming completion
-      const stream = await this.client.chat.completions.create({
-        model: this.currentModel,
-        messages: openaiMessages,
-        tools,
-        max_tokens: options?.maxTokens || this.config?.maxTokens,
-        temperature: options?.temperature ?? this.config?.temperature ?? 1,
-        stream: true,
-      });
-
-      // Track tool use state
-      let currentToolUse: Partial<ToolUseBlock> | null = null;
-
-      // Process stream
-      for await (const chunk of stream) {
-        const delta = chunk.choices[0]?.delta;
-
-        if (!delta) continue;
-
-        // Handle content deltas
-        if (delta.content) {
-          yield {
-            type: 'content_delta',
-            delta: delta.content,
-          };
-        }
-
-        // Handle tool calls
-        if (delta.tool_calls) {
-          for (const toolCall of delta.tool_calls) {
-            // Tool call start
-            if (toolCall.function?.name && !currentToolUse) {
-              currentToolUse = {
-                id: toolCall.id || `tool_${Date.now()}`,
-                name: toolCall.function.name,
-                input: {},
-              };
-
-              yield {
-                type: 'tool_use_start',
-                toolUse: currentToolUse as ToolUseBlock,
-              };
-            }
-
-            // Tool call arguments (streamed)
-            if (toolCall.function?.arguments && currentToolUse) {
-              // Accumulate arguments as string temporarily
-              const existingArgs = (currentToolUse.input as any)?._raw || '';
-              (currentToolUse.input as any) = {
-                _raw: existingArgs + toolCall.function.arguments,
-              };
-
-              yield {
-                type: 'tool_use_delta',
-                delta: toolCall.function.arguments,
-              };
-            }
-          }
-        }
-
-        // Handle finish reasons
-        if (chunk.choices[0]?.finish_reason) {
-          // Complete any pending tool use
-          if (currentToolUse && currentToolUse.id && currentToolUse.name) {
-            // Parse accumulated arguments
-            try {
-              const rawArgs = (currentToolUse.input as any)?._raw || '{}';
-              const parsedInput = JSON.parse(rawArgs);
-
-              yield {
-                type: 'tool_use',
-                toolUse: {
-                  id: currentToolUse.id,
-                  name: currentToolUse.name,
-                  input: parsedInput,
-                },
-              };
-            } catch (error) {
-              console.error('Failed to parse tool arguments:', error);
-              yield {
-                type: 'error',
-                error: 'Failed to parse tool arguments',
-              };
-            }
-            currentToolUse = null;
-          }
-
-          yield {
-            type: 'complete',
-          };
-        }
-      }
-    } catch (error: any) {
-      console.error('OpenRouter streaming error:', error);
-      yield {
-        type: 'error',
-        error: error.message || 'Unknown error',
-      };
-    }
+    yield* this.chatProxy(messages, options);
   }
 
   /**
@@ -230,6 +83,7 @@ export class OpenRouterProvider extends AIProvider {
       // Build headers
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
+        ...(this.config.headers || {}),
       };
       if (this.config.httpReferer) {
         headers['HTTP-Referer'] = this.config.httpReferer;
@@ -496,7 +350,6 @@ export class OpenRouterProvider extends AIProvider {
    * Clean up provider resources
    */
   destroy(): void {
-    this.client = null;
     this.config = null;
   }
 
