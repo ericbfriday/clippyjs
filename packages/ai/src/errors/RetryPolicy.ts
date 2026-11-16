@@ -157,7 +157,7 @@ export class RetryPolicy {
         if (attempt === effectiveConfig.maxRetries) {
           throw new Error(
             `Operation failed after ${attempt + 1} attempts: ${lastError.message}`,
-            { cause: lastError }
+            { cause: error }
           );
         }
 

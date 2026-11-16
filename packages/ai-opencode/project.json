@@ -19,14 +19,12 @@
       }
     },
     "test": {
-      "executor": "@nx/vitest:test",
+      "executor": "nx:run-commands",
       "outputs": [
         "{workspaceRoot}/coverage/packages/ai-opencode"
       ],
       "options": {
-        "config": "packages/ai-opencode/vitest.config.ts",
-        "passWithNoTests": false,
-        "reportsDirectory": "{projectRoot}/../../coverage/packages/ai-opencode"
+        "command": "yarn workspace @clippyjs/ai-opencode test"
       }
     },
     "typecheck": {
@@ -34,6 +32,13 @@
       "outputs": [],
       "options": {
         "command": "yarn workspace @clippyjs/ai-opencode typecheck"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "eslint src",
+        "cwd": "{projectRoot}"
       }
     },
     "clean": {

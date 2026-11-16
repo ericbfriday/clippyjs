@@ -10,6 +10,11 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   testDir: './tests',
 
+  /* Only pick up Playwright specs (*.spec.ts); vitest component tests in the
+     same directories (*.test.tsx) are run separately by vitest and crash the
+     Playwright collection step if matched here. */
+  testMatch: /.*\.spec\.tsx?$/,
+
   /* Run tests in files in parallel */
   fullyParallel: true,
 

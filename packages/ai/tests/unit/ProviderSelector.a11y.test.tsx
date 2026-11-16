@@ -433,11 +433,13 @@ describe('ProviderSelector Accessibility Tests', () => {
       const anthropicRadio = screen.getByRole('radio', { name: /Anthropic Claude/i });
       const openaiRadio = screen.getByRole('radio', { name: /OpenAI GPT/i });
 
-      anthropicRadio.focus();
       fireEvent.keyDown(anthropicRadio, { key: 'ArrowDown' });
 
-      // Focus should not move
-      expect(anthropicRadio).toHaveFocus();
+      // Disabled radios are not focusable per the HTML spec (enforced by
+      // jsdom 31+), so focus cannot sit on the disabled radio itself — the
+      // assertion is that keyboard navigation must not move focus to any
+      // other radio either.
+      expect(anthropicRadio).not.toHaveFocus();
       expect(openaiRadio).not.toHaveFocus();
     });
   });

@@ -9,7 +9,10 @@
     "noEmit": true,
     "isolatedModules": true,
     "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "noUncheckedSideEffectImports": false,
+    "esModuleInterop": false,
+    "ignoreDeprecations": "6.0"
   },
   "include": ["src/**/*"]
 }

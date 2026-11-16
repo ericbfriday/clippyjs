@@ -9,7 +9,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Error Handling - E2E', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/iframe.html?id=useagent-basic--auto-load');
+    await page.goto('/iframe.html?id=hooks-useagent-basic--auto-load');
     await page.waitForLoadState('networkidle');
   });
 
@@ -22,7 +22,7 @@ test.describe('Error Handling - E2E', () => {
     await page.context().setOffline(true);
 
     // Try to navigate to new story
-    await page.goto('/iframe.html?id=clippy-component--basic', { waitUntil: 'domcontentloaded' }).catch(() => {
+    await page.goto('/iframe.html?id=components-clippy--basic', { waitUntil: 'domcontentloaded' }).catch(() => {
       // Expected to fail when offline
     });
 
@@ -30,7 +30,7 @@ test.describe('Error Handling - E2E', () => {
     await page.context().setOffline(false);
 
     // Verify recovery
-    await page.goto('/iframe.html?id=useagent-basic--auto-load');
+    await page.goto('/iframe.html?id=hooks-useagent-basic--auto-load');
     await page.waitForLoadState('networkidle');
 
     const recoveredRoot = page.locator('#storybook-root');
@@ -61,7 +61,7 @@ test.describe('Error Handling - E2E', () => {
       }
     });
 
-    await page.goto('/iframe.html?id=useagent-basic--auto-load');
+    await page.goto('/iframe.html?id=hooks-useagent-basic--auto-load');
     await page.waitForLoadState('networkidle');
 
     // Page should still be functional even if there are console errors
@@ -76,10 +76,10 @@ test.describe('Error Handling - E2E', () => {
 
   test('handles rapid navigation without crashing', async ({ page }) => {
     const stories = [
-      '/iframe.html?id=useagent-basic--auto-load',
-      '/iframe.html?id=clippy-component--basic',
-      '/iframe.html?id=useagent-basic--auto-load',
-      '/iframe.html?id=clippy-component--with-greeting',
+      '/iframe.html?id=hooks-useagent-basic--auto-load',
+      '/iframe.html?id=components-clippy--basic',
+      '/iframe.html?id=hooks-useagent-basic--auto-load',
+      '/iframe.html?id=components-clippy--with-message',
     ];
 
     // Rapidly navigate between stories
@@ -107,7 +107,7 @@ test.describe('Asset Loading Errors', () => {
       }
     });
 
-    await page.goto('/iframe.html?id=useagent-basic--auto-load');
+    await page.goto('/iframe.html?id=hooks-useagent-basic--auto-load');
     await page.waitForLoadState('networkidle');
 
     // Page should still load even if some assets fail
@@ -128,7 +128,7 @@ test.describe('Asset Loading Errors', () => {
       latency: 500, // 500ms latency
     });
 
-    await page.goto('/iframe.html?id=useagent-basic--auto-load');
+    await page.goto('/iframe.html?id=hooks-useagent-basic--auto-load');
 
     // Should eventually load even with slow network
     await page.waitForLoadState('networkidle', { timeout: 30000 });
@@ -154,7 +154,7 @@ test.describe('JavaScript Errors', () => {
       pageErrors.push(error);
     });
 
-    await page.goto('/iframe.html?id=useagent-basic--auto-load');
+    await page.goto('/iframe.html?id=hooks-useagent-basic--auto-load');
     await page.waitForLoadState('networkidle');
 
     // Application should handle errors gracefully
@@ -176,7 +176,7 @@ test.describe('JavaScript Errors', () => {
       }
     });
 
-    await page.goto('/iframe.html?id=useagent-basic--auto-load');
+    await page.goto('/iframe.html?id=hooks-useagent-basic--auto-load');
     await page.waitForLoadState('networkidle');
 
     // Wait a bit to catch any async Promise rejections
@@ -200,7 +200,7 @@ test.describe('Browser Compatibility', () => {
       'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X)',
     });
 
-    await page.goto('/iframe.html?id=useagent-basic--auto-load');
+    await page.goto('/iframe.html?id=hooks-useagent-basic--auto-load');
     await page.waitForLoadState('networkidle');
 
     const storyRoot = page.locator('#storybook-root');
@@ -209,14 +209,14 @@ test.describe('Browser Compatibility', () => {
 
   test('handles browser back/forward navigation', async ({ page }) => {
     // Load first story
-    await page.goto('/iframe.html?id=useagent-basic--auto-load');
+    await page.goto('/iframe.html?id=hooks-useagent-basic--auto-load');
     await page.waitForLoadState('networkidle');
 
     let storyRoot = page.locator('#storybook-root');
     await expect(storyRoot).toBeVisible();
 
     // Load second story
-    await page.goto('/iframe.html?id=clippy-component--basic');
+    await page.goto('/iframe.html?id=components-clippy--basic');
     await page.waitForLoadState('networkidle');
 
     storyRoot = page.locator('#storybook-root');
@@ -240,7 +240,7 @@ test.describe('Browser Compatibility', () => {
 
 test.describe('Resource Cleanup', () => {
   test('cleans up resources on page unload', async ({ page }) => {
-    await page.goto('/iframe.html?id=useagent-basic--auto-load');
+    await page.goto('/iframe.html?id=hooks-useagent-basic--auto-load');
     await page.waitForLoadState('networkidle');
 
     const storyRoot = page.locator('#storybook-root');
@@ -250,7 +250,7 @@ test.describe('Resource Cleanup', () => {
     await page.goto('about:blank');
 
     // Navigate back
-    await page.goto('/iframe.html?id=useagent-basic--auto-load');
+    await page.goto('/iframe.html?id=hooks-useagent-basic--auto-load');
     await page.waitForLoadState('networkidle');
 
     // Should load cleanly without leftover state
@@ -259,7 +259,7 @@ test.describe('Resource Cleanup', () => {
   });
 
   test('handles tab visibility changes', async ({ page }) => {
-    await page.goto('/iframe.html?id=useagent-basic--auto-load');
+    await page.goto('/iframe.html?id=hooks-useagent-basic--auto-load');
     await page.waitForLoadState('networkidle');
 
     // Simulate tab becoming hidden

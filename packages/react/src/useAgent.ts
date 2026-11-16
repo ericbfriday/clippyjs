@@ -25,25 +25,38 @@ export function useAgent(
 
   const { loadAgent, getAgent, unloadAgent } = useClippy();
   const [agent, setAgent] = useState<Agent | null>(null);
+  // Ref mirror of `agent` so method wrappers (show/speak/...) see the current
+  // agent even when called right after `await load()` in the same closure,
+  // before React has re-rendered with the new state.
+  const agentRef = useRef<Agent | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const mountedRef = useRef(true);
   const agentNameRef = useRef(name);
+
+  const setAgentState = useCallback(
+    (next: Agent | null) => {
+      agentRef.current = next;
+      setAgent(next);
+    },
+    []
+  );
 
   // Handle agent name changes - cleanup old agent when name changes
   useEffect(() => {
     if (agentNameRef.current !== name) {
       // Name changed - unload the old agent
       const oldName = agentNameRef.current;
-      const oldAgent = getAgent(oldName);
+      const oldAgent = agentRef.current ?? getAgent(oldName);
       if (oldAgent && autoCleanup) {
         oldAgent.destroy();
         unloadAgent(oldName);
       }
       agentNameRef.current = name;
-      setAgent(null);
+      setAgentState(null);
+      setError(null);
     }
-  }, [name, autoCleanup, getAgent, unloadAgent]);
+  }, [name, autoCleanup, getAgent, unloadAgent, setAgentState]);
 
   // Load function
   const load = useCallback(async (): Promise<Agent> => {
@@ -62,7 +75,7 @@ export function useAgent(
 
       if (!mountedRef.current) throw new Error("Component unmounted");
 
-      setAgent(loadedAgent);
+      setAgentState(loadedAgent);
 
       // Auto-show if enabled
       if (autoShow) {
@@ -102,16 +115,17 @@ export function useAgent(
     initialPosition,
     initialMessage,
     loadAgent,
+    setAgentState,
   ]);
 
   // Unload function
   const unload = useCallback(() => {
-    if (agent) {
-      agent.destroy();
+    if (agentRef.current) {
+      agentRef.current.destroy();
       unloadAgent(agentNameRef.current);
-      setAgent(null);
+      setAgentState(null);
     }
-  }, [agent, unloadAgent]);
+  }, [unloadAgent, setAgentState]);
 
   // Reload function
   const reload = useCallback(async (): Promise<Agent> => {
@@ -134,111 +148,128 @@ export function useAgent(
 
     return () => {
       mountedRef.current = false;
-      if (agent && autoCleanup) {
-        agent.destroy();
+      if (agentRef.current && autoCleanup) {
+        agentRef.current.destroy();
         unloadAgent(agentNameRef.current);
       }
     };
-  }, [agent, autoCleanup, unloadAgent]);
+  }, [autoCleanup, unloadAgent]);
 
-  // Convenience method wrappers
+  // Convenience method wrappers — read agentRef so they stay valid across
+  // renders and immediately after load() resolves
   const show = useCallback(async () => {
-    if (!agent) throw new Error("Agent not loaded");
-    await agent.show();
-  }, [agent]);
+    const current = agentRef.current;
+    if (!current) throw new Error("Agent not loaded");
+    await current.show();
+  }, []);
 
   const hide = useCallback(async () => {
-    if (!agent) throw new Error("Agent not loaded");
-    await agent.hide();
-  }, [agent]);
+    const current = agentRef.current;
+    if (!current) throw new Error("Agent not loaded");
+    await current.hide();
+  }, []);
 
   const play = useCallback(
     async (animation: string) => {
-      if (!agent) throw new Error("Agent not loaded");
-      await agent.play(animation);
+      const current = agentRef.current;
+      if (!current) throw new Error("Agent not loaded");
+      await current.play(animation);
     },
-    [agent]
+    []
   );
 
   const animate = useCallback(async () => {
-    if (!agent) throw new Error("Agent not loaded");
-    await agent.animate();
-  }, [agent]);
+    const current = agentRef.current;
+    if (!current) throw new Error("Agent not loaded");
+    await current.animate();
+  }, []);
 
   const speak = useCallback(
     async (text: string, hold?: boolean) => {
-      if (!agent) throw new Error("Agent not loaded");
-      await agent.speak(text, hold);
+      const current = agentRef.current;
+      if (!current) throw new Error("Agent not loaded");
+      await current.speak(text, hold);
     },
-    [agent]
+    []
   );
 
   const moveTo = useCallback(
     async (x: number, y: number, duration?: number) => {
-      if (!agent) throw new Error("Agent not loaded");
-      await agent.moveTo(x, y, duration);
+      const current = agentRef.current;
+      if (!current) throw new Error("Agent not loaded");
+      await current.moveTo(x, y, duration);
     },
-    [agent]
+    []
   );
 
   const gestureAt = useCallback(
     async (x: number, y: number) => {
-      if (!agent) throw new Error("Agent not loaded");
-      await agent.gestureAt(x, y);
+      const current = agentRef.current;
+      if (!current) throw new Error("Agent not loaded");
+      await current.gestureAt(x, y);
     },
-    [agent]
+    []
   );
 
   const stop = useCallback(() => {
-    if (!agent) throw new Error("Agent not loaded");
-    agent.stop();
-  }, [agent]);
+    const current = agentRef.current;
+    if (!current) throw new Error("Agent not loaded");
+    current.stop();
+  }, []);
 
   const stopCurrent = useCallback(() => {
-    if (!agent) throw new Error("Agent not loaded");
-    agent.stopCurrent();
-  }, [agent]);
+    const current = agentRef.current;
+    if (!current) throw new Error("Agent not loaded");
+    current.stopCurrent();
+  }, []);
 
   const pause = useCallback(() => {
-    if (!agent) throw new Error("Agent not loaded");
-    agent.pause();
-  }, [agent]);
+    const current = agentRef.current;
+    if (!current) throw new Error("Agent not loaded");
+    current.pause();
+  }, []);
 
   const resume = useCallback(() => {
-    if (!agent) throw new Error("Agent not loaded");
-    agent.resume();
-  }, [agent]);
+    const current = agentRef.current;
+    if (!current) throw new Error("Agent not loaded");
+    current.resume();
+  }, []);
 
   const delay = useCallback(
     async (ms: number) => {
-      if (!agent) throw new Error("Agent not loaded");
-      await agent.delay(ms);
+      const current = agentRef.current;
+      if (!current) throw new Error("Agent not loaded");
+      await current.delay(ms);
     },
-    [agent]
+    []
   );
 
   const closeBalloon = useCallback(() => {
-    if (!agent) throw new Error("Agent not loaded");
-    agent.closeBalloon();
-  }, [agent]);
+    const current = agentRef.current;
+    if (!current) throw new Error("Agent not loaded");
+    current.closeBalloon();
+  }, []);
 
   const getAnimations = useCallback((): string[] => {
-    if (!agent) return [];
-    return agent.getAnimations();
-  }, [agent]);
+    const current = agentRef.current;
+    if (!current) return [];
+    return current.getAnimations();
+  }, []);
 
   const hasAnimation = useCallback(
     (animName: string): boolean => {
-      if (!agent) return false;
-      return agent.hasAnimation(animName);
+      const current = agentRef.current;
+      if (!current) return false;
+      return current.hasAnimation(animName);
     },
-    [agent]
+    []
   );
 
   const isVisible = useCallback((): boolean => {
-    if (!agent) return false;
-    return agent.isVisible();
-  }, [agent]);
+    const current = agentRef.current;
+    if (!current) return false;
+    return current.isVisible();
+  }, []);
 
   return {
     // State
