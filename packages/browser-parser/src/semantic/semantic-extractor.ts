@@ -550,7 +550,7 @@ export class SemanticExtractor {
       const rect = el.getBoundingClientRect();
       visible = rect.height > 0;
     } catch {
-      visible = true;
+      // getBoundingClientRect unavailable in this environment — keep default true
     }
 
     return { id, title, content, type, importance, visible };

@@ -19,14 +19,12 @@
       }
     },
     "test": {
-      "executor": "@nx/vitest:test",
+      "executor": "nx:run-commands",
       "outputs": [
         "{workspaceRoot}/coverage/packages/ai-zai"
       ],
       "options": {
-        "config": "packages/ai-zai/vitest.config.ts",
-        "passWithNoTests": false,
-        "reportsDirectory": "{projectRoot}/../../coverage/packages/ai-zai"
+        "command": "yarn workspace @clippyjs/ai-zai test"
       }
     },
     "typecheck": {
@@ -34,6 +32,13 @@
       "outputs": [],
       "options": {
         "command": "yarn workspace @clippyjs/ai-zai typecheck"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "eslint src",
+        "cwd": "{projectRoot}"
       }
     },
     "clean": {

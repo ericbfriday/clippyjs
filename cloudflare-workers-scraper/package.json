@@ -7,12 +7,15 @@
     "dev": "wrangler dev",
     "deploy": "wrangler deploy"
   },
-  "keywords": ["web-scraping", "cloudflare-workers"],
+  "keywords": [
+    "web-scraping",
+    "cloudflare-workers"
+  ],
   "author": "goose",
   "license": "MIT",
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20241127.0",
-    "typescript": "^5.7.2",
+    "typescript": "^6.0.3",
     "wrangler": "^3.94.0"
   },
   "dependencies": {

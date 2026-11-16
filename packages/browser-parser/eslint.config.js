@@ -22,6 +22,8 @@ export default [
       '@typescript-eslint': tseslint,
     },
     rules: {
+      // TypeScript compiler already flags undefined identifiers
+      'no-undef': 'off',
       ...tseslint.configs.recommended.rules,
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-unused-vars': 'warn',

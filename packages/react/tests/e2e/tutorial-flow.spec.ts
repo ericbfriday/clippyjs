@@ -10,7 +10,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Tutorial Flow - E2E', () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to a Storybook story with agent
-    await page.goto('/iframe.html?id=useagent-basic--auto-load');
+    await page.goto('/iframe.html?id=hooks-useagent-basic--auto-load');
     await page.waitForLoadState('networkidle');
   });
 
@@ -26,7 +26,7 @@ test.describe('Tutorial Flow - E2E', () => {
 
   test('agent greeting appears after page load', async ({ page }) => {
     // Navigate to a story with initial greeting
-    await page.goto('/iframe.html?id=clippy-component--with-greeting');
+    await page.goto('/iframe.html?id=components-clippy--with-message');
     await page.waitForLoadState('networkidle');
 
     // Wait for any greeting or agent message to appear
@@ -39,7 +39,7 @@ test.describe('Tutorial Flow - E2E', () => {
 
   test('user can interact with page while agent is present', async ({ page }) => {
     // Navigate to interactive story
-    await page.goto('/iframe.html?id=useagent-basic--auto-load');
+    await page.goto('/iframe.html?id=hooks-useagent-basic--auto-load');
     await page.waitForLoadState('networkidle');
 
     // Verify we can still interact with page elements
@@ -53,7 +53,7 @@ test.describe('Tutorial Flow - E2E', () => {
 
   test('multiple agents can coexist on same page', async ({ page }) => {
     // Navigate to multi-agent story
-    await page.goto('/iframe.html?id=stories-all-agents--all-agents');
+    await page.goto('/iframe.html?id=agents-all-agents--agent-gallery');
     await page.waitForLoadState('networkidle');
 
     // Give agents time to load
@@ -66,14 +66,14 @@ test.describe('Tutorial Flow - E2E', () => {
 
   test('agent responds to user navigation', async ({ page }) => {
     // Start on one story
-    await page.goto('/iframe.html?id=useagent-basic--auto-load');
+    await page.goto('/iframe.html?id=hooks-useagent-basic--auto-load');
     await page.waitForLoadState('networkidle');
 
     let storyRoot = page.locator('#storybook-root');
     await expect(storyRoot).toBeVisible();
 
     // Navigate to different story
-    await page.goto('/iframe.html?id=clippy-component--basic');
+    await page.goto('/iframe.html?id=components-clippy--basic');
     await page.waitForLoadState('networkidle');
 
     storyRoot = page.locator('#storybook-root');
@@ -83,7 +83,7 @@ test.describe('Tutorial Flow - E2E', () => {
 
 test.describe('Tutorial Steps - Sequential Guidance', () => {
   test('guides user through multi-step process', async ({ page }) => {
-    await page.goto('/iframe.html?id=useagent-basic--auto-load');
+    await page.goto('/iframe.html?id=hooks-useagent-basic--auto-load');
     await page.waitForLoadState('networkidle');
 
     // Step 1: Agent loads
@@ -100,7 +100,7 @@ test.describe('Tutorial Steps - Sequential Guidance', () => {
   });
 
   test('handles page reload gracefully', async ({ page }) => {
-    await page.goto('/iframe.html?id=useagent-basic--auto-load');
+    await page.goto('/iframe.html?id=hooks-useagent-basic--auto-load');
     await page.waitForLoadState('networkidle');
 
     // Verify initial load
@@ -119,7 +119,7 @@ test.describe('Tutorial Steps - Sequential Guidance', () => {
 
 test.describe('Interactive Tutorial Elements', () => {
   test('agent appearance persists during page interaction', async ({ page }) => {
-    await page.goto('/iframe.html?id=clippy-component--basic');
+    await page.goto('/iframe.html?id=components-clippy--basic');
     await page.waitForLoadState('networkidle');
 
     const storyRoot = page.locator('#storybook-root');
@@ -137,9 +137,9 @@ test.describe('Interactive Tutorial Elements', () => {
 
   test('handles rapid story switching', async ({ page }) => {
     const stories = [
-      '/iframe.html?id=useagent-basic--auto-load',
-      '/iframe.html?id=clippy-component--basic',
-      '/iframe.html?id=useagent-basic--auto-load',
+      '/iframe.html?id=hooks-useagent-basic--auto-load',
+      '/iframe.html?id=components-clippy--basic',
+      '/iframe.html?id=hooks-useagent-basic--auto-load',
     ];
 
     for (const story of stories) {
@@ -157,7 +157,7 @@ test.describe('Interactive Tutorial Elements', () => {
 test.describe('Agent Persistence and Cleanup', () => {
   test('agent cleans up when navigating away', async ({ page }) => {
     // Load first story with agent
-    await page.goto('/iframe.html?id=useagent-basic--auto-load');
+    await page.goto('/iframe.html?id=hooks-useagent-basic--auto-load');
     await page.waitForLoadState('networkidle');
 
     const storyRoot = page.locator('#storybook-root');
@@ -175,7 +175,7 @@ test.describe('Agent Persistence and Cleanup', () => {
   test('handles multiple page loads without memory leaks', async ({ page }) => {
     // Load the same agent story multiple times
     for (let i = 0; i < 5; i++) {
-      await page.goto('/iframe.html?id=useagent-basic--auto-load');
+      await page.goto('/iframe.html?id=hooks-useagent-basic--auto-load');
       await page.waitForLoadState('networkidle');
 
       const storyRoot = page.locator('#storybook-root');
@@ -192,7 +192,7 @@ test.describe('Agent Persistence and Cleanup', () => {
 
 test.describe('Cross-Browser Compatibility', () => {
   test('agent renders consistently across viewport sizes', async ({ page }) => {
-    await page.goto('/iframe.html?id=useagent-basic--auto-load');
+    await page.goto('/iframe.html?id=hooks-useagent-basic--auto-load');
 
     // Test desktop size
     await page.setViewportSize({ width: 1920, height: 1080 });

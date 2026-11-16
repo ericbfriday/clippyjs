@@ -346,22 +346,25 @@ function calculateConcurrentUsers(
     case 'sustained':
       return peakUsers;
 
-    case 'spike':
+    case 'spike': {
       // Spike pattern: baseline with periodic spikes
       const inSpike = Math.floor(elapsedMs / spikeIntervalMs) % 2 === 1;
       return inSpike ? peakUsers : initialUsers;
+    }
 
-    case 'wave':
+    case 'wave': {
       // Sine wave pattern
       const amplitude = waveAmplitude;
       const midpoint = (peakUsers + initialUsers) / 2;
       const waveValue = Math.sin((elapsedMs / wavePeriodMs) * 2 * Math.PI) * amplitude;
       return Math.max(initialUsers, Math.floor(midpoint + waveValue));
+    }
 
-    case 'stress':
+    case 'stress': {
       // Incrementally increase users until failure
       const stepNumber = Math.floor(elapsedMs / stressStepDurationMs);
       return Math.min(peakUsers, initialUsers + (stepNumber * stressStepUsers));
+    }
 
     default:
       return peakUsers;

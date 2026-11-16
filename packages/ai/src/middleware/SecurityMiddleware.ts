@@ -121,7 +121,7 @@ const SECURITY_PATTERNS = {
     /\b(eval|exec|system|shell_exec|passthru|proc_open|popen)\b/gi,
   ],
   pathTraversal: [
-    /\.\.[\/\\]/g,
+    /\.\.[/\\]/g,
     /\/(etc|proc|sys|dev|bin|usr|var|tmp)\//gi,
   ],
 };

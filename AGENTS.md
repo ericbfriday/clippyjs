@@ -10,17 +10,25 @@ Modern TypeScript React library for adding AI-powered Clippy agents to websites.
 - **@clippyjs/ai**: Core AI integration abstractions
 - **@clippyjs/ai-anthropic**: Claude AI provider integration
 - **@clippyjs/ai-openai**: OpenAI GPT provider integration
+- **@clippyjs/ai-openrouter**: OpenRouter multi-model gateway provider (proxy-only; requires a backend `endpoint`)
+- **@clippyjs/ai-opencode**: OpenCode runtime provider
+- **@clippyjs/ai-zai**: ZAI provider integration
+- **@clippyjs/browser-parser**: Page context parsing (forms, semantics)
+- **@clippyjs/browser-assistant**: Browser assistant built on the parser
+- **@clippyjs/context-providers**: Shared React context providers
 - **@clippyjs/storybook**: Component development and documentation
 - **clippyjs-lib** (legacy): Deprecated - use @clippyjs/react instead
 
 **Build System**: 
-- **Primary**: Nx 22.0.3 with intelligent caching (20-72% faster builds)
-- **Traditional**: Rollup 4.31.0 (ESM, CommonJS, UMD outputs)
-- **Package Manager**: Yarn 4.9.2 with Plug'n'Play
+- **Primary**: Nx 24.0.6 with intelligent caching
+- **Bundler**: Rollup 4.68 (ESM, CommonJS outputs; legacy lib also emits UMD)
+- **Package Manager**: Yarn 4.18.1 (node-modules linker, workspaces-hoisted)
+
+**Runtime**: Node.js >= 24.15.0 (see `engines` in root package.json and `.nvmrc`)
 
 **Testing**: 
-- Vitest 3.0.5 for unit tests
-- Playwright for E2E, integration, and visual regression testing
+- Vitest 5.1 (+ @vitest/coverage-v8 5.1, jsdom 31) for unit tests
+- Playwright 1.65 for E2E, integration, and visual regression testing
 
 ## Build/Lint/Test Commands
 
@@ -172,14 +180,15 @@ yarn nx:build:affected     # Only builds react + dependents
 ## Code Style Guidelines
 
 ### TypeScript Standards
-- **Strict Mode**: TypeScript strict mode enabled
+- **TypeScript 6.0** (`strict` is NOT yet enabled workspace-wide — enabling it is a known follow-up; do not claim otherwise)
 - **Target**: ES2020
 - **JSX Transform**: react-jsx
 - **Type Imports**: Use explicit `type` imports for types only
 - **All code must be TypeScript**: No JavaScript files in source
+- **Project references**: root `tsconfig.json` references all 11 buildable packages; `npx tsc --build` checks the full workspace
 
 ### React Standards
-- **Version**: React 19.0.0 with concurrent features
+- **Version**: React 19.3 with concurrent features
 - **Components**: Functional components with hooks only, no class components
 - **State Management**: Use hooks (useState, useEffect, useContext, etc.)
 - **Props**: Explicit interface definitions for all component props
@@ -227,8 +236,11 @@ The library includes these nostalgic agents:
 ## AI Integration
 
 The library supports AI-powered agents through provider packages:
-- **Anthropic**: Claude integration via @clippyjs/ai-anthropic
-- **OpenAI**: GPT integration via @clippyjs/ai-openai
+- **Anthropic**: Claude integration via @clippyjs/ai-anthropic (uses @anthropic-ai/sdk v1; the Messages API 2026-10-21 no longer accepts `temperature`/`top_p`/`top_k`, so ChatOptions `temperature` is ignored with a console warning)
+- **OpenAI**: GPT integration via @clippyjs/ai-openai (openai SDK v7)
+- **OpenRouter**: Multi-model gateway via @clippyjs/ai-openrouter (proxy-only; direct client-side API keys throw a Security Error)
+- **OpenCode**: Runtime provider via @clippyjs/ai-opencode
+- **ZAI**: ZAI provider via @clippyjs/ai-zai
 - **Multi-Provider**: Support for multiple AI providers simultaneously
 - **Custom**: Extend BaseAIProvider for custom providers
 

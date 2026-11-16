@@ -51,7 +51,7 @@ export function validatePath(path: string): string {
       throw e;
     }
     // If not a valid URL and not relative, it's safer to reject
-    throw new Error(`Security Error: Invalid or untrusted path for Clippy assets: ${path}`);
+    throw new Error(`Security Error: Invalid or untrusted path for Clippy assets: ${path}`, { cause: e });
   }
 }
 

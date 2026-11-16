@@ -5,6 +5,15 @@
     { "path": "./packages/react" },
     { "path": "./packages/ai" },
     { "path": "./packages/ai-openai" },
-    { "path": "./packages/ai-anthropic" }
-  ]
+    { "path": "./packages/ai-anthropic" },
+    { "path": "./packages/ai-opencode" },
+    { "path": "./packages/ai-openrouter" },
+    { "path": "./packages/ai-zai" },
+    { "path": "./packages/browser-parser" },
+    { "path": "./packages/browser-assistant" },
+    { "path": "./packages/context-providers" }
+  ],
+  "compilerOptions": {
+    "ignoreDeprecations": "6.0"
+  }
 }

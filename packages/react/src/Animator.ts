@@ -270,6 +270,11 @@ export class Animator {
    * Destroy the animator and clean up
    */
   public destroy(): void {
+    // Settle any pending animation callback first so awaiting callers
+    // (e.g. play()/show() promises) don't hang forever after destroy.
+    if (this.currentAnimation && this.endCallback) {
+      this.endCallback(this.currentAnimationName!, Animator.States.EXITED);
+    }
     this.pause();
     this.overlays = [];
     this.sounds = {};

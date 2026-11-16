@@ -205,7 +205,9 @@ describe('OpenRouterProvider', () => {
       (global.fetch as any).mockResolvedValue(mockResponse);
 
       const stream = provider.chat(messages, options);
-      for await (const _ of stream) {}
+      for await (const _ of stream) {
+        // Drain the stream; chunk contents are asserted via the fetch call body below.
+      }
 
       const fetchCall = (global.fetch as any).mock.calls[0];
       const requestBody = JSON.parse(fetchCall[1].body);

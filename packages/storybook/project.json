@@ -23,6 +23,13 @@
       "options": {
         "command": "yarn workspace @clippyjs/storybook build-storybook"
       }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "eslint .storybook stories",
+        "cwd": "{projectRoot}"
+      }
     }
   }
 }

@@ -60,9 +60,13 @@ export class AnthropicProvider extends AIProvider {
       params.system = options.systemPrompt;
     }
 
-    // Add temperature if provided
+    // NOTE: `temperature`/`top_p`/`top_k` were removed from the Anthropic Messages
+    // API as of version 2026-10-21 (pinned by @anthropic-ai/sdk v1), so ChatOptions
+    // temperature can no longer be forwarded to the API.
     if (options?.temperature !== undefined) {
-      params.temperature = options.temperature;
+      console.warn(
+        'AnthropicProvider: the `temperature` option is ignored — the Anthropic Messages API (2026-10-21) no longer accepts sampling parameters.'
+      );
     }
 
     // Add tools if provided

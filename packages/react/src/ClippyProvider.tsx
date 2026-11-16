@@ -73,6 +73,13 @@ export const ClippyProvider: React.FC<ClippyProviderProps> = ({
 }) => {
   const [agents, setAgents] = useState<Map<string, Agent>>(new Map());
   const agentsRef = useRef(agents);
+  // In-flight loads per name, so concurrent loadAgent calls (e.g. React
+  // StrictMode double-mounting in dev) share one load instead of creating
+  // duplicate agent instances.
+  const pendingLoadsRef = useRef(new Map<string, Promise<Agent>>());
+  // Bumped on every unloadAgent(name) so loads still in flight can detect
+  // that their result is no longer wanted and discard it.
+  const unloadGenerationRef = useRef(new Map<string, number>());
 
   useEffect(() => {
     agentsRef.current = agents;
@@ -86,6 +93,10 @@ export const ClippyProvider: React.FC<ClippyProviderProps> = ({
     const existing = agentsRef.current.get(name);
     if (existing) return existing;
 
+    // Share an in-flight load for the same agent name
+    const pending = pendingLoadsRef.current.get(name);
+    if (pending) return pending;
+
     // Check max agents limit
     if (agentsRef.current.size >= maxAgents) {
       const error = new Error(
@@ -95,35 +106,51 @@ export const ClippyProvider: React.FC<ClippyProviderProps> = ({
       throw error;
     }
 
-    try {
-      // Load the agent
-      const agent = await load(name, {
-        basePath: options?.basePath || defaultBasePath
-      });
+    const loadPromise = (async () => {
+      try {
+        const generation = unloadGenerationRef.current.get(name) ?? 0;
 
-      // Add to state and update the ref synchronously so callbacks always see
-      // the latest map without changing identity after every agent update.
-      setAgents(prev => {
-        const next = new Map(prev).set(name, agent);
-        agentsRef.current = next;
-        return next;
-      });
+        // Load the agent
+        const agent = await load(name, {
+          basePath: options?.basePath || defaultBasePath
+        });
 
-      // Show if requested
-      if (options?.show !== false) {
-        await agent.show();
+        if ((unloadGenerationRef.current.get(name) ?? 0) !== generation) {
+          // The agent was unloaded while its load was in flight — discard it
+          // instead of registering a destroyed agent.
+          agent.destroy();
+          throw new Error(`Load of agent "${name}" cancelled: unloaded during load`);
+        }
+
+        // Add to state and update the ref synchronously so callbacks always see
+        // the latest map without changing identity after every agent update.
+        setAgents(prev => {
+          const next = new Map(prev).set(name, agent);
+          agentsRef.current = next;
+          return next;
+        });
+
+        // Show if requested
+        if (options?.show !== false) {
+          await agent.show();
+        }
+
+        return agent;
+      } catch (error) {
+        const err = error as Error;
+        onError?.(err, name);
+        console.error(`Failed to load agent ${name}:`, err);
+        throw err;
+      } finally {
+        pendingLoadsRef.current.delete(name);
       }
-
-      return agent;
-    } catch (error) {
-      const err = error as Error;
-      onError?.(err, name);
-      console.error(`Failed to load agent ${name}:`, err);
-      throw err;
-    }
+    })();
+    pendingLoadsRef.current.set(name, loadPromise);
+    return loadPromise;
   }, [defaultBasePath, maxAgents, onError]);
 
   const unloadAgent = useCallback((name: string): void => {
+    unloadGenerationRef.current.set(name, (unloadGenerationRef.current.get(name) ?? 0) + 1);
     const agent = agentsRef.current.get(name);
     if (agent) {
       agent.destroy();

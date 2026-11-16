@@ -29,8 +29,7 @@
     "lint": {
       "cache": true,
       "inputs": [
-        "default",
-        "{workspaceRoot}/.eslintrc.json"
+        "default"
       ]
     },
     "typecheck": {
@@ -55,8 +54,6 @@
     "production": [
       "default",
       "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?",
-      "!{projectRoot}/tsconfig.spec.json",
-      "!{projectRoot}/.eslintrc.json",
       "!{projectRoot}/**/*.md"
     ],
     "sharedGlobals": [
@@ -65,5 +62,24 @@
   },
   "parallel": 8,
   "cacheDirectory": "node_modules/.cache/nx",
-  "analytics": true
+  "analytics": true,
+  "affected": {
+    "legacy": true
+  },
+  "plugins": [
+    {
+      "plugin": "@nx/vitest",
+      "options": {
+        "testMode": "watch",
+        "testTargetName": "test"
+      },
+      "include": [
+        "packages/ai-anthropic/**/*",
+        "packages/ai-openai/**/*",
+        "packages/ai-openrouter/**/*",
+        "packages/ai-opencode/**/*",
+        "packages/ai-zai/**/*"
+      ]
+    }
+  ]
 }

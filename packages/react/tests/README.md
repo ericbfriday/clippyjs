@@ -67,7 +67,7 @@ it('returns correct initial state', () => {
 **Example**:
 ```typescript
 test('loads agent when Load Agent button is clicked', async ({ page }) => {
-  await page.goto('/iframe.html?id=useagent-basic--load-and-speak');
+  await page.goto('/iframe.html?id=hooks-useagent-basic--load-and-speak');
   await page.click('button:has-text("Load Agent")');
   await expect(page.locator('.clippy')).toBeVisible({ timeout: 5000 });
 });
@@ -90,7 +90,7 @@ test('loads agent when Load Agent button is clicked', async ({ page }) => {
 **Example**:
 ```typescript
 test('clippy renders correctly at idle', async ({ page }) => {
-  await page.goto('/iframe.html?id=useagent-basic--load-and-speak');
+  await page.goto('/iframe.html?id=hooks-useagent-basic--load-and-speak');
   await page.click('button:has-text("Load Agent")');
   const agent = page.locator('.clippy');
   await expect(agent).toHaveScreenshot('clippy-idle.png', {
@@ -223,7 +223,7 @@ Integration and visual tests run against **Storybook stories**, not the starter 
 ### Story-Based Testing
 ```typescript
 // Navigate to specific story
-await page.goto('/iframe.html?id=useagent-basic--load-and-speak&viewMode=story');
+await page.goto('/iframe.html?id=hooks-useagent-basic--load-and-speak&viewMode=story');
 
 // Test the isolated component
 await page.click('button:has-text("Load Agent")');

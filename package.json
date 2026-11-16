@@ -56,25 +56,30 @@
   },
   "homepage": "https://github.com/ericbfriday/clippyjs#readme",
   "private": true,
-  "packageManager": "yarn@4.12.0",
+  "packageManager": "yarn@4.18.1",
+  "engines": {
+    "node": ">=24.15.0"
+  },
   "devDependencies": {
-    "@eslint/js": "^9.18.0",
-    "@nx/eslint": "22.6.5",
-    "@nx/js": "22.6.5",
-    "@nx/playwright": "22.6.5",
-    "@nx/react": "22.6.5",
-    "@nx/rollup": "22.6.5",
-    "@nx/vite": "22.6.5",
-    "@nx/vitest": "22.6.5",
-    "@playwright/test": "^1.58.2",
-    "@typescript-eslint/eslint-plugin": "^8.20.0",
-    "@typescript-eslint/parser": "^8.20.0",
-    "eslint": "^9.39.1",
-    "globals": "^15.14.0",
-    "nx": "22.7.10",
-    "typescript": "^5.7.3",
-    "vite": "^7.3.5",
-    "vitest": "5.0.0"
+    "@eslint/js": "^10.0.1",
+    "@nx/eslint": "24.0.6",
+    "@nx/js": "24.0.6",
+    "@nx/playwright": "24.0.6",
+    "@nx/react": "24.0.6",
+    "@nx/rollup": "24.0.6",
+    "@nx/vite": "24.0.6",
+    "@nx/vitest": "24.0.6",
+    "@playwright/test": "^1.65.1",
+    "@typescript-eslint/eslint-plugin": "^8.73.0",
+    "@typescript-eslint/parser": "^8.73.0",
+    "eslint": "^10.15.0",
+    "globals": "^17.14.0",
+    "nx": "24.0.6",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "typescript": "^6.0.3",
+    "vite": "^8.3.8",
+    "vitest": "^5.1.0"
   },
   "workspaces": [
     "packages/*",
@@ -83,9 +88,21 @@
   "resolutions": {
     "tar": "^7.5.21",
     "svgo": "^3.3.5",
-    "serialize-javascript": "^6.0.2",
+    "serialize-javascript": "^7.1.4",
+    "source-map-js": "^1.2.2",
     "koa": "^3.1.2",
-    "minimatch": "^10.2.3",
-    "@isaacs/brace-expansion": "^5.0.1"
+    "minimatch": "^11.0.8",
+    "@isaacs/brace-expansion": "^5.0.1",
+    "brace-expansion": "^5.0.13",
+    "fast-uri": "^3.1.9",
+    "@ungap/structured-clone": "^1.4.0",
+    "follow-redirects": "^1.16.3",
+    "qs": "^6.17.1",
+    "socks": "^2.8.10",
+    "test-exclude": "^8.0.0",
+    "glob": "^14.0.6"
+  },
+  "dependencies": {
+    "rollup": "^4.68.4"
   }
 }

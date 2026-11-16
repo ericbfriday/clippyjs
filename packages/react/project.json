@@ -28,12 +28,12 @@
       }
     },
     "test:integration": {
-      "executor": "@nx/playwright:playwright",
+      "executor": "nx:run-commands",
       "outputs": [
         "{workspaceRoot}/playwright-report"
       ],
       "options": {
-        "config": "packages/react/playwright.config.ts"
+        "command": "yarn workspace @clippyjs/react test:integration"
       }
     },
     "typecheck": {
@@ -41,6 +41,13 @@
       "outputs": [],
       "options": {
         "command": "yarn workspace @clippyjs/react typecheck"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "eslint src",
+        "cwd": "{projectRoot}"
       }
     },
     "clean": {

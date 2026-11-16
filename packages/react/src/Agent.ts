@@ -413,8 +413,12 @@ export class Agent {
   }
 
   private playInternal(animation: string, callback?: (name: string, state: AnimationState) => void): void {
-    // If in idle animation, wait for it to complete
+    // If an idle animation is looping, interrupt it so it exits and the
+    // queued action can start. Without this, idles that loop via exitBranch
+    // never fire EXITED on their own and every play/move task would wait on
+    // idleDeferred forever.
     if (this.isIdleAnimation() && this.idleDeferred) {
+      this.animator.exitAnimation();
       this.idleDeferred.then(() => {
         this.playInternal(animation, callback);
       });

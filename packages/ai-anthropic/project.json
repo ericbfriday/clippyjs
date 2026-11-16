@@ -19,14 +19,12 @@
       }
     },
     "test": {
-      "executor": "@nx/vitest:test",
+      "executor": "nx:run-commands",
       "outputs": [
         "{workspaceRoot}/coverage/packages/ai-anthropic"
       ],
       "options": {
-        "config": "packages/ai-anthropic/vitest.config.ts",
-        "passWithNoTests": false,
-        "reportsDirectory": "{projectRoot}/../../coverage/packages/ai-anthropic"
+        "command": "yarn workspace @clippyjs/ai-anthropic test"
       }
     },
     "typecheck": {
@@ -34,6 +32,13 @@
       "outputs": [],
       "options": {
         "command": "yarn workspace @clippyjs/ai-anthropic typecheck"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "eslint src",
+        "cwd": "{projectRoot}"
       }
     },
     "clean": {

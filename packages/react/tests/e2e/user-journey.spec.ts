@@ -14,20 +14,20 @@ test.describe('User Journey - First Time Visitor', () => {
     await page.waitForLoadState('networkidle');
 
     // Step 2: Navigate to agent demo
-    await page.goto('/iframe.html?id=useagent-basic--auto-load');
+    await page.goto('/iframe.html?id=hooks-useagent-basic--auto-load');
     await page.waitForLoadState('networkidle');
 
     const storyRoot = page.locator('#storybook-root');
     await expect(storyRoot).toBeVisible();
 
     // Step 3: Explore different agents
-    await page.goto('/iframe.html?id=stories-all-agents--all-agents');
+    await page.goto('/iframe.html?id=agents-all-agents--agent-gallery');
     await page.waitForLoadState('networkidle');
 
     await expect(storyRoot).toBeVisible();
 
     // Step 4: View component API
-    await page.goto('/iframe.html?id=clippy-component--basic');
+    await page.goto('/iframe.html?id=components-clippy--basic');
     await page.waitForLoadState('networkidle');
 
     await expect(storyRoot).toBeVisible();
@@ -35,7 +35,7 @@ test.describe('User Journey - First Time Visitor', () => {
 
   test('user tests interactive features', async ({ page }) => {
     // Load interactive story
-    await page.goto('/iframe.html?id=useagent-basic--auto-load');
+    await page.goto('/iframe.html?id=hooks-useagent-basic--auto-load');
     await page.waitForLoadState('networkidle');
 
     const storyRoot = page.locator('#storybook-root');
@@ -57,9 +57,9 @@ test.describe('User Journey - Developer Integration', () => {
   test('developer explores API documentation', async ({ page }) => {
     // Visit different component stories to understand API
     const stories = [
-      '/iframe.html?id=clippy-component--basic',
-      '/iframe.html?id=clippy-component--with-greeting',
-      '/iframe.html?id=useagent-basic--auto-load',
+      '/iframe.html?id=components-clippy--basic',
+      '/iframe.html?id=components-clippy--with-message',
+      '/iframe.html?id=hooks-useagent-basic--auto-load',
     ];
 
     for (const story of stories) {
@@ -76,21 +76,21 @@ test.describe('User Journey - Developer Integration', () => {
 
   test('developer tests different agent configurations', async ({ page }) => {
     // Test auto-load configuration
-    await page.goto('/iframe.html?id=useagent-basic--auto-load');
+    await page.goto('/iframe.html?id=hooks-useagent-basic--auto-load');
     await page.waitForLoadState('networkidle');
 
     let storyRoot = page.locator('#storybook-root');
     await expect(storyRoot).toBeVisible();
 
     // Test component with custom props
-    await page.goto('/iframe.html?id=clippy-component--with-greeting');
+    await page.goto('/iframe.html?id=components-clippy--with-message');
     await page.waitForLoadState('networkidle');
 
     storyRoot = page.locator('#storybook-root');
     await expect(storyRoot).toBeVisible();
 
     // Test multi-agent setup
-    await page.goto('/iframe.html?id=stories-all-agents--all-agents');
+    await page.goto('/iframe.html?id=agents-all-agents--agent-gallery');
     await page.waitForLoadState('networkidle');
 
     storyRoot = page.locator('#storybook-root');
@@ -100,7 +100,7 @@ test.describe('User Journey - Developer Integration', () => {
 
 test.describe('User Journey - Performance Testing', () => {
   test('handles sustained usage over time', async ({ page }) => {
-    await page.goto('/iframe.html?id=useagent-basic--auto-load');
+    await page.goto('/iframe.html?id=hooks-useagent-basic--auto-load');
     await page.waitForLoadState('networkidle');
 
     // Simulate 5 minutes of usage
@@ -130,9 +130,9 @@ test.describe('User Journey - Performance Testing', () => {
 
   test('handles frequent story switching', async ({ page }) => {
     const stories = [
-      '/iframe.html?id=useagent-basic--auto-load',
-      '/iframe.html?id=clippy-component--basic',
-      '/iframe.html?id=clippy-component--with-greeting',
+      '/iframe.html?id=hooks-useagent-basic--auto-load',
+      '/iframe.html?id=components-clippy--basic',
+      '/iframe.html?id=components-clippy--with-message',
     ];
 
     // Switch between stories 10 times
@@ -153,7 +153,7 @@ test.describe('User Journey - Mobile User', () => {
   test.use({ viewport: { width: 375, height: 667 } }); // iPhone SE
 
   test('mobile user interacts with agent', async ({ page }) => {
-    await page.goto('/iframe.html?id=useagent-basic--auto-load');
+    await page.goto('/iframe.html?id=hooks-useagent-basic--auto-load');
     await page.waitForLoadState('networkidle');
 
     const storyRoot = page.locator('#storybook-root');
@@ -175,8 +175,8 @@ test.describe('User Journey - Mobile User', () => {
 
   test('responsive layout works on mobile', async ({ page }) => {
     const stories = [
-      '/iframe.html?id=useagent-basic--auto-load',
-      '/iframe.html?id=clippy-component--basic',
+      '/iframe.html?id=hooks-useagent-basic--auto-load',
+      '/iframe.html?id=components-clippy--basic',
     ];
 
     for (const story of stories) {
@@ -198,7 +198,7 @@ test.describe('User Journey - Mobile User', () => {
 
 test.describe('User Journey - Accessibility User', () => {
   test('keyboard navigation works throughout journey', async ({ page }) => {
-    await page.goto('/iframe.html?id=useagent-basic--auto-load');
+    await page.goto('/iframe.html?id=hooks-useagent-basic--auto-load');
     await page.waitForLoadState('networkidle');
 
     const storyRoot = page.locator('#storybook-root');
@@ -219,7 +219,7 @@ test.describe('User Journey - Accessibility User', () => {
   });
 
   test('screen reader landmarks are present', async ({ page }) => {
-    await page.goto('/iframe.html?id=useagent-basic--auto-load');
+    await page.goto('/iframe.html?id=hooks-useagent-basic--auto-load');
     await page.waitForLoadState('networkidle');
 
     // Check for basic accessibility structure
@@ -239,10 +239,10 @@ test.describe('User Journey - Power User', () => {
   test('explores all agent types', async ({ page }) => {
     // Navigate through all available agent stories
     const agentStories = [
-      '/iframe.html?id=useagent-basic--auto-load',
-      '/iframe.html?id=clippy-component--basic',
-      '/iframe.html?id=clippy-component--with-greeting',
-      '/iframe.html?id=stories-all-agents--all-agents',
+      '/iframe.html?id=hooks-useagent-basic--auto-load',
+      '/iframe.html?id=components-clippy--basic',
+      '/iframe.html?id=components-clippy--with-message',
+      '/iframe.html?id=agents-all-agents--agent-gallery',
     ];
 
     for (const story of agentStories) {
@@ -258,7 +258,7 @@ test.describe('User Journey - Power User', () => {
   });
 
   test('tests edge cases and boundaries', async ({ page }) => {
-    await page.goto('/iframe.html?id=useagent-basic--auto-load');
+    await page.goto('/iframe.html?id=hooks-useagent-basic--auto-load');
     await page.waitForLoadState('networkidle');
 
     // Test rapid clicks
@@ -284,7 +284,7 @@ test.describe('User Journey - Power User', () => {
 test.describe('User Journey - Return Visitor', () => {
   test('returning user quickly navigates to familiar features', async ({ page }) => {
     // User knows exactly what they want
-    await page.goto('/iframe.html?id=clippy-component--with-greeting');
+    await page.goto('/iframe.html?id=components-clippy--with-message');
     await page.waitForLoadState('networkidle');
 
     const storyRoot = page.locator('#storybook-root');
@@ -294,7 +294,7 @@ test.describe('User Journey - Return Visitor', () => {
     await page.waitForTimeout(500);
 
     // Navigate to another favorite
-    await page.goto('/iframe.html?id=stories-all-agents--all-agents');
+    await page.goto('/iframe.html?id=agents-all-agents--agent-gallery');
     await page.waitForLoadState('networkidle');
 
     await expect(storyRoot).toBeVisible();

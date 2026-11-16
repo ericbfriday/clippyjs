@@ -7,16 +7,16 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Agent Animations', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/iframe.html?id=useagent-methods--play-animations&viewMode=story');
+    await page.goto('/iframe.html?id=hooks-useagent-all-methods--play-animations&viewMode=story');
 
-    // Load agent first
-    await page.click('button:has-text("Load Agent")');
-    await expect(page.locator('.clippy')).toBeVisible({ timeout: 5000 });
+    // The PlayAnimations story auto-loads and auto-shows the agent on mount;
+    // asset loading is async, so wait generously for it to appear
+    await expect(page.locator('.clippy')).toBeVisible({ timeout: 10000 });
   });
 
   test('plays animation when Play Animation button is clicked', async ({ page }) => {
-    // Click play animation button
-    await page.click('button:has-text("Play")');
+    // The story renders one button per animation name; click "Wave"
+    await page.click('button:has-text("Wave")');
 
     // Verify agent is animating (check for animation-related classes or attributes)
     const agent = page.locator('.clippy');
@@ -29,60 +29,64 @@ test.describe('Agent Animations', () => {
   });
 
   test('displays speech bubble when agent speaks', async ({ page }) => {
-    // Navigate to speak story
-    await page.goto('/iframe.html?id=useagent-basic--load-and-speak&viewMode=story');
-    await page.click('button:has-text("Load Agent")');
-    await expect(page.locator('.clippy')).toBeVisible();
+    // Navigate to the LoadAndSpeak story, whose "Say Hello" button loads
+    // the agent and speaks the greeting
+    await page.goto('/iframe.html?id=hooks-useagent-basic--load-and-speak&viewMode=story');
+    await page.click('button:has-text("Say Hello")');
+    await expect(page.locator('.clippy')).toBeVisible({ timeout: 10000 });
 
-    // Trigger speak
-    await page.click('button:has-text("Speak")');
-
-    // Look for speech bubble (class name may vary)
-    const speechBubble = page.locator('.clippy-balloon, .speech-bubble, [class*="bubble"]');
-    await expect(speechBubble).toBeVisible({ timeout: 2000 });
+    // The story speaks "Hello! Welcome to ClippyJS!" - wait for the balloon
+    const speechBubble = page.locator('.clippy-balloon');
+    await expect(speechBubble).toBeVisible({ timeout: 5000 });
+    await expect(page.locator('.clippy-content')).toContainText('Welcome to ClippyJS', {
+      timeout: 5000,
+    });
   });
 
   test('hides agent when hide is called', async ({ page }) => {
-    // Agent should be visible
-    await expect(page.locator('.clippy')).toBeVisible();
+    // Navigate to the ShowAndHide story (auto-loads the agent, hidden until shown)
+    await page.goto('/iframe.html?id=hooks-useagent-all-methods--show-and-hide&viewMode=story');
 
-    // Navigate to show/hide story
-    await page.goto('/iframe.html?id=useagent-methods--show-hide&viewMode=story');
-    await page.click('button:has-text("Load Agent")');
-    await expect(page.locator('.clippy')).toBeVisible();
+    // Show the agent first (Playwright waits for the button to be enabled
+    // once the agent has loaded)
+    await page.click('button:has-text("Show")');
+    await expect(page.locator('.clippy')).toBeVisible({ timeout: 10000 });
 
     // Click hide
     await page.click('button:has-text("Hide")');
 
-    // Agent should be hidden (may use display:none or visibility:hidden)
+    // Agent should be hidden (display:none after the Hide animation)
     const agent = page.locator('.clippy');
-    await expect(agent).toBeHidden({ timeout: 2000 });
+    await expect(agent).toBeHidden({ timeout: 5000 });
   });
 
   test('shows agent again after hiding', async ({ page }) => {
-    await page.goto('/iframe.html?id=useagent-methods--show-hide&viewMode=story');
-    await page.click('button:has-text("Load Agent")');
+    await page.goto('/iframe.html?id=hooks-useagent-all-methods--show-and-hide&viewMode=story');
 
-    // Hide then show
+    // The agent auto-loads hidden; show it, hide it, then show it again
+    await page.click('button:has-text("Show")');
+    await expect(page.locator('.clippy')).toBeVisible({ timeout: 10000 });
+
     await page.click('button:has-text("Hide")');
-    await expect(page.locator('.clippy')).toBeHidden();
+    await expect(page.locator('.clippy')).toBeHidden({ timeout: 5000 });
 
     await page.click('button:has-text("Show")');
-    await expect(page.locator('.clippy')).toBeVisible();
+    await expect(page.locator('.clippy')).toBeVisible({ timeout: 5000 });
   });
 
   test('moves agent to specified position', async ({ page }) => {
-    await page.goto('/iframe.html?id=useagent-methods--move-to&viewMode=story');
-    await page.click('button:has-text("Load Agent")');
+    await page.goto('/iframe.html?id=hooks-useagent-all-methods--move-to&viewMode=story');
 
+    // The MoveTo story auto-loads and auto-shows the agent
     const agent = page.locator('.clippy');
+    await expect(agent).toBeVisible({ timeout: 10000 });
 
     // Get initial position
     const initialBox = await agent.boundingBox();
     expect(initialBox).not.toBeNull();
 
-    // Trigger move
-    await page.click('button:has-text("Move")');
+    // Trigger move via the story's "Top Left" button (moves to 100,100 over 1s)
+    await page.click('button:has-text("Top Left")');
 
     // Wait for animation to complete
     await page.waitForTimeout(1500);

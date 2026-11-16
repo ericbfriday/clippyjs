@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (toolchain modernization, 2026-11-16)
+- **Runtime**: Node.js floor is now `>=24.15.0` via root `engines` + `.nvmrc` (Node 24 Maintenance LTS; CI updated from Node 20).
+- **Package manager**: Yarn 4.12.0 → 4.18.1.
+- **Build orchestration**: Nx 22.6/22.7 (skewed) → Nx 24.0.6 across core and all `@nx/*` plugins; removed `@nx/vitest:test` and `@nx/playwright:playwright` executors in favor of explicit `nx:run-commands` targets; added a `project.json` for `@clippyjs/ai-openrouter` (previously invisible to Nx); cleaned stale cache-key references in `nx.json`.
+- **TypeScript**: 5.7/5.9 → 6.0.3 everywhere (single version). Root `tsconfig.json` now references all 11 buildable packages, so `tsc --build` checks the full workspace.
+- **Bundling**: Rollup 4.60 → 4.68; `@rollup/plugin-commonjs` 29, `plugin-node-resolve` 16 (deduped), `plugin-replace` 6.0.3, `plugin-terser` 1.0, `plugin-typescript` 12.3.
+- **Linting**: ESLint 9.39 (EOL) → ESLint 10.15 + `@eslint/js` 10 + `@typescript-eslint` 8.73 + `globals` 17. Flat ESLint configs and `lint` targets added for all 16 workspace projects (previously only 3 of 16 were linted). `no-undef` is disabled for TS files per typescript-eslint guidance. `react/display-name` dropped from the Next.js template config because `eslint-plugin-react` 7.37.5 is incompatible with ESLint 10's context API.
+- **Unit testing**: Vitest 5.0 (pinned) → 5.1 with `@vitest/coverage-v8` and `@vitest/ui` aligned at 5.1 — this fixes an invalid mixed-version pair (coverage v3 with vitest 5) that vitest itself warned about. jsdom 25 → 31.
+- **Libraries**: React/ReactDOM 19.3.1, `@types/react(-dom)` 19.3, Playwright 1.65.1, `@types/node` 24.x (aligned to Node 24), `@testing-library/jest-dom` 7, `@anthropic-ai/sdk` 1.9, `openai` 7.57, Storybook 10.6.7 (single version across packages), Next.js 16.4.6 (template), web-vitals 6 (demo).
+- **Breaking (behavior)**: `@clippyjs/ai-anthropic` no longer forwards `temperature` to the Anthropic API — the Messages API version pinned by SDK v1 (2026-10-21) removed sampling parameters; the option is ignored with a console warning.
+- **Fixed**: Playwright `testMatch` now only collects `*.spec.ts` — vitest `*.test.tsx` component tests in the same directories were being imported by Playwright's collection step and crashed it (pre-existing breakage exposed by the vitest/jsdom upgrade). Integration spec story IDs updated to current Storybook slugs (`hooks-useagent-basic--*`, `components-clippy--*`, etc.) and visual tests use masked, deterministic captures with committed baselines for the first time.
+- **Fixed (`@clippyjs/react` runtime bugs found by the newly-running browser tests)**:
+  - `useAgent` method wrappers (`speak`, `play`, `moveTo`, …) closed over stale `agent` state and threw "Agent not loaded" when called right after `await load()` in the same handler; they now read a ref mirror.
+  - `ClippyProvider.loadAgent` did not dedupe in-flight loads — concurrent loads (e.g. React StrictMode double-mount) created duplicate agent instances; concurrent loads now share one promise.
+  - Idle sprite loops that exit via branching never fired their exit callback, so any queued `play`/`moveTo` task waited forever; queued actions now interrupt the idle loop (classic Clippy behavior).
+  - `Animator.destroy()` now settles the pending animation callback so `play()`/`show()` promises resolve instead of hanging after `destroy()`, and `loadAgent` discards results for agents that were unloaded mid-load instead of registering a destroyed agent.
+- **Security**: `yarn npm audit` advisories reduced from 143 (5 critical / 57 high) to 2 low-severity, both dev-only transitives with no upstream fix available (`deepmerge` prototype-poisoning advisory flags its latest release; `whatwg-encoding` deprecation advisory is jsdom's internal dependency). Root `resolutions` added/updated: `brace-expansion ^5.0.13`, `fast-uri ^3.1.9`, `@ungap/structured-clone ^1.4.0`, `follow-redirects ^1.16.3`, `qs ^6.17.1`, `socks ^2.8.10`, `test-exclude ^8.0.0`, `glob ^14.0.6`, `minimatch ^11.0.8`, `serialize-javascript ^7.1.4`, `source-map-js ^1.2.2`.
+
 ### Added
 - **`window.CLIPPY_TRUSTED_ORIGINS` global** - Allow-list for cross-origin Clippy asset hosting.
   - Array of origin strings (e.g. `['https://cdn.example.com']`) that `@clippyjs/react` asset loading accepts
@@ -15,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - **Asset origin validation in `@clippyjs/react` loader (#46)** - All dynamically loaded agent resources (CSS, sprite map, agent data, sounds) are validated before loading. Relative paths (`/`, `./`, `../`) and same-origin URLs load as before; absolute cross-origin URLs now throw `Security Error: Untrusted origin for Clippy assets` unless the origin is listed in `window.CLIPPY_TRUSTED_ORIGINS`. Protocol-relative (`//`) paths are rejected.
 - **Secure form IDs in `@clippyjs/browser-parser` (#48)** - `FormAnalyzer` generates IDs with `crypto.randomUUID()` instead of `Math.random()`. IDs now use the `form-<uuid>` format; `crypto.randomUUID()` requires a secure context (HTTPS or localhost).
+- **OpenRouter provider is proxy-only (#59)** - `@clippyjs/ai-openrouter` no longer supports direct client-side API keys: passing `apiKey` without `endpoint` now throws `Security Error: Direct client-side API key usage is disabled. Please use a secure backend proxy endpoint.` The OpenAI-SDK direct mode and the `baseURL`/`httpReferer`/`xTitle` config options were removed; a backend proxy `endpoint` is required.
 
 ### Fixed
 - **ProviderSelector keyboard navigation follows DOM focus (`@clippyjs/ai`)** - Arrow/Home/End handling now anchors on the actually-focused radio button instead of potentially stale state, and moves DOM focus imperatively in the keydown handler. All 41 accessibility tests now pass in jsdom (previously 37/41).

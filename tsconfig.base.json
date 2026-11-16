@@ -23,7 +23,14 @@
       "@clippyjs/browser-parser": ["packages/browser-parser/src/index.ts"],
       "@clippyjs/context-providers": ["packages/context-providers/src/index.ts"],
       "@clippyjs/browser-assistant": ["packages/browser-assistant/src/index.ts"]
-    }
+    },
+    "strict": false,
+    "noUncheckedSideEffectImports": false,
+    "types": [
+      "*"
+    ],
+    "esModuleInterop": false,
+    "ignoreDeprecations": "6.0"
   },
   "exclude": ["node_modules", "tmp"]
 }
