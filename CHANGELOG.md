@@ -8,6 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **`window.CLIPPY_TRUSTED_ORIGINS` global** - Allow-list for cross-origin Clippy asset hosting.
+  - Array of origin strings (e.g. `['https://cdn.example.com']`) that `@clippyjs/react` asset loading accepts
+  - Required when `basePath`/`defaultBasePath`/`window.CLIPPY_CDN` points at another origin
+
+### Security
+- **Asset origin validation in `@clippyjs/react` loader (#46)** - All dynamically loaded agent resources (CSS, sprite map, agent data, sounds) are validated before loading. Relative paths (`/`, `./`, `../`) and same-origin URLs load as before; absolute cross-origin URLs now throw `Security Error: Untrusted origin for Clippy assets` unless the origin is listed in `window.CLIPPY_TRUSTED_ORIGINS`. Protocol-relative (`//`) paths are rejected.
+- **Secure form IDs in `@clippyjs/browser-parser` (#48)** - `FormAnalyzer` generates IDs with `crypto.randomUUID()` instead of `Math.random()`. IDs now use the `form-<uuid>` format; `crypto.randomUUID()` requires a secure context (HTTPS or localhost).
+
+### Fixed
+- **ProviderSelector keyboard navigation follows DOM focus (`@clippyjs/ai`)** - Arrow/Home/End handling now anchors on the actually-focused radio button instead of potentially stale state, and moves DOM focus imperatively in the keydown handler. All 41 accessibility tests now pass in jsdom (previously 37/41).
+
+### Performance
+- **Semantic topic extraction (#47)** - `SemanticExtractor.extractTopics` counts frequencies via in-place counter objects instead of repeated `Map.set` calls (~20-30% faster; observable output unchanged).
 
 ## [0.5.0] - 2025-11-04 - Phase 6 Sprint 3: Enhanced Accessibility
 

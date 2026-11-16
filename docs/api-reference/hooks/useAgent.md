@@ -31,7 +31,7 @@ function useAgent(
 | `autoCleanup` | `boolean` | No | `true` | Automatically cleanup agent on component unmount |
 | `initialPosition` | `{ x: number; y: number }` | No | - | Initial position for the agent |
 | `initialMessage` | `string` | No | - | Initial message for agent to speak |
-| `basePath` | `string` | No | - | Custom base path for agent assets |
+| `basePath` | `string` | No | `/agents/` | Custom base path for agent assets. Must be a relative path (`/`, `./`, `../`) or same-origin URL; cross-origin URLs require `window.CLIPPY_TRUSTED_ORIGINS` (see [Asset origin validation](../components/ClippyProvider.md#asset-origin-validation)) |
 
 ## Returns
 
@@ -297,6 +297,14 @@ function CustomAssetsAgent() {
   return null;
 }
 ```
+
+For a cross-origin asset host (e.g. a CDN), the origin must be allow-listed before loading:
+
+```typescript
+window.CLIPPY_TRUSTED_ORIGINS = ['https://cdn.example.com'];
+```
+
+See [Asset origin validation](../components/ClippyProvider.md#asset-origin-validation).
 
 ## Notes
 

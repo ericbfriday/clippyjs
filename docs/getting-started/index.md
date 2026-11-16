@@ -564,7 +564,7 @@ A: Agent sprites are pre-rendered. You can use CSS to adjust positioning or add 
 A: Yes! 10 agents available: Clippy, Bonzi, F1, Genie, Genius, Links, Merlin, Peedy, Rocky, Rover.
 
 **Q: Can I host the assets myself?**
-A: Yes! Use the `basePath` prop or `defaultBasePath` on the provider.
+A: Yes! Use the `basePath` prop or `defaultBasePath` on the provider. Paths must be relative or same-origin; to load assets from a cross-origin CDN, also set `window.CLIPPY_TRUSTED_ORIGINS = ['https://your-cdn.example.com']` (see [ClippyProvider docs](../api-reference/components/ClippyProvider.md#asset-origin-validation)).
 
 **Q: How do I cleanup agents?**
 A: Use `autoCleanup: true` (default) or manually call `unload()`.

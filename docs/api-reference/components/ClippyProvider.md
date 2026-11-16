@@ -243,7 +243,7 @@ The callback receives:
 
 Agents are loaded from the `defaultBasePath` which defaults to:
 ```
-https://gitcdn.xyz/repo/pi0/clippyjs/master/assets/agents/
+/agents/
 ```
 
 Override this to use your own assets:
@@ -260,6 +260,19 @@ Individual `useAgent` calls can override the base path:
 const { load } = useAgent('Clippy', {
   basePath: '/custom/path/'
 });
+```
+
+#### Asset origin validation
+
+Asset paths are validated before any resource (CSS, sprite map, agent data, sounds) is loaded:
+
+- Relative paths (`/`, `./`, `../`) and same-origin URLs load as before.
+- Protocol-relative paths (`//cdn.example.com/...`) are rejected.
+- Absolute cross-origin URLs throw `Security Error: Untrusted origin for Clippy assets` unless the origin is allow-listed:
+
+```typescript
+// Set before loading any agent
+window.CLIPPY_TRUSTED_ORIGINS = ['https://cdn.example.com'];
 ```
 
 ## Notes
